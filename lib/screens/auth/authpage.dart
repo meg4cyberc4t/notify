@@ -23,7 +23,7 @@ class AuthPage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(25, 0, 25, 10),
+          padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -42,7 +42,7 @@ class AuthPage extends StatelessWidget {
                   delay: 0.9,
                   child: Text(
                     "Let’s create a space for your notification",
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                 ),
               ),

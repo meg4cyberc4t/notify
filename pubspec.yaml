@@ -31,7 +31,6 @@ flutter_icons:
   ios: true
   image_path: "assets/logo.png"
   adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "#000000"
 
 flutter_native_splash:
   background_image: "assets/splashscreen.png"

@@ -23,7 +23,7 @@ class AuthPage2 extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(25, 0, 25, 10),
+          padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -35,7 +35,7 @@ class AuthPage2 extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Text(
                     "Calendar, notification, management",
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                 ),
               ),

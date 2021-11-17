@@ -64,6 +64,7 @@ class AuthPageSignIn extends StatelessWidget {
             child: NotifyTextField(
               hintText: 'Your password',
               labelText: 'Password',
+              obscureText: true,
             ),
           ),
           Padding(

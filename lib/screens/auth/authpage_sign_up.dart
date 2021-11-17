@@ -54,6 +54,22 @@ class AuthPageSignUp extends StatelessWidget {
           const FadeAnimation(
             delay: 0.95,
             child: NotifyTextField(
+              hintText: 'Your first name',
+              labelText: 'First name',
+            ),
+          ),
+          const SizedBox(height: 10),
+          const FadeAnimation(
+            delay: 0.95,
+            child: NotifyTextField(
+              hintText: 'Your last name',
+              labelText: 'Last name',
+            ),
+          ),
+          const SizedBox(height: 10),
+          const FadeAnimation(
+            delay: 0.95,
+            child: NotifyTextField(
               hintText: 'Your login',
               labelText: 'Login',
             ),
@@ -62,16 +78,9 @@ class AuthPageSignUp extends StatelessWidget {
           const FadeAnimation(
             delay: 0.95,
             child: NotifyTextField(
-              hintText: 'Your email',
-              labelText: 'Email',
-            ),
-          ),
-          const SizedBox(height: 10),
-          const FadeAnimation(
-            delay: 0.95,
-            child: NotifyTextField(
               hintText: 'Your password',
               labelText: 'Password',
+              obscureText: true,
             ),
           ),
           Padding(
