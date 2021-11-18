@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/fadeanimation.dart';
@@ -17,7 +19,7 @@ class AuthPageSignIn extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 30),
+          SizedBox(height: Platform.isIOS ? 50 : 30),
           FadeAnimation(
             delay: 0.9,
             child: Row(

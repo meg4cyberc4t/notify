@@ -19,16 +19,16 @@ class NotifyTextField extends StatelessWidget {
     return TextFormField(
       cursorColor: Theme.of(context).primaryColor,
       maxLines: 1,
-      style: Theme.of(context).textTheme.headline5,
+      style: Theme.of(context).textTheme.headline4,
       obscureText: obscureText,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(5),
         hintText: hintText,
-        hintStyle: Theme.of(context).textTheme.headline5!.copyWith(
+        hintStyle: Theme.of(context).textTheme.headline4!.copyWith(
               color: const Color(0xFF7A7979),
             ),
         labelText: labelText,
-        labelStyle: Theme.of(context).textTheme.headline5!.copyWith(
+        labelStyle: Theme.of(context).textTheme.headline4!.copyWith(
               color: const Color(0xFF7A7979),
             ),
         border: UnderlineInputBorder(
