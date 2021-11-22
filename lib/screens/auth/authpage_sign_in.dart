@@ -1,13 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/fadeanimation.dart';
-import 'package:notify/components/textbutton.dart';
-import 'package:notify/components/textformfield.dart';
+import 'package:megasdkdart/megasdkdart.dart';
+import 'package:notify/components/widgets/fadeanimation.dart';
+import 'package:notify/components/widgets/textbutton.dart';
+import 'package:notify/components/widgets/textformfield.dart';
 
 class AuthPageSignIn extends StatelessWidget {
-  const AuthPageSignIn({Key? key}) : super(key: key);
+  const AuthPageSignIn({Key? key, required this.sdk}) : super(key: key);
+  final MegaSDK sdk;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AuthPageSignIn extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: Platform.isIOS ? 50 : 30),
+          const SizedBox(height: 50),
           FadeAnimation(
             delay: 0.9,
             child: Row(
@@ -53,7 +53,7 @@ class AuthPageSignIn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const FadeAnimation(
+          FadeAnimation(
             delay: 0.95,
             child: NotifyTextField(
               hintText: 'Your login',
@@ -61,7 +61,7 @@ class AuthPageSignIn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const FadeAnimation(
+          FadeAnimation(
             delay: 0.95,
             child: NotifyTextField(
               hintText: 'Your password',

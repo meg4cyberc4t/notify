@@ -1,6 +1,8 @@
 name: notify
 description: A new Flutter project.
-publish_to: 'meg4cyberc4t'
+# publish_to: 'meg4cyberc4t'
+publish_to: 'none'
+
 
 version: 1.0.0+1
 environment:
@@ -14,6 +16,10 @@ dependencies:
   supercharged: ^2.1.1
   simple_animations: ^4.0.1
   flutter_native_splash: ^1.3.1
+  megasdkdart:
+    git: 
+      url: https://github.com/meg4cyberc4t/megasdkdart
+      ref: main
 
 flutter:
   uses-material-design: true
@@ -37,6 +43,7 @@ flutter_native_splash:
   background_image: "assets/splashscreen.png"
   android: true
   ios: true
+
 
 
   #   - images/a_dot_burr.jpeg

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:megasdkdart/megasdkdart.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
@@ -11,6 +12,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  static const serverAddress = "http://185.12.95.163";
+  static MegaSDK sdk = MegaSDK(
+    address: serverAddress,
+    authVariables: AuthVariables('', ''),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +48,8 @@ class MyApp extends StatelessWidget {
       routes: {
         "/AuthPage": (context) => const AuthPage(),
         "/AuthPage2": (context) => const AuthPage2(),
-        "/AuthPageSignUp": (context) => const AuthPageSignUp(),
-        "/AuthPageSignIn": (context) => const AuthPageSignIn(),
+        "/AuthPageSignUp": (context) => AuthPageSignUp(sdk: sdk),
+        "/AuthPageSignIn": (context) => AuthPageSignIn(sdk: sdk),
       },
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/fadeanimation.dart';
-import 'package:notify/components/textbutton.dart';
+import 'package:notify/components/widgets/fadeanimation.dart';
+import 'package:notify/components/widgets/textbutton.dart';
 
 class AuthPage2 extends StatelessWidget {
   const AuthPage2({Key? key}) : super(key: key);
