@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:megasdkdart/megasdkdart.dart';
-import 'package:notify/components/widgets/fadeanimation.dart';
-import 'package:notify/components/widgets/textbutton.dart';
-import 'package:notify/components/widgets/textformfield.dart';
+import 'package:notify/components/widgets/fade_animation.dart';
+import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/text_field.dart';
 
 class AuthPageSignIn extends StatelessWidget {
   const AuthPageSignIn({Key? key, required this.sdk}) : super(key: key);

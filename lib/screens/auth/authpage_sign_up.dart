@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:megasdkdart/megasdkdart.dart';
-import 'package:notify/components/methods/inputvalidators.dart';
-import 'package:notify/components/widgets/fadeanimation.dart';
-import 'package:notify/components/widgets/textbutton.dart';
-import 'package:notify/components/widgets/textformfield.dart';
+import 'package:notify/components/methods/is_digit.dart';
+import 'package:notify/components/widgets/fade_animation.dart';
+import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/text_field.dart';
+import 'package:notify/components/BLoC/text_field_validator_bloc.dart';
 
 class AuthPageSignUp extends StatefulWidget {
   const AuthPageSignUp({
@@ -39,6 +41,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
       child: SingleChildScrollView(
         padding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        scrollDirection: Axis.vertical,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -80,41 +84,144 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
             const SizedBox(height: 10),
             FadeAnimation(
               delay: 0.95,
-              child: NotifyTextField(
-                hintText: 'Your first name',
-                labelText: 'First name',
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: userfieldValidator,
-                controller: _controllerFirstname,
+              child: BlocProvider(
+                create: (context) => TextFieldValidatorBloc(null),
+                child: BlocBuilder<TextFieldValidatorBloc, String?>(
+                  builder: (BuildContext context, String? errorTextFromBLoC) {
+                    return NotifyTextField(
+                      hintText: 'Your first name',
+                      labelText: 'First name',
+                      errorText: errorTextFromBLoC,
+                      onChanged: (value) async {
+                        value = value.toLowerCase();
+                        if (value.isEmpty) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventEmpty());
+                        } else if (haveDigit(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNeedOnlyLetters());
+                        } else if (["login", "password"].contains(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventAreYouKidding());
+                        } else {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventCancel());
+                        }
+                      },
+                      controller: _controllerFirstname,
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10),
             FadeAnimation(
               delay: 0.95,
-              child: NotifyTextField(
-                hintText: 'Your last name',
-                labelText: 'Last name',
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: userfieldValidator,
-                controller: _controllerLastname,
+              child: BlocProvider(
+                create: (context) => TextFieldValidatorBloc(null),
+                child: BlocBuilder<TextFieldValidatorBloc, String?>(
+                  builder: (BuildContext context, String? errorTextFromBLoC) {
+                    return NotifyTextField(
+                      hintText: 'Your last name',
+                      labelText: 'Last name',
+                      errorText: errorTextFromBLoC,
+                      onChanged: (value) async {
+                        value = value.toLowerCase();
+                        if (value.isEmpty) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventEmpty());
+                        } else if (haveDigit(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNeedOnlyLetters());
+                        } else if (["login", "password"].contains(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventAreYouKidding());
+                        } else {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventCancel());
+                        }
+                      },
+                      controller: _controllerLastname,
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10),
             FadeAnimation(
               delay: 0.95,
-              child: _LocalLoginTextWidget(
-                  controllerLogin: _controllerLogin, widget: widget),
+              child: BlocProvider(
+                create: (context) => TextFieldValidatorBloc(null),
+                child: BlocBuilder<TextFieldValidatorBloc, String?>(
+                  builder: (BuildContext context, String? errorTextFromBLoC) {
+                    return NotifyTextField(
+                      hintText: 'Your login',
+                      labelText: 'Login',
+                      errorText: errorTextFromBLoC,
+                      onChanged: (value) async {
+                        value = value.toLowerCase();
+                        if (value.length < 3) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNoLength());
+                        } else if (value.isEmpty) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventEmpty());
+                        } else if (int.tryParse(value) != null) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNeedLetters());
+                        } else if (["login", "password"].contains(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventAreYouKidding());
+                        } else if (await widget.sdk.auth
+                                .isCorrectLoginWithStatusCode(value) ==
+                            422) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventAlreadyUsed());
+                        } else {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventCancel());
+                        }
+                      },
+                      controller: _controllerLogin,
+                    );
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             FadeAnimation(
               delay: 0.95,
-              child: NotifyTextField(
-                hintText: 'Your password',
-                labelText: 'Password',
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: passwordValidator,
-                controller: _controllerPassword,
-                obscureText: true,
+              child: BlocProvider(
+                create: (context) => TextFieldValidatorBloc(null),
+                child: BlocBuilder<TextFieldValidatorBloc, String?>(
+                  builder: (BuildContext context, String? errorTextFromBLoC) {
+                    return NotifyTextField(
+                      hintText: 'Your password',
+                      labelText: 'Password',
+                      errorText: errorTextFromBLoC,
+                      onChanged: (value) async {
+                        value = value.toLowerCase();
+                        if (value.length < 5) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNoLength());
+                        } else if (value.isEmpty) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventEmpty());
+                        } else if (int.tryParse(value) != null) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventNeedLetters());
+                        } else if (["login", "password"].contains(value)) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventAreYouKidding());
+                        } else {
+                          BlocProvider.of<TextFieldValidatorBloc>(context)
+                              .add(TextFieldValidatorEventCancel());
+                        }
+                      },
+                      controller: _controllerPassword,
+                    );
+                  },
+                ),
               ),
             ),
             Padding(
@@ -131,17 +238,20 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                         child: NotifyTextButton(
                             text: 'Continue',
                             onPressed: () {
-                              if ((userfieldValidator(
-                                          _controllerFirstname.text) ==
-                                      null) &&
-                                  (userfieldValidator(
-                                          _controllerLastname.text) ==
-                                      null) &&
-                                  (loginValidator(_controllerLogin.text) ==
-                                      null) &&
-                                  (passwordValidator(
-                                          _controllerPassword.text) ==
-                                      null)) {}
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      dismissDirection: DismissDirection.down,
+                                      content: Text(
+                                          "Check the errors in the fields!",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6
+                                              ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .button!
+                                                      .color))));
                             })),
                   ],
                 ),
@@ -151,53 +261,5 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
         ),
       ),
     ));
-  }
-}
-
-class _LocalLoginTextWidget extends StatefulWidget {
-  const _LocalLoginTextWidget({
-    Key? key,
-    required TextEditingController controllerLogin,
-    required this.widget,
-  })  : _controllerLogin = controllerLogin,
-        super(key: key);
-
-  final TextEditingController _controllerLogin;
-  final AuthPageSignUp widget;
-
-  @override
-  State<_LocalLoginTextWidget> createState() => _LocalLoginTextWidgetState();
-}
-
-class _LocalLoginTextWidgetState extends State<_LocalLoginTextWidget> {
-  String errorText = "";
-
-  @override
-  Widget build(BuildContext context) {
-    return NotifyTextField(
-      hintText: 'Your login',
-      labelText: 'Login',
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (value) {
-        var validator = loginValidator(value);
-        if (validator != null) {
-          return validator;
-        }
-        if (errorText.isNotEmpty) {
-          return errorText;
-        }
-        return null;
-      },
-      controller: widget._controllerLogin,
-      onChanged: (value) async {
-        (value);
-        if (await widget.widget.sdk.auth.isCorrectLoginWithStatusCode(value) ==
-            422) {
-          setState(() => errorText = "Login already exists");
-        } else if (errorText != "") {
-          setState(() => errorText = "");
-        }
-      },
-    );
   }
 }

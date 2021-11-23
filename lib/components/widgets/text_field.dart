@@ -8,23 +8,17 @@ class NotifyTextField extends StatefulWidget {
     this.hintText,
     this.labelText,
     this.obscureText = false,
-    this.autovalidateMode = AutovalidateMode.disabled,
-    this.validator,
     this.initialValue,
     this.onChanged,
-  })  : assert(
-          autovalidateMode != AutovalidateMode.disabled || validator == null,
-          "You forgot to enable the validation function",
-        ),
-        super(key: key);
-  final FormFieldValidator<String>? validator;
+    this.errorText,
+  }) : super(key: key);
   final bool obscureText;
   final TextEditingController? controller;
   final String? hintText;
   final String? labelText;
-  final AutovalidateMode autovalidateMode;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
+  final String? errorText;
 
   @override
   State<NotifyTextField> createState() => NotifyTextFieldState();
@@ -35,9 +29,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
   Widget build(BuildContext context) {
     return TextFormField(
       key: widget.key,
-      validator: widget.validator,
       controller: widget.controller,
-      autovalidateMode: widget.autovalidateMode,
       cursorColor: Theme.of(context).primaryColor,
       maxLines: 1,
       onChanged: widget.onChanged,
@@ -66,6 +58,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
             width: 2,
           ),
         ),
+        errorText: widget.errorText,
         errorStyle: Theme.of(context)
             .textTheme
             .headline6
