@@ -5,9 +5,23 @@ import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/text_button.dart';
 import 'package:notify/components/widgets/text_field.dart';
 
-class AuthPageSignIn extends StatelessWidget {
+class AuthPageSignIn extends StatefulWidget {
   const AuthPageSignIn({Key? key, required this.sdk}) : super(key: key);
   final MegaSDK sdk;
+
+  @override
+  State<AuthPageSignIn> createState() => _AuthPageSignInState();
+}
+
+class _AuthPageSignInState extends State<AuthPageSignIn> {
+  final TextEditingController _controllerLogin = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  @override
+  void dispose() {
+    _controllerLogin.dispose();
+    _controllerPassword.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +72,7 @@ class AuthPageSignIn extends StatelessWidget {
             child: NotifyTextField(
               hintText: 'Your login',
               labelText: 'Login',
+              controller: _controllerLogin,
             ),
           ),
           const SizedBox(height: 10),
@@ -67,6 +82,7 @@ class AuthPageSignIn extends StatelessWidget {
               hintText: 'Your password',
               labelText: 'Password',
               obscureText: true,
+              controller: _controllerPassword,
             ),
           ),
           Padding(

@@ -16,6 +16,9 @@ class TextFieldValidatorEventNeedLetters extends TextFieldValidatorEvent {}
 
 class TextFieldValidatorEventNeedOnlyLetters extends TextFieldValidatorEvent {}
 
+class TextFieldValidatorEventMustBeWithoutSpaces
+    extends TextFieldValidatorEvent {}
+
 class TextFieldValidatorBloc extends Bloc<TextFieldValidatorEvent, String?> {
   TextFieldValidatorBloc(String? initState) : super(initState) {
     on<TextFieldValidatorEventNoLength>(
@@ -30,6 +33,8 @@ class TextFieldValidatorBloc extends Bloc<TextFieldValidatorEvent, String?> {
         (event, emit) => emit("Need more letters"));
     on<TextFieldValidatorEventNeedOnlyLetters>(
         (event, emit) => emit("Need only letters"));
+    on<TextFieldValidatorEventMustBeWithoutSpaces>(
+        (event, emit) => emit("Must be without spaces"));
     on<TextFieldValidatorEventCancel>((event, emit) => emit(null));
   }
 }

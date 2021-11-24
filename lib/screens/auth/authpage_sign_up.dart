@@ -37,6 +37,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // resizeToAvoidBottomInset: false,
         body: Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
       child: SingleChildScrollView(
@@ -159,8 +160,11 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                       labelText: 'Login',
                       errorText: errorTextFromBLoC,
                       onChanged: (value) async {
-                        value = value.toLowerCase();
-                        if (value.length < 3) {
+                        value = value.trim().toLowerCase();
+                        if (value.contains(' ')) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context).add(
+                              TextFieldValidatorEventMustBeWithoutSpaces());
+                        } else if (value.length < 3) {
                           BlocProvider.of<TextFieldValidatorBloc>(context)
                               .add(TextFieldValidatorEventNoLength());
                         } else if (value.isEmpty) {
@@ -200,8 +204,11 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                       labelText: 'Password',
                       errorText: errorTextFromBLoC,
                       onChanged: (value) async {
-                        value = value.toLowerCase();
-                        if (value.length < 5) {
+                        value = value.trim().toLowerCase();
+                        if (value.contains(' ')) {
+                          BlocProvider.of<TextFieldValidatorBloc>(context).add(
+                              TextFieldValidatorEventMustBeWithoutSpaces());
+                        } else if (value.length < 5) {
                           BlocProvider.of<TextFieldValidatorBloc>(context)
                               .add(TextFieldValidatorEventNoLength());
                         } else if (value.isEmpty) {
@@ -237,7 +244,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                     Expanded(
                         child: NotifyTextButton(
                             text: 'Continue',
-                            onPressed: () {
+                            onPressed: () async {
+                              // widget.sdk.auth.si
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       dismissDirection: DismissDirection.down,
