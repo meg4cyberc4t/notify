@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +11,7 @@ import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/text_button.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/components/BLoC/text_field_validator_bloc.dart';
+import 'package:notify/screens/colorpickerpage.dart';
 
 class AuthPageSignUp extends StatefulWidget {
   const AuthPageSignUp({Key? key, required this.sdk}) : super(key: key);
@@ -175,14 +178,21 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                         } else if (["login", "password"].contains(value)) {
                           BlocProvider.of<TextFieldValidatorBloc>(context)
                               .add(TextFieldValidatorEventAreYouKidding());
-                        } else if (await widget.sdk.auth
-                                .isCorrectLoginWithStatusCode(value) ==
-                            422) {
-                          BlocProvider.of<TextFieldValidatorBloc>(context)
-                              .add(TextFieldValidatorEventAlreadyUsed());
                         } else {
-                          BlocProvider.of<TextFieldValidatorBloc>(context)
-                              .add(TextFieldValidatorEventCancel());
+                          try {
+                            if (await widget.sdk.auth
+                                    .isCorrectLoginWithStatusCode(value) ==
+                                422) {
+                              BlocProvider.of<TextFieldValidatorBloc>(context)
+                                  .add(TextFieldValidatorEventAlreadyUsed());
+                            } else {
+                              BlocProvider.of<TextFieldValidatorBloc>(context)
+                                  .add(TextFieldValidatorEventCancel());
+                            }
+                          } catch (_) {
+                            BlocProvider.of<TextFieldValidatorBloc>(context).add(
+                                TextFieldValidatorEventCheckInternetConnection());
+                          }
                         }
                       },
                       controller: _controllerLogin,
@@ -247,12 +257,29 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                             text: 'Continue',
                             onPressed: () async {
                               try {
+                                final color = await Navigator.push(
+                                    context,
+                                    Platform.isAndroid
+                                        ? MaterialPageRoute(
+                                            builder: (context) => ColorPickerPage(
+                                                title: _controllerLastname.text
+                                                        .trim()[0] +
+                                                    _controllerLastname.text
+                                                        .trim()[0]))
+                                        : CupertinoPageRoute(
+                                            builder: (context) =>
+                                                ColorPickerPage(
+                                                    title: _controllerLastname
+                                                            .text
+                                                            .trim()[0] +
+                                                        _controllerLastname.text
+                                                            .trim()[0])));
                                 var data = await widget.sdk.auth.signUp(
                                     _controllerFirstname.text.trim(),
                                     _controllerLastname.text.trim(),
                                     _controllerLogin.text.trim(),
                                     _controllerPassword.text.trim(),
-                                    0);
+                                    color.value);
                                 Box box = Hive.box('Fenestra');
                                 box.put('auth_token', data['auth_token']);
                                 box.put('refresh_token', data['refresh_token']);
@@ -261,19 +288,22 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                     (Route<dynamic> route) => false);
                               } on AssertionError catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        dismissDirection: DismissDirection.down,
-                                        content: Text(
-                                            e.message.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6
-                                                ?.copyWith(
-                                                    color: Theme.of(context)
-                                                        .textTheme
-                                                        .button!
-                                                        .color))));
+                                  SnackBar(
+                                    dismissDirection: DismissDirection.down,
+                                    content: Text(
+                                      e.message.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .button!
+                                                  .color),
+                                    ),
+                                  ),
+                                );
                               }
                             })),
                   ],

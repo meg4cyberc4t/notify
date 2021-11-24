@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
         "/AuthPageSignUp": (context) => AuthPageSignUp(sdk: sdk),
         "/AuthPageSignIn": (context) => AuthPageSignIn(sdk: sdk),
         "/MainPage": (context) => MainPage(sdk: sdk),
+        // "/ColorPickerPage": (context) => ColorPickerPage(sdk: sdk),
       },
     );
   }
