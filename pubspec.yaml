@@ -21,6 +21,7 @@ dependencies:
       url: https://github.com/meg4cyberc4t/megasdkdart
       ref: main
   flutter_bloc: ^8.0.0
+  hive_flutter: ^1.1.0
 
 flutter:
   uses-material-design: true

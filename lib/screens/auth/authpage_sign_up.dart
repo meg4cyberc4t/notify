@@ -1,18 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:megasdkdart/megasdkdart.dart';
-import 'package:notify/components/methods/is_digit.dart';
+import 'package:notify/components/methods/have_digit.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/text_button.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/components/BLoC/text_field_validator_bloc.dart';
 
 class AuthPageSignUp extends StatefulWidget {
-  const AuthPageSignUp({
-    Key? key,
-    required this.sdk,
-  }) : super(key: key);
+  const AuthPageSignUp({Key? key, required this.sdk}) : super(key: key);
   final MegaSDK sdk;
 
   @override
@@ -203,6 +202,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                       hintText: 'Your password',
                       labelText: 'Password',
                       errorText: errorTextFromBLoC,
+                      obscureText: true,
+                      autocorrect: false,
                       onChanged: (value) async {
                         value = value.trim().toLowerCase();
                         if (value.contains(' ')) {
@@ -245,21 +246,35 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                         child: NotifyTextButton(
                             text: 'Continue',
                             onPressed: () async {
-                              // widget.sdk.auth.si
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      dismissDirection: DismissDirection.down,
-                                      content: Text(
-                                          "Check the errors in the fields!",
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .button!
-                                                      .color))));
+                              try {
+                                var data = await widget.sdk.auth.signUp(
+                                    _controllerFirstname.text.trim(),
+                                    _controllerLastname.text.trim(),
+                                    _controllerLogin.text.trim(),
+                                    _controllerPassword.text.trim(),
+                                    0);
+                                Box box = Hive.box('Fenestra');
+                                box.put('auth_token', data['auth_token']);
+                                box.put('refresh_token', data['refresh_token']);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/MainPage',
+                                    (Route<dynamic> route) => false);
+                              } on AssertionError catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        dismissDirection: DismissDirection.down,
+                                        content: Text(
+                                            e.message.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                ?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .button!
+                                                        .color))));
+                              }
                             })),
                   ],
                 ),

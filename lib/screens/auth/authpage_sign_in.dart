@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:megasdkdart/megasdkdart.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/text_button.dart';
@@ -95,8 +96,35 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child:
-                          NotifyTextButton(text: 'Continue', onPressed: () {})),
+                      child: NotifyTextButton(
+                          text: 'Continue',
+                          onPressed: () async {
+                            try {
+                              var data = await widget.sdk.auth.signIn(
+                                _controllerLogin.text.trim(),
+                                _controllerPassword.text.trim(),
+                              );
+                              Box box = Hive.box('Fenestra');
+                              box.put('auth_token', data['auth_token']);
+                              box.put('refresh_token', data['refresh_token']);
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/MainPage', (Route<dynamic> route) => false);
+                            } on AssertionError catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      dismissDirection: DismissDirection.down,
+                                      content: Text(e.message.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6
+                                              ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .button!
+                                                      .color))));
+                            }
+                          })),
                 ],
               ),
             ),
