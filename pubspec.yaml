@@ -16,9 +16,9 @@ dependencies:
   supercharged: ^2.1.1
   simple_animations: ^4.0.1
   flutter_native_splash: ^1.3.1
-  megasdkdart:
+  fenestra_sdk_dart:
     git: 
-      url: https://github.com/meg4cyberc4t/megasdkdart
+      url: https://github.com/meg4cyberc4t/fenestra_sdk_dart
       ref: main
   flutter_bloc: ^8.0.0
   hive_flutter: ^1.1.0

@@ -1,11 +1,11 @@
+import 'package:fenestra_sdk_dart/fenestra_sdk_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:megasdkdart/megasdkdart.dart';
 import 'package:notify/components/widgets/outlined_text_button.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key, required this.sdk}) : super(key: key);
-  final MegaSDK sdk;
+  final FenestraSDK sdk;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

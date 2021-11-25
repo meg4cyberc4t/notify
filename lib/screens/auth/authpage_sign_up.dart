@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:fenestra_sdk_dart/fenestra_sdk_dart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:megasdkdart/megasdkdart.dart';
 import 'package:notify/components/BLoC/avatar_props_validator_bloc.dart';
 import 'package:notify/components/methods/have_digit.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
@@ -17,7 +17,7 @@ import 'package:notify/screens/colorpickerpage.dart';
 
 class AuthPageSignUp extends StatefulWidget {
   const AuthPageSignUp({Key? key, required this.sdk}) : super(key: key);
-  final MegaSDK sdk;
+  final FenestraSDK sdk;
 
   @override
   State<AuthPageSignUp> createState() => _AuthPageSignUpState();
@@ -42,12 +42,12 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        scrollDirection: Axis.vertical,
+        body: SingleChildScrollView(
+      padding: EdgeInsets.zero,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      scrollDirection: Axis.vertical,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
         child: BlocProvider(
           create: (context) => AvatarPropsValidatorBloc(
             AvatarProps(color: color, title: "LA"),
@@ -265,9 +265,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                   .add(TextFieldValidatorEventAreYouKidding());
                             } else {
                               try {
-                                if (await widget.sdk.auth
-                                        .isCorrectLoginWithStatusCode(value) ==
-                                    422) {
+                                if (!await widget.sdk.auth
+                                    .isCorrectLogin(value)) {
                                   BlocProvider.of<TextFieldValidatorBloc>(
                                           context)
                                       .add(
@@ -350,14 +349,14 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                       ["login", "password"].contains(
                                           _controllerFirstname.text
                                               .toLowerCase())) {
-                                    throw AssertionError("Check your values");
+                                    throw FenestraAPIError("Check your values");
                                   }
                                   if (_controllerLastname.text.isEmpty ||
                                       haveDigit(_controllerLastname.text) ||
                                       ["login", "password"].contains(
                                           _controllerLastname.text
                                               .toLowerCase())) {
-                                    throw AssertionError("Check your values");
+                                    throw FenestraAPIError("Check your values");
                                   }
                                   if (_controllerLogin.text.contains(' ') ||
                                       _controllerLogin.text.length < 3 ||
@@ -367,7 +366,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                       ["login", "password"].contains(
                                           _controllerLogin.text
                                               .toLowerCase())) {
-                                    throw AssertionError("Check your values");
+                                    throw FenestraAPIError("Check your values");
                                   }
                                   if (_controllerPassword.text.contains(' ') ||
                                       _controllerPassword.text.length < 5 ||
@@ -377,7 +376,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                       ["login", "password"].contains(
                                           _controllerPassword.text
                                               .toLowerCase())) {
-                                    throw AssertionError("Check your values");
+                                    throw FenestraAPIError("Check your values");
                                   }
                                   updateAvatarTitle();
                                   var data = await widget.sdk.auth.signUp(
@@ -393,30 +392,12 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       '/MainPage',
                                       (Route<dynamic> route) => false);
-                                } on AssertionError catch (e) {
+                                } on FenestraAPIError catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       dismissDirection: DismissDirection.down,
                                       content: Text(
                                         e.message.toString(),
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6
-                                            ?.copyWith(
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .button!
-                                                    .color),
-                                      ),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      dismissDirection: DismissDirection.down,
-                                      content: Text(
-                                        e.toString(),
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme

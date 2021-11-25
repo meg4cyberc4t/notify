@@ -1,7 +1,7 @@
+import 'package:fenestra_sdk_dart/fenestra_sdk_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:megasdkdart/megasdkdart.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MegaSDK sdk = MegaSDK(
+    FenestraSDK sdk = FenestraSDK(
       address: MyApp.serverAddress,
-      authVariables: AuthVariables('', ''),
+      authVariables: AuthVariables(authToken: '', refreshToken: ''),
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
