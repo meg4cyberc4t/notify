@@ -46,27 +46,25 @@ class AuthPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: FadeAnimation(
-                        delay: 1.0,
-                        child: NotifyTextButton(
-                          text: 'Get started',
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/AuthPage2'),
-                        ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: FadeAnimation(
+                      delay: 1.0,
+                      child: NotifyTextButton(
+                        text: 'Get started',
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/AuthPage2'),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 20),
             ],
           ),
         )

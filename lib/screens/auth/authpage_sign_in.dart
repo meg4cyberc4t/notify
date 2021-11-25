@@ -86,49 +86,47 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
               controller: _controllerPassword,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
-            child: FadeAnimation(
-              delay: 1.0,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: NotifyTextButton(
-                          text: 'Continue',
-                          onPressed: () async {
-                            try {
-                              var data = await widget.sdk.auth.signIn(
-                                _controllerLogin.text.trim(),
-                                _controllerPassword.text.trim(),
-                              );
-                              Box box = Hive.box('Fenestra');
-                              box.put('auth_token', data['auth_token']);
-                              box.put('refresh_token', data['refresh_token']);
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/MainPage', (Route<dynamic> route) => false);
-                            } on AssertionError catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      dismissDirection: DismissDirection.down,
-                                      content: Text(e.message.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .button!
-                                                      .color))));
-                            }
-                          })),
-                ],
-              ),
+          const SizedBox(height: 10),
+          FadeAnimation(
+            delay: 1.0,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: NotifyTextButton(
+                        text: 'Continue',
+                        onPressed: () async {
+                          try {
+                            var data = await widget.sdk.auth.signIn(
+                              _controllerLogin.text.trim(),
+                              _controllerPassword.text.trim(),
+                            );
+                            Box box = Hive.box('Fenestra');
+                            box.put('auth_token', data['auth_token']);
+                            box.put('refresh_token', data['refresh_token']);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/MainPage', (Route<dynamic> route) => false);
+                          } on AssertionError catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                dismissDirection: DismissDirection.down,
+                                content: Text(e.message.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        ?.copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .button!
+                                                .color))));
+                          }
+                        })),
+              ],
             ),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     ));

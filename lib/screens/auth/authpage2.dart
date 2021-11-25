@@ -39,31 +39,29 @@ class AuthPage2 extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
-                child: FadeAnimation(
-                  delay: 1.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: NotifyTextButton(
-                              text: 'Sign up',
-                              onPressed: () => Navigator.pushNamed(
-                                  context, '/AuthPageSignUp'))),
-                      const SizedBox(width: 10),
-                      Expanded(
-                          child: NotifyTextButton(
-                              text: 'Sign in',
-                              onPressed: () => Navigator.pushNamed(
-                                  context, '/AuthPageSignIn'))),
-                    ],
-                  ),
+              const SizedBox(height: 10),
+              FadeAnimation(
+                delay: 1.0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: NotifyTextButton(
+                            text: 'Sign up',
+                            onPressed: () => Navigator.pushNamed(
+                                context, '/AuthPageSignUp'))),
+                    const SizedBox(width: 10),
+                    Expanded(
+                        child: NotifyTextButton(
+                            text: 'Sign in',
+                            onPressed: () => Navigator.pushNamed(
+                                context, '/AuthPageSignIn'))),
+                  ],
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         )
