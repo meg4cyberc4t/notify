@@ -1,7 +1,9 @@
+import 'package:bottom_nav_layout/bottom_nav_layout.dart';
 import 'package:fenestra_sdk_dart/fenestra_sdk_dart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:notify/components/widgets/outlined_text_button.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key, required this.sdk}) : super(key: key);
@@ -22,30 +24,61 @@ class MainPage extends StatelessWidget {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
             } else if (snapshot.hasData) {
-              return FutureBuilder(
-                  future: sdk.users.get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    } else if (snapshot.hasData) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text((snapshot.data as Map).toString()),
-                          const SizedBox(height: 10),
-                          NotifyOutlinedTextButton(
-                              text: 'Log out',
-                              onPressed: () async {
-                                Box box = Hive.box('Fenestra');
-                                await box.delete('auth_token');
-                                await box.delete('refresh_token');
-                                Navigator.pushNamed(context, '/AuthPage');
-                              }),
-                        ],
-                      );
-                    }
-                    return const CircularProgressIndicator();
-                  });
+              return BottomNavLayout(
+                  pages: [
+                    (_) => const Scaffold(body: Center(child: Text('home'))),
+                    (_) => const Scaffold(body: Center(child: Text('likes'))),
+                    (_) => const Scaffold(body: Center(child: Text('search'))),
+                    (_) => const Scaffold(body: Center(child: Text('profile'))),
+                  ],
+                  bottomNavigationBar: (currentIndex, onTap) => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 20,
+                              color: Colors.black.withOpacity(.1),
+                            )
+                          ],
+                        ),
+                        child: SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 8),
+                            child: GNav(
+                                rippleColor: Colors.grey[300]!,
+                                hoverColor: Colors.grey[100]!,
+                                gap: 8,
+                                activeColor: Theme.of(context).primaryColor,
+                                iconSize: 24,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                                duration: const Duration(milliseconds: 400),
+                                tabBackgroundColor: Colors.grey[100]!,
+                                color: Colors.black,
+                                tabs: const [
+                                  GButton(
+                                    icon: CupertinoIcons.home,
+                                    text: 'Home',
+                                  ),
+                                  GButton(
+                                    icon: CupertinoIcons.calendar,
+                                    text: 'Calendar',
+                                  ),
+                                  GButton(
+                                    icon: CupertinoIcons.search,
+                                    text: 'Search',
+                                  ),
+                                  GButton(
+                                    icon: CupertinoIcons.person,
+                                    text: 'Profile',
+                                  ),
+                                ],
+                                selectedIndex: currentIndex,
+                                onTabChange: (index) => onTap(index)),
+                          ),
+                        ),
+                      ));
             }
             return const CircularProgressIndicator();
           },

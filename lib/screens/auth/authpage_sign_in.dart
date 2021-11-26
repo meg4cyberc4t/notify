@@ -109,20 +109,29 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                               box.put('refresh_token', data['refresh_token']);
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                   '/MainPage', (Route<dynamic> route) => false);
-                            } on FenestraAPIError catch (e) {
+                            } catch (e) {
+                              String errorMessage =
+                                  'Check your internet connection';
+                              if (e is FenestraAPIError) {
+                                errorMessage = e.message;
+                              }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      dismissDirection: DismissDirection.down,
-                                      content: Text(e.message.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .button!
-                                                      .color))));
+                                SnackBar(
+                                  dismissDirection: DismissDirection.down,
+                                  content: Text(
+                                    errorMessage.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        ?.copyWith(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .button!
+                                                .color),
+                                  ),
+                                ),
+                              );
                             }
                           })),
                 ],
