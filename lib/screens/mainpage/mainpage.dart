@@ -37,6 +37,7 @@ class MainPage extends StatelessWidget {
                               text: 'Log out',
                               onPressed: () async {
                                 Box box = Hive.box('Fenestra');
+                                await box.delete('auth_token');
                                 await box.delete('refresh_token');
                                 Navigator.pushNamed(context, '/AuthPage');
                               }),

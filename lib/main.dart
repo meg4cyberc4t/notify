@@ -10,6 +10,7 @@ import 'package:notify/screens/mainpage/mainpage.dart';
 
 void main() async {
   await Hive.initFlutter();
+  // Hive.registerAdapter(AuthVariablesAdapter());
   var box = await Hive.openBox('Fenestra');
   runApp(MyApp(storage: box));
 }
@@ -17,14 +18,22 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required this.storage}) : super(key: key);
   final Box storage;
+
   static const serverAddress = "http://185.12.95.163";
 
   @override
   Widget build(BuildContext context) {
     FenestraSDK sdk = FenestraSDK(
-      address: MyApp.serverAddress,
-      authVariables: AuthVariables(authToken: '', refreshToken: ''),
-    );
+        address: MyApp.serverAddress,
+        authVariables: AuthVariables.withSavedCallback(
+            authToken: storage.get('auth_token') ?? '',
+            refreshToken: storage.get('refresh_token') ?? '',
+            savedCallback: (String authToken, String refreshToken) async {
+              await storage.put('auth_token', authToken);
+              await storage.put('refresh_token', refreshToken);
+              print(authToken);
+              print('saved\n');
+            }));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
