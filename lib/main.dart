@@ -31,8 +31,6 @@ class MyApp extends StatelessWidget {
             savedCallback: (String authToken, String refreshToken) async {
               await storage.put('auth_token', authToken);
               await storage.put('refresh_token', refreshToken);
-              print(authToken);
-              print('saved\n');
             }));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
