@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/screens/mainpage/homepage.dart';
 import 'package:notify/screens/mainpage/profilepage.dart';
 
@@ -83,7 +84,7 @@ class MainPage extends StatelessWidget {
                         ),
                       ));
             }
-            return const CircularProgressIndicator();
+            return const NotifyProgressIndicator();
           },
         ),
       ),

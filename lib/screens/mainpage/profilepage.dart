@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notify/components/widgets/progress_indicator.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -7,7 +8,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: RefreshProgressIndicator(),
+        child: NotifyProgressIndicator(),
       ),
     );
   }
