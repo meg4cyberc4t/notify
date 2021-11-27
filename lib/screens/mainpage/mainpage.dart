@@ -28,6 +28,8 @@ class MainPage extends StatelessWidget {
               return Text(snapshot.error.toString());
             } else if (snapshot.hasData) {
               return BottomNavLayout(
+                  lazyLoadPages: true,
+                  savePageState: true,
                   pages: [
                     (_) => const HomePage(),
                     (_) => const Scaffold(body: Center(child: Text('likes'))),
