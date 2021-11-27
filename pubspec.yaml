@@ -25,6 +25,9 @@ dependencies:
   flutter_material_color_picker: ^1.1.0+2
   bottom_nav_layout: ^3.0.9
   google_nav_bar: ^5.0.5
+  flutter_sticky_header: ^0.6.0
+  intl: ^0.17.0
+  auto_animated: ^3.0.1
 
 flutter:
   uses-material-design: true

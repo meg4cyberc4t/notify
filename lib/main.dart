@@ -7,6 +7,7 @@ import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
+import 'package:notify/screens/mainpage/profilepage.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF8474A1),
+        cardColor: const Color(0xFFCCABD8), // NotificationItem
+        dialogBackgroundColor: const Color(0xFFEFEFEF), // FolderItem
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         backgroundColor: const Color(0xFFFFFFFF),
         textTheme: GoogleFonts.mPlusRounded1cTextTheme().copyWith(
@@ -63,6 +66,7 @@ class MyApp extends StatelessWidget {
         "/AuthPageSignUp": (context) => AuthPageSignUp(sdk: sdk),
         "/AuthPageSignIn": (context) => AuthPageSignIn(sdk: sdk),
         "/MainPage": (context) => MainPage(sdk: sdk),
+        "/ProfilePage": (context) => const ProfilePage(),
         // "/ColorPickerPage": (context) => ColorPickerPage(sdk: sdk),
       },
     );

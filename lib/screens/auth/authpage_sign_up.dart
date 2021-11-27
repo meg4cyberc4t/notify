@@ -392,12 +392,15 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                   Navigator.of(context).pushNamedAndRemoveUntil(
                                       '/MainPage',
                                       (Route<dynamic> route) => false);
-                                } on FenestraAPIError catch (e) {
+                                } catch (e) {
+                                  String errorMessage = e is FenestraAPIError
+                                      ? e.message
+                                      : e.toString();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       dismissDirection: DismissDirection.down,
                                       content: Text(
-                                        e.message.toString(),
+                                        errorMessage,
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
