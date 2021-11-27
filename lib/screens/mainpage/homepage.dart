@@ -77,22 +77,12 @@ class _HomePageState extends State<HomePage> {
 
   AppBar miniHeader(BuildContext context, String title) {
     return AppBar(
-      elevation: 0,
-      shadowColor: Colors.black26,
-      // excludeHeaderSemantics: true,
+      elevation: 1,
+      shadowColor: Colors.grey[300],
       backgroundColor: Theme.of(context).backgroundColor,
       titleSpacing: 0,
       primary: true,
       title: Text(title, style: Theme.of(context).textTheme.headline4),
     );
   }
-  // Container miniHeader(BuildContext context, String title) {
-  //   return Container(
-  //     elevation: 0,
-  //     // shadowColor: Colors.black26,
-  //     // excludeHeaderSemantics: true,
-  //     color: Theme.of(context).backgroundColor,
-  //     child: Text(title, style: Theme.of(context).textTheme.headline4),
-  //   );
-  // }
 }

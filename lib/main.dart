@@ -55,6 +55,10 @@ class MyApp extends StatelessWidget {
                 fontSize: 24,
                 overflow: TextOverflow.fade,
               ),
+          bodyText1: GoogleFonts.mPlusRounded1cTextTheme().bodyText1?.copyWith(
+                color: const Color(0xFF8474A1),
+                overflow: TextOverflow.fade,
+              ),
         ),
       ),
       home: (storage.get('refresh_token') ?? '').isEmpty
