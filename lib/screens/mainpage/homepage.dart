@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/widgets/folder_item.dart';
+import 'package:notify/components/widgets/mini_sliver_header.dart';
 import 'package:notify/components/widgets/notification_item.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
             centerTitle: false,
           ),
           SliverStickyHeader(
-            header: miniHeader(
+            header: miniSliverHeader(
               context,
               'Today Tasks',
             ),
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverStickyHeader(
-            header: miniHeader(context, 'Folders'),
+            header: miniSliverHeader(context, 'Folders'),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, i) => FolderItem(
@@ -56,17 +57,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-    );
-  }
-
-  AppBar miniHeader(BuildContext context, String title) {
-    return AppBar(
-      elevation: 1,
-      shadowColor: Colors.grey[300],
-      backgroundColor: Theme.of(context).backgroundColor,
-      titleSpacing: 0,
-      primary: true,
-      title: Text(title, style: Theme.of(context).textTheme.headline4),
     );
   }
 }
