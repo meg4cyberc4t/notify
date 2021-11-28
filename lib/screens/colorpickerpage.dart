@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:notify/components/widgets/outlined_text_button.dart';
+import 'package:notify/components/widgets/outlined_button.dart';
 import 'package:notify/components/widgets/text_button.dart';
 
 class ColorPickerPage extends StatefulWidget {
@@ -90,7 +90,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyOutlinedTextButton(
+                      child: NotifyOutlinedButton.text(
                     text: 'Back',
                     onPressed: () => Navigator.pop(context),
                   )),

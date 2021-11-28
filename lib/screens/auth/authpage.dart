@@ -32,8 +32,8 @@ class AuthPage extends StatelessWidget {
               FadeAnimation(
                 delay: 0.8,
                 child: Text(
-                  " ntf manager",
-                  style: Theme.of(context).textTheme.headline6,
+                  "ntf manager",
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
               SizedBox(

@@ -10,29 +10,34 @@ import 'package:notify/screens/mainpage/mainpage.dart';
 import 'package:notify/screens/mainpage/profilepage.dart';
 
 void main() async {
+  const serverAddress = "http://185.12.95.163";
   await Hive.initFlutter();
   // Hive.registerAdapter(AuthVariablesAdapter());
   var box = await Hive.openBox('Fenestra');
-  runApp(MyApp(storage: box));
+  runApp(MyApp(storage: box, serverAddress: serverAddress));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.storage}) : super(key: key);
+  const MyApp({Key? key, required this.storage, required this.serverAddress})
+      : super(key: key);
   final Box storage;
-
-  static const serverAddress = "http://185.12.95.163";
+  final String serverAddress;
 
   @override
   Widget build(BuildContext context) {
     FenestraSDK sdk = FenestraSDK(
-        address: MyApp.serverAddress,
-        authVariables: AuthVariables.withSavedCallback(
-            authToken: storage.get('auth_token') ?? '',
-            refreshToken: storage.get('refresh_token') ?? '',
-            savedCallback: (String authToken, String refreshToken) async {
-              await storage.put('auth_token', authToken);
-              await storage.put('refresh_token', refreshToken);
-            }));
+      address: serverAddress,
+      authVariables: AuthVariables.withSavedCallback(
+        authToken: storage.get('auth_token') ?? '',
+        refreshToken: storage.get('refresh_token') ?? '',
+        savedCallback: (String authToken, String refreshToken) async {
+          await storage.put('auth_token', authToken);
+          await storage.put('refresh_token', refreshToken);
+        },
+      ),
+    );
+    bool isAuth = (storage.get('refresh_token') ?? '').isNotEmpty;
+    TextTheme mainTextTheme = GoogleFonts.exo2TextTheme();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -41,29 +46,16 @@ class MyApp extends StatelessWidget {
         dialogBackgroundColor: const Color(0xFFEFEFEF), // FolderItem
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         backgroundColor: const Color(0xFFFFFFFF),
-        textTheme: GoogleFonts.mPlusRounded1cTextTheme().copyWith(
-          headline4: GoogleFonts.mPlusRounded1cTextTheme().headline4?.copyWith(
-                fontSize: 27,
-                overflow: TextOverflow.fade,
-              ),
-          headline6: GoogleFonts.mPlusRounded1cTextTheme().headline6?.copyWith(
-                color: const Color(0xFFCCABD8),
-                overflow: TextOverflow.fade,
-              ),
-          button: GoogleFonts.mPlusRounded1cTextTheme().button?.copyWith(
-                color: const Color(0xFFFFFFFF),
-                fontSize: 24,
-                overflow: TextOverflow.fade,
-              ),
-          bodyText1: GoogleFonts.mPlusRounded1cTextTheme().bodyText1?.copyWith(
-                color: const Color(0xFF8474A1),
-                overflow: TextOverflow.fade,
-              ),
-        ),
+        appBarTheme: const AppBarTheme(centerTitle: true),
+        textTheme: mainTextTheme.copyWith(
+            headline5: mainTextTheme.headline5
+                ?.copyWith(color: const Color(0xFF8474A1)),
+            button: mainTextTheme.button?.copyWith(
+              color: const Color(0xFFFFFFFF),
+              fontSize: 24,
+            )),
       ),
-      home: (storage.get('refresh_token') ?? '').isEmpty
-          ? const AuthPage()
-          : MainPage(sdk: sdk),
+      home: isAuth ? MainPage(sdk: sdk) : const AuthPage(),
       routes: {
         "/AuthPage": (context) => const AuthPage(),
         "/AuthPage2": (context) => const AuthPage2(),

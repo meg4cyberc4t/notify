@@ -37,17 +37,19 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       autocorrect: widget.autocorrect ?? true,
       onChanged: widget.onChanged,
       initialValue: widget.initialValue,
-      style: Theme.of(context).textTheme.headline4,
+      style: Theme.of(context).textTheme.headline5!.copyWith(
+            color: Theme.of(context).textTheme.headline4!.color,
+          ),
       obscureText: widget.obscureText,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(5),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.headline4!.copyWith(
-              color: const Color(0xFF7A7979),
+        hintStyle: Theme.of(context).textTheme.headline5!.copyWith(
+              color: Theme.of(context).textTheme.headline4!.color,
             ),
         labelText: widget.labelText,
-        labelStyle: Theme.of(context).textTheme.headline4!.copyWith(
-              color: const Color(0xFF7A7979),
+        labelStyle: Theme.of(context).textTheme.headline5!.copyWith(
+              color: Theme.of(context).textTheme.headline4!.color,
             ),
         border: UnderlineInputBorder(
           borderSide: BorderSide(

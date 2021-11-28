@@ -18,8 +18,9 @@ class MainPage extends StatelessWidget {
         child: FutureBuilder(
           future: Future.sync(() async {
             Box box = Hive.box('Fenestra');
-            String refreshToken = await box.get('refresh_token') ?? '';
-            var data = await sdk.auth.reloadToken(refreshToken);
+            String oldRefreshToken = await box.get('refresh_token') ?? '';
+            Map<String, dynamic> data =
+                (await sdk.auth.reloadToken(oldRefreshToken));
             await box.put('refresh_token', data['refresh_token']);
             return data;
           }),

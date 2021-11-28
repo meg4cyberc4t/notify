@@ -17,27 +17,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverStickyHeader(
-            header: SafeArea(
-              child: Container(
-                color: Theme.of(context).backgroundColor,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Mikhail',
-                          style: Theme.of(context).textTheme.headline3),
-                      Icon(CupertinoIcons.person_fill,
-                          color: Colors.black,
-                          size:
-                              Theme.of(context).textTheme.headline4!.fontSize),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          SliverAppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            titleTextStyle: Theme.of(context).textTheme.headline3,
+            title: const Text('Home'),
+            centerTitle: false,
           ),
           SliverStickyHeader(
             header: miniHeader(

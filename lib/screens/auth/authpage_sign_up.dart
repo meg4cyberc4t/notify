@@ -85,7 +85,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                       MaterialButton(
                         child: Text(
                           "Have account",
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.headline5,
                         ),
                         onPressed: () => Navigator.pushReplacementNamed(
                             context, '/AuthPageSignIn'),
