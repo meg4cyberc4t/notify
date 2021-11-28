@@ -9,8 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notify/components/BLoC/avatar_props_validator_bloc.dart';
 import 'package:notify/components/methods/have_digit.dart';
+import 'package:notify/components/widgets/avatar.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
-import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/components/BLoC/text_field_validator_bloc.dart';
 import 'package:notify/screens/colorpickerpage.dart';
@@ -111,55 +112,33 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                 FadeAnimation(
                   delay: 0.9,
                   child: BlocBuilder<AvatarPropsValidatorBloc, AvatarProps>(
-                    builder: (context, AvatarProps props) {
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () async {
-                          final Color? inputColor = await Navigator.push(
-                            context,
-                            Platform.isAndroid
-                                ? MaterialPageRoute(
-                                    builder: (context) => ColorPickerPage(
-                                      title: props.title!,
-                                      initialValue: props.color,
-                                    ),
-                                  )
-                                : CupertinoPageRoute(
-                                    builder: (context) => ColorPickerPage(
-                                      title: props.title!,
-                                      initialValue: props.color,
-                                    ),
+                    builder: (context, AvatarProps props) => Avatar(
+                      title: props.title!,
+                      color: props.color!,
+                      size: AvatarSize.max,
+                      onTap: () async {
+                        final Color? inputColor = await Navigator.push(
+                          context,
+                          Platform.isAndroid
+                              ? MaterialPageRoute(
+                                  builder: (context) => ColorPickerPage(
+                                    title: props.title!,
+                                    initialValue: props.color,
                                   ),
-                          );
-                          if (inputColor != null) {
-                            BlocProvider.of<AvatarPropsValidatorBloc>(context)
-                                .add(AvatarProps(color: inputColor));
-                          }
-                        },
-                        child: Hero(
-                          tag: "avatar-${props.title}",
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: props.color,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Center(
-                              child: Text(
-                                props.title!,
-                                style: Theme.of(context).textTheme.headline3,
-                                maxLines: 1,
-                                semanticsLabel: 'Avatar text',
-                                textDirection: TextDirection.ltr,
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                                )
+                              : CupertinoPageRoute(
+                                  builder: (context) => ColorPickerPage(
+                                    title: props.title!,
+                                    initialValue: props.color,
+                                  ),
+                                ),
+                        );
+                        if (inputColor != null) {
+                          BlocProvider.of<AvatarPropsValidatorBloc>(context)
+                              .add(AvatarProps(color: inputColor));
+                        }
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -340,7 +319,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                          child: NotifyTextButton(
+                          child: NotifyDirectButton.text(
                               text: 'Continue',
                               onPressed: () async {
                                 try {

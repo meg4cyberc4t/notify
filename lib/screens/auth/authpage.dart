@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
-import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/direct_button.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -55,7 +55,7 @@ class AuthPage extends StatelessWidget {
                   Expanded(
                     child: FadeAnimation(
                       delay: 1.0,
-                      child: NotifyTextButton(
+                      child: NotifyDirectButton.text(
                         text: 'Get started',
                         onPressed: () =>
                             Navigator.pushNamed(context, '/AuthPage2'),

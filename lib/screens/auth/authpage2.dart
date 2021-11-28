@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
-import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/direct_button.dart';
 
 class AuthPage2 extends StatelessWidget {
   const AuthPage2({Key? key}) : super(key: key);
@@ -48,13 +48,13 @@ class AuthPage2 extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                        child: NotifyTextButton(
+                        child: NotifyDirectButton.text(
                             text: 'Sign up',
                             onPressed: () => Navigator.pushNamed(
                                 context, '/AuthPageSignUp'))),
                     const SizedBox(width: 10),
                     Expanded(
-                        child: NotifyTextButton(
+                        child: NotifyDirectButton.text(
                             text: 'Sign in',
                             onPressed: () => Navigator.pushNamed(
                                 context, '/AuthPageSignIn'))),

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
-import 'package:notify/components/widgets/text_button.dart';
+import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/text_field.dart';
 
 class AuthPageSignIn extends StatefulWidget {
@@ -96,7 +96,7 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyTextButton(
+                      child: NotifyDirectButton.text(
                           text: 'Continue',
                           onPressed: () async {
                             try {

@@ -47,13 +47,15 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
         backgroundColor: const Color(0xFFFFFFFF),
         appBarTheme: const AppBarTheme(centerTitle: true),
-        textTheme: mainTextTheme.copyWith(
-            headline5: mainTextTheme.headline5
-                ?.copyWith(color: const Color(0xFF8474A1)),
-            button: mainTextTheme.button?.copyWith(
-              color: const Color(0xFFFFFFFF),
-              fontSize: 24,
-            )),
+        textTheme: mainTextTheme
+            .apply(displayColor: const Color(0xFF7A7979))
+            .copyWith(
+                headline5: mainTextTheme.headline5
+                    ?.copyWith(color: const Color(0xFF8474A1)),
+                button: mainTextTheme.button?.copyWith(
+                  color: const Color(0xFFFFFFFF),
+                  fontSize: 24,
+                )),
       ),
       home: isAuth ? MainPage(sdk: sdk) : const AuthPage(),
       routes: {
