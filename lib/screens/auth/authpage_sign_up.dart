@@ -150,8 +150,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                 FadeAnimation(
                   delay: 0.95,
                   child: NotifyTextField(
-                    hintText: 'Your first name',
-                    labelText: 'First name',
+                    hintText: 'Your last name',
+                    labelText: 'Last name',
                     controller: _controllerLastname,
                     onChanged: (value) => updateAvatarTitle(),
                   ),
@@ -187,6 +187,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                           child: NotifyDirectButton.text(
                               text: 'Continue',
                               onPressed: () async {
+                                // TODO:  Анимация загрузки
                                 String? error = await context
                                     .read<AuthenticationService>()
                                     .signUp(

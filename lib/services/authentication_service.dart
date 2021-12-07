@@ -1,11 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fauth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthenticationService {
-  final FirebaseAuth _firebaseAuth;
+  final fauth.FirebaseAuth _firebaseAuth;
   AuthenticationService(this._firebaseAuth);
 
-  Stream<User?> get currentUser => _firebaseAuth.authStateChanges();
+  Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
 
   Future<String?> signIn(
       {required String email, required String password}) async {
@@ -13,7 +14,7 @@ class AuthenticationService {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return null;
-    } on FirebaseAuthException catch (e) {
+    } on fauth.FirebaseAuthException catch (e) {
       return e.message;
     }
   }
@@ -26,11 +27,16 @@ class AuthenticationService {
     required Color color,
   }) async {
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      userCredential.
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      FirebaseFirestore store = FirebaseFirestore.instance;
+      await store.collection('users').add({
+        'first_name': firstName,
+        'last_name': lastName,
+        'color': color.value,
+      });
       return null;
-    } on FirebaseAuthException catch (e) {
+    } on fauth.FirebaseAuthException catch (e) {
       return e.message;
     }
   }
