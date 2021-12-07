@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/avatar.dart';
 import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/services/authentication_service.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -89,7 +91,25 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ),
-          )
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: NotifyDirectButton.text(
+                      text: 'logout',
+                      onPressed: () async {
+                        await Provider.of<AuthenticationService>(context)
+                            .signOut();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           // SliverStickyHeader(
           //   header: miniSliverHeader(
           //     context,

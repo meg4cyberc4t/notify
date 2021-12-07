@@ -13,8 +13,8 @@ class NotifyDirectButton extends StatelessWidget {
 
   const NotifyDirectButton.text({
     Key? key,
-    required this.onPressed,
     required this.text,
+    required this.onPressed,
     this.isOutlined = false,
     this.padding = const EdgeInsets.all(10.0),
   })  : widget = null,

@@ -1,25 +1,25 @@
-import 'package:fenestra_sdk_dart/fenestra_sdk_dart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
+import 'package:notify/services/authentication_service.dart';
+import 'package:provider/provider.dart';
 
 class AuthPageSignIn extends StatefulWidget {
-  const AuthPageSignIn({Key? key, required this.sdk}) : super(key: key);
-  final FenestraSDK sdk;
+  const AuthPageSignIn({Key? key}) : super(key: key);
 
   @override
   State<AuthPageSignIn> createState() => _AuthPageSignInState();
 }
 
 class _AuthPageSignInState extends State<AuthPageSignIn> {
-  final TextEditingController _controllerLogin = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+
   @override
   void dispose() {
-    _controllerLogin.dispose();
+    _controllerEmail.dispose();
     _controllerPassword.dispose();
     super.dispose();
   }
@@ -72,9 +72,9 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
             FadeAnimation(
               delay: 0.95,
               child: NotifyTextField(
-                hintText: 'Your login',
-                labelText: 'Login',
-                controller: _controllerLogin,
+                hintText: 'Your email',
+                labelText: 'Email',
+                controller: _controllerEmail,
               ),
             ),
             const SizedBox(height: 10),
@@ -96,44 +96,23 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyDirectButton.text(
-                          text: 'Continue',
-                          onPressed: () async {
-                            try {
-                              var data = await widget.sdk.auth.signIn(
-                                _controllerLogin.text.trim(),
-                                _controllerPassword.text.trim(),
-                              );
-                              Box box = Hive.box('Fenestra');
-                              box.put('auth_token', data['auth_token']);
-                              box.put('refresh_token', data['refresh_token']);
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                  '/MainPage', (Route<dynamic> route) => false);
-                            } catch (e) {
-                              String errorMessage =
-                                  'Check your internet connection';
-                              if (e is FenestraAPIError) {
-                                errorMessage = e.message;
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  dismissDirection: DismissDirection.down,
-                                  content: Text(
-                                    errorMessage.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .button!
-                                                .color),
-                                  ),
-                                ),
-                              );
-                            }
-                          })),
+                    child: NotifyDirectButton.text(
+                      text: 'Continue',
+                      onPressed: () async {
+                        String? error =
+                            await context.read<AuthenticationService>().signIn(
+                                  email: _controllerEmail.text.trim(),
+                                  password: _controllerPassword.text.trim(),
+                                );
+                        if (error != null) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(notifySnackBar(error, context));
+                        } else {
+                          Navigator.pushReplacementNamed(context, '/MainPage');
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),

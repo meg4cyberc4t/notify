@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/widgets/folder_item.dart';
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Theme.of(context).backgroundColor,
             titleTextStyle: Theme.of(context).textTheme.headline3,
             title: const Text('Home'),
-            centerTitle: false,
+            centerTitle: true,
           ),
           SliverStickyHeader(
             header: miniSliverHeader(

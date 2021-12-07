@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
