@@ -101,7 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: NotifyDirectButton.text(
                       text: 'logout',
                       onPressed: () async {
-                        await context.read<AuthenticationService>().signOut();
+                        context
+                            .read<AuthenticationService>()
+                            .signOut()
+                            .then((value) async {
+                          await Navigator.of(context).pushNamed('/AuthPage');
+                        });
                       },
                     ),
                   ),

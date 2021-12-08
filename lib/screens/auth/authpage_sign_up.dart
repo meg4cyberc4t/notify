@@ -187,7 +187,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                           child: NotifyDirectButton.text(
                               text: 'Continue',
                               onPressed: () async {
-                                // TODO:  Анимация загрузки
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    notifySnackBar('Downloading...', context));
                                 String? error = await context
                                     .read<AuthenticationService>()
                                     .signUp(
