@@ -11,6 +11,8 @@ class NotifyTextField extends StatefulWidget {
     this.initialValue,
     this.onChanged,
     this.errorText,
+    this.maxLines = 1,
+    this.minLines,
     this.autocorrect,
   }) : super(key: key);
   final bool obscureText;
@@ -21,6 +23,8 @@ class NotifyTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final bool? autocorrect;
+  final int maxLines;
+  final int? minLines;
 
   @override
   State<NotifyTextField> createState() => NotifyTextFieldState();
@@ -33,7 +37,8 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       key: widget.key,
       controller: widget.controller,
       cursorColor: Theme.of(context).primaryColor,
-      maxLines: 1,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
       autocorrect: widget.autocorrect ?? true,
       onChanged: widget.onChanged,
       initialValue: widget.initialValue,

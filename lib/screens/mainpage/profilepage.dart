@@ -76,14 +76,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               showDialog(
                                 context: context,
                                 builder: (context) => NotifyAlertDialog(
-                                  title: 'You',
+                                  title: 'Do you confirm the exit?',
                                   listButtons: [
                                     NotifyAlertDialogButtonItem(
-                                      title: "Отмена",
+                                      title: "Back",
                                       onPressed: () => Navigator.pop(context),
                                     ),
                                     NotifyAlertDialogButtonItem(
-                                      title: "Далее",
+                                      title: "Next",
                                       onPressed: () {
                                         context
                                             .read<AuthenticationService>()
@@ -158,7 +158,29 @@ class _ProfilePageState extends State<ProfilePage> {
                   pinned: true,
                   backgroundColor: userColor,
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
+                    child: Text(
+                      data['status'],
+                      style: Theme.of(context).textTheme.headline5,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 5),
+                      child: NotifyDirectButton.text(
+                        text: 'Edit',
+                        isOutlined: true,
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/ProfilePageEdit");
+                        },
+                      )),
+                ),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -167,7 +189,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Expanded(
                           child: NotifyDirectButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection('relations')
+                                  .add({
+                                "from": "",
+                                "to": "",
+                              });
+                            },
                             text: 'Add',
                             icon: CupertinoIcons.person_add_solid,
                             isOutlined: true,
@@ -178,33 +207,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         Expanded(
                             child: NotifyDirectButton.icon(
                           icon: CupertinoIcons.qrcode,
-                          onPressed: () {},
+                          onPressed: () async {
+                            var snapshot = await FirebaseFirestore.instance
+                                .collection('relations')
+                                .where("to",
+                                    isEqualTo: "xaNIHsf1ducwAiQ1IYngtgpEE5u2")
+                                .get();
+                            print(snapshot.docs[0].data());
+                          },
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           text: 'QR code',
                         ))
-                      ],
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: NotifyDirectButton.text(
-                            text: 'logout',
-                            onPressed: () async {
-                              context
-                                  .read<AuthenticationService>()
-                                  .signOut()
-                                  .then((value) async {
-                                await Navigator.of(context)
-                                    .pushNamed('/AuthPage');
-                              });
-                            },
-                          ),
-                        ),
                       ],
                     ),
                   ),
