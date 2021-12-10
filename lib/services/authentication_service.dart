@@ -27,13 +27,15 @@ class AuthenticationService {
     required Color color,
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      fauth.UserCredential ucred = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
       FirebaseFirestore store = FirebaseFirestore.instance;
-      await store.collection('users').add({
+      await store.collection('users').doc(ucred.user!.uid).set({
         'first_name': firstName,
         'last_name': lastName,
-        'color': color.value,
+        'color_r': color.red,
+        'color_g': color.green,
+        'color_b': color.blue,
       });
       return null;
     } on fauth.FirebaseAuthException catch (e) {

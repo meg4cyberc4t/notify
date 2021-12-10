@@ -7,7 +7,6 @@ import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
-import 'package:notify/screens/mainpage/profilepage.dart';
 import 'package:notify/services/authentication_service.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +59,6 @@ class MyApp extends StatelessWidget {
           "/AuthPageSignUp": (context) => const AuthPageSignUp(),
           "/AuthPageSignIn": (context) => const AuthPageSignIn(),
           "/MainPage": (context) => const MainPage(),
-          "/ProfilePage": (context) => const ProfilePage(),
           // "/ColorPickerPage": (context) => ColorPickerPage(sdk: sdk),
         },
       ),

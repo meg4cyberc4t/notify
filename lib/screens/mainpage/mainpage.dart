@@ -1,9 +1,11 @@
 import 'package:bottom_nav_layout/bottom_nav_layout.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:notify/screens/mainpage/homepage.dart';
 import 'package:notify/screens/mainpage/profilepage.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -17,7 +19,9 @@ class MainPage extends StatelessWidget {
           (_) => const HomePage(),
           (_) => const Scaffold(body: Center(child: Text('likes'))),
           (_) => const Scaffold(body: Center(child: Text('search'))),
-          (_) => const ProfilePage(),
+          (_) => ProfilePage(
+                userUID: context.watch<User>().uid,
+              ),
         ],
         bottomNavigationBar: (currentIndex, onTap) => Container(
           decoration: BoxDecoration(
