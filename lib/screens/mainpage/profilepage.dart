@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
@@ -68,8 +69,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   actions: [
                     isMe
                         ? IconButton(
-                            icon: const Icon(CupertinoIcons.settings),
-                            onPressed: () {})
+                            icon: const Icon(
+                              Icons.logout,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => NotifyAlertDialog(
+                                  title: 'You',
+                                  listButtons: [
+                                    NotifyAlertDialogButtonItem(
+                                      title: "Отмена",
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    NotifyAlertDialogButtonItem(
+                                      title: "Далее",
+                                      onPressed: () {
+                                        context
+                                            .read<AuthenticationService>()
+                                            .signOut();
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                              // context.read<AuthenticationService>().signOut();
+                            })
                         : IconButton(
                             icon: const Icon(CupertinoIcons.add),
                             onPressed: () {},
