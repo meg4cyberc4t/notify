@@ -192,6 +192,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: SizedBox(height: 10),
                 ),
                 SliverToBoxAdapter(
+                    child: Expanded(
+                  child:
+                      NotifyDirectButton.text(text: 'text', onPressed: () {
+                        
+                      }),
+                )),
+                SliverToBoxAdapter(
                   child: Column(
                     children: [
                       QrImage(
