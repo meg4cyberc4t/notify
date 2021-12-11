@@ -28,6 +28,7 @@ dependencies:
   firebase_core: ^1.10.2
   provider: ^6.0.1
   cloud_firestore: ^3.1.1
+  qr_flutter: ^4.0.0
 
 flutter:
   uses-material-design: true
@@ -51,6 +52,8 @@ flutter_native_splash:
   background_image: "assets/splashscreen.png"
   android: true
   ios: true
+  # flutter pub run flutter_native_splash:create
+
 
 
 

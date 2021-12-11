@@ -3,7 +3,7 @@ import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
-import 'package:notify/services/authentication_service.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 class AuthPageSignIn extends StatefulWidget {
@@ -100,7 +100,7 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                       text: 'Continue',
                       onPressed: () async {
                         String? error =
-                            await context.read<AuthenticationService>().signIn(
+                            await context.read<FirebaseService>().signIn(
                                   email: _controllerEmail.text.trim(),
                                   password: _controllerPassword.text.trim(),
                                 );

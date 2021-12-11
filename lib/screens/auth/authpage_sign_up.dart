@@ -10,7 +10,7 @@ import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/screens/colorpickerpage.dart';
-import 'package:notify/services/authentication_service.dart';
+import 'package:notify/services/firebase_service.dart';
 
 class AuthPageSignUp extends StatefulWidget {
   const AuthPageSignUp({Key? key}) : super(key: key);
@@ -190,7 +190,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     notifySnackBar('Downloading...', context));
                                 String? error = await context
-                                    .read<AuthenticationService>()
+                                    .read<FirebaseService>()
                                     .signUp(
                                         email: _controllerEmail.text.trim(),
                                         password:

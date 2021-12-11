@@ -8,7 +8,7 @@ import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/auth/profilepage_edit.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
-import 'package:notify/services/authentication_service.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -25,13 +25,13 @@ class MyApp extends StatelessWidget {
     TextTheme mainTextTheme = GoogleFonts.exo2TextTheme();
     return MultiProvider(
       providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        Provider<FirebaseService>(
+          create: (_) => FirebaseService(FirebaseAuth.instance),
         ),
         StreamProvider(
           initialData: null,
           create: (context) =>
-              context.read<AuthenticationService>().currentUser,
+              context.read<FirebaseService>().currentUser,
         )
       ],
       child: MaterialApp(
@@ -74,7 +74,6 @@ class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
-    print(firebaseUser);
     if (firebaseUser != null) {
       return const MainPage();
     } else {

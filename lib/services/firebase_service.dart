@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-class AuthenticationService {
+class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
-  AuthenticationService(this._firebaseAuth);
+  FirebaseService(this._firebaseAuth);
 
   Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
 
@@ -47,5 +47,11 @@ class AuthenticationService {
     }
   }
 
-  Future<void> signOut() async => await _firebaseAuth.signOut();
+  Future<void> signOut() => _firebaseAuth.signOut();
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getInfoAboutUser(String uid) =>
+      FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
+
+  Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
+      FirebaseFirestore.instance.collection('users').doc(uid).update(data);
 }

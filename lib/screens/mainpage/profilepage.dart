@@ -8,8 +8,9 @@ import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
-import 'package:notify/services/authentication_service.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key, required this.userUID}) : super(key: key);
@@ -25,10 +26,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final bool isMe = context.watch<User>().uid == widget.userUID;
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(widget.userUID)
-              .snapshots(),
+          stream:
+              context.read<FirebaseService>().getInfoAboutUser(widget.userUID),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -86,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       title: "Next",
                                       onPressed: () {
                                         context
-                                            .read<AuthenticationService>()
+                                            .read<FirebaseService>()
                                             .signOut();
                                         Navigator.pop(context);
                                       },
@@ -126,10 +125,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                             );
                             if (inputColor != null) {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(widget.userUID)
-                                  .update({
+                              context
+                                  .read<FirebaseService>()
+                                  .updateInfoAboutUser(widget.userUID, {
                                 "color_r": inputColor.red,
                                 "color_g": inputColor.green,
                                 "color_b": inputColor.blue,
@@ -181,50 +179,71 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                       )),
                 ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 1000),
+                ),
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: NotifyDirectButton.icon(
-                            onPressed: () {
-                              FirebaseFirestore.instance
-                                  .collection('relations')
-                                  .add({
-                                "from": "",
-                                "to": "",
-                              });
-                            },
-                            text: 'Add',
-                            icon: CupertinoIcons.person_add_solid,
-                            isOutlined: true,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                            child: NotifyDirectButton.icon(
-                          icon: CupertinoIcons.qrcode,
-                          onPressed: () async {
-                            var snapshot = await FirebaseFirestore.instance
-                                .collection('relations')
-                                .where("to",
-                                    isEqualTo: "xaNIHsf1ducwAiQ1IYngtgpEE5u2")
-                                .get();
-                            print(snapshot.docs[0].data());
-                          },
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          text: 'QR code',
-                        ))
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      QrImage(
+                        data: widget.userUID,
+                        version: QrVersions.auto,
+                        size: 150,
+                        gapless: true,
+                      ),
+                      Text(
+                        'Scan this QR code from another device to find this account!',
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
                 const SliverToBoxAdapter(
-                  child: SizedBox(height: 1000),
-                )
+                  child: SizedBox(height: 10),
+                ),
+                //     SliverToBoxAdapter(
+                //       child: Padding(
+                //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                //         child: Row(
+                //           mainAxisSize: MainAxisSize.max,
+                //           children: [
+                //             Expanded(
+                //               child: NotifyDirectButton.icon(
+                //                 onPressed: () {
+                //                   FirebaseFirestore.instance
+                //                       .collection('relations')
+                //                       .add({
+                //                     "from": "",
+                //                     "to": "",
+                //                   });
+                //                 },
+                //                 text: 'Add',
+                //                 icon: CupertinoIcons.person_add_solid,
+                //                 isOutlined: true,
+                //                 padding: const EdgeInsets.symmetric(vertical: 10),
+                //               ),
+                //             ),
+                //             const SizedBox(width: 10),
+                //             Expanded(
+                //                 child: NotifyDirectButton.icon(
+                //               icon: CupertinoIcons.qrcode,
+                //               onPressed: () async {
+                //                 var snapshot = await FirebaseFirestore.instance
+                //                     .collection('relations')
+                //                     .where("to",
+                //                         isEqualTo: "xaNIHsf1ducwAiQ1IYngtgpEE5u2")
+                //                     .get();
+                //                 print(snapshot.docs[0].data());
+                //               },
+                //               padding: const EdgeInsets.symmetric(vertical: 10),
+                //               text: 'QR code',
+                //             ))
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //
               ],
             );
           }),
