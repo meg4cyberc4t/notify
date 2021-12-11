@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/auth/authpage2.dart';
@@ -12,6 +14,10 @@ import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  LicenseRegistry.addLicense(() async* {
+    final license = await rootBundle.loadString('google_fonts/OFL.txt');
+    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
+  });
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -22,7 +28,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme mainTextTheme = GoogleFonts.exo2TextTheme();
     return MultiProvider(
       providers: [
         Provider<FirebaseService>(
@@ -30,8 +35,7 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider(
           initialData: null,
-          create: (context) =>
-              context.read<FirebaseService>().currentUser,
+          create: (context) => context.read<FirebaseService>().currentUser,
         )
       ],
       child: MaterialApp(
@@ -43,15 +47,17 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color(0xFFFFFFFF),
           backgroundColor: const Color(0xFFFFFFFF),
           appBarTheme: const AppBarTheme(centerTitle: true),
-          textTheme: mainTextTheme
+          textTheme: GoogleFonts.exo2TextTheme()
               .apply(displayColor: const Color(0xFF7A7979))
               .copyWith(
-                  headline5: mainTextTheme.headline5
-                      ?.copyWith(color: const Color(0xFF8474A1)),
-                  button: mainTextTheme.button?.copyWith(
-                    color: const Color(0xFFFFFFFF),
-                    fontSize: 24,
-                  )),
+                headline5: GoogleFonts.exo2TextTheme().headline5?.copyWith(
+                      color: const Color(0xFF8474A1),
+                    ),
+                button: GoogleFonts.exo2TextTheme().button?.copyWith(
+                      color: const Color(0xFFFFFFFF),
+                      fontSize: 24,
+                    ),
+              ),
         ),
         home: const AuthenticationWrapper(),
         routes: {

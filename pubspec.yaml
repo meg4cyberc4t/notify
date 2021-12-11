@@ -29,11 +29,13 @@ dependencies:
   provider: ^6.0.1
   cloud_firestore: ^3.1.1
   qr_flutter: ^4.0.0
+  flutter_svg: ^1.0.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
+    - google_fonts/
 
 dev_dependencies:
   flutter_test:
@@ -47,12 +49,14 @@ flutter_icons:
   image_path: "assets/logo.png"
   remove_alpha_ios: true
   
+  
 
 flutter_native_splash:
   background_image: "assets/splashscreen.png"
   android: true
   ios: true
   # flutter pub run flutter_native_splash:create
+
 
 
 
