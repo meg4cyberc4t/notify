@@ -174,13 +174,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: NotifyDirectButton.text(
                         text: 'Edit',
                         isOutlined: true,
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/ProfilePageEdit");
-                        },
+                        onPressed: () =>
+                            Navigator.pushNamed(context, "/ProfilePageEdit"),
                       )),
                 ),
                 const SliverToBoxAdapter(
-                  child: SizedBox(height: 1000),
+                  child: SizedBox(height: 10),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
+                    child: PeopleSliver(uid: widget.userUID),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 10),
                 ),
                 SliverToBoxAdapter(
                   child: Column(
@@ -202,51 +211,116 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 10),
                 ),
-                //     SliverToBoxAdapter(
-                //       child: Padding(
-                //         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                //         child: Row(
-                //           mainAxisSize: MainAxisSize.max,
-                //           children: [
-                //             Expanded(
-                //               child: NotifyDirectButton.icon(
-                //                 onPressed: () {
-                //                   FirebaseFirestore.instance
-                //                       .collection('relations')
-                //                       .add({
-                //                     "from": "",
-                //                     "to": "",
-                //                   });
-                //                 },
-                //                 text: 'Add',
-                //                 icon: CupertinoIcons.person_add_solid,
-                //                 isOutlined: true,
-                //                 padding: const EdgeInsets.symmetric(vertical: 10),
-                //               ),
-                //             ),
-                //             const SizedBox(width: 10),
-                //             Expanded(
-                //                 child: NotifyDirectButton.icon(
-                //               icon: CupertinoIcons.qrcode,
-                //               onPressed: () async {
-                //                 var snapshot = await FirebaseFirestore.instance
-                //                     .collection('relations')
-                //                     .where("to",
-                //                         isEqualTo: "xaNIHsf1ducwAiQ1IYngtgpEE5u2")
-                //                     .get();
-                //                 print(snapshot.docs[0].data());
-                //               },
-                //               padding: const EdgeInsets.symmetric(vertical: 10),
-                //               text: 'QR code',
-                //             ))
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //
               ],
             );
           }),
+    );
+  }
+}
+
+class PeopleSliver extends StatelessWidget {
+  const PeopleSliver({
+    Key? key,
+    required this.uid,
+  }) : super(key: key);
+
+  final String uid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: FutureBuilder(
+              future: context.read<FirebaseService>().getColleguesFromUser(uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                if (snapshot.hasData) {
+                  var data = snapshot.data as List<dynamic>;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        data.length.toString(),
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        'Collegues',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  );
+                }
+                return const NotifyProgressIndicator();
+              }),
+        ),
+        Container(
+          height: 50,
+          width: 1,
+          color: Theme.of(context).primaryColor,
+        ),
+        Expanded(
+          child: FutureBuilder(
+              future: context.read<FirebaseService>().getFollowersFromUser(uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                if (snapshot.hasData) {
+                  var data = snapshot.data as List<dynamic>;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        data.length.toString(),
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        'Followers',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  );
+                }
+                return const NotifyProgressIndicator();
+              }),
+        ),
+        Container(
+          height: 50,
+          width: 1,
+          color: Theme.of(context).primaryColor,
+        ),
+        Expanded(
+          child: FutureBuilder(
+              future: context.read<FirebaseService>().getFollowingFromUser(uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                if (snapshot.hasData) {
+                  var data = snapshot.data as List<dynamic>;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        data.length.toString(),
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        'Following',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  );
+                }
+                return const NotifyProgressIndicator();
+              }),
+        ),
+      ],
     );
   }
 }

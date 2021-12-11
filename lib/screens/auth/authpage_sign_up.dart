@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notify/components/BLoC/avatar_props_validator_bloc.dart';
 import 'package:notify/components/widgets/avatar.dart';
-import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
@@ -71,145 +70,119 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-                FadeAnimation(
-                  delay: 0.9,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        child: Text(
-                          "Have account",
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                        onPressed: () => Navigator.pushReplacementNamed(
-                            context, '/AuthPageSignIn'),
-                      )
-                    ],
-                  ),
-                ),
-                FadeAnimation(
-                  delay: 0.9,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sign up",
-                        style: Theme.of(context).textTheme.headline3,
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    MaterialButton(
+                      child: Text(
+                        "Have account",
+                        style: Theme.of(context).textTheme.headline5,
                       ),
-                    ],
-                  ),
+                      onPressed: () => Navigator.pushReplacementNamed(
+                          context, '/AuthPageSignIn'),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 0.9,
-                  child: BlocBuilder<AvatarPropsValidatorBloc, AvatarProps>(
-                    builder: (context, AvatarProps props) => Avatar(
-                      title: props.title!,
-                      color: props.color!,
-                      size: AvatarSize.max,
-                      onTap: () async {
-                        final Color? inputColor = await Navigator.push(
-                          context,
-                          Platform.isAndroid
-                              ? MaterialPageRoute(
-                                  builder: (context) => ColorPickerPage(
-                                    title: props.title!,
-                                    initialValue: props.color,
-                                  ),
-                                )
-                              : CupertinoPageRoute(
-                                  builder: (context) => ColorPickerPage(
-                                    title: props.title!,
-                                    initialValue: props.color,
-                                  ),
-                                ),
-                        );
-                        if (inputColor != null) {
-                          BlocProvider.of<AvatarPropsValidatorBloc>(context)
-                              .add(AvatarProps(color: inputColor));
-                        }
-                      },
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Sign up",
+                      style: Theme.of(context).textTheme.headline3,
                     ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                BlocBuilder<AvatarPropsValidatorBloc, AvatarProps>(
+                  builder: (context, AvatarProps props) => Avatar(
+                    title: props.title!,
+                    color: props.color!,
+                    size: AvatarSize.max,
+                    onTap: () async {
+                      final Color? inputColor = await Navigator.push(
+                        context,
+                        Platform.isAndroid
+                            ? MaterialPageRoute(
+                                builder: (context) => ColorPickerPage(
+                                  title: props.title!,
+                                  initialValue: props.color,
+                                ),
+                              )
+                            : CupertinoPageRoute(
+                                builder: (context) => ColorPickerPage(
+                                  title: props.title!,
+                                  initialValue: props.color,
+                                ),
+                              ),
+                      );
+                      if (inputColor != null) {
+                        BlocProvider.of<AvatarPropsValidatorBloc>(context)
+                            .add(AvatarProps(color: inputColor));
+                      }
+                    },
                   ),
                 ),
                 const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 0.95,
-                  child: NotifyTextField(
-                    hintText: 'Your first name',
-                    labelText: 'First name',
-                    controller: _controllerFirstname,
-                    onChanged: (value) => updateAvatarTitle(),
-                  ),
+                NotifyTextField(
+                  hintText: 'Your first name',
+                  labelText: 'First name',
+                  controller: _controllerFirstname,
+                  onChanged: (value) => updateAvatarTitle(),
                 ),
                 const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 0.95,
-                  child: NotifyTextField(
-                    hintText: 'Your last name',
-                    labelText: 'Last name',
-                    controller: _controllerLastname,
-                    onChanged: (value) => updateAvatarTitle(),
-                  ),
+                NotifyTextField(
+                  hintText: 'Your last name',
+                  labelText: 'Last name',
+                  controller: _controllerLastname,
+                  onChanged: (value) => updateAvatarTitle(),
                 ),
                 const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 0.95,
-                  child: NotifyTextField(
-                    hintText: 'Your email',
-                    labelText: 'Email',
-                    controller: _controllerEmail,
-                  ),
+                NotifyTextField(
+                  hintText: 'Your email',
+                  labelText: 'Email',
+                  controller: _controllerEmail,
                 ),
                 const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 0.95,
-                  child: NotifyTextField(
-                    hintText: 'Your password',
-                    labelText: 'Password',
-                    obscureText: true,
-                    controller: _controllerPassword,
-                  ),
+                NotifyTextField(
+                  hintText: 'Your password',
+                  labelText: 'Password',
+                  obscureText: true,
+                  controller: _controllerPassword,
                 ),
                 const SizedBox(height: 10),
-                FadeAnimation(
-                  delay: 1.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: NotifyDirectButton.text(
-                              text: 'Continue',
-                              onPressed: () async {
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: NotifyDirectButton.text(
+                            text: 'Continue',
+                            onPressed: () async {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  notifySnackBar('Downloading...', context));
+                              String? error = await context
+                                  .read<FirebaseService>()
+                                  .signUp(
+                                      email: _controllerEmail.text.trim(),
+                                      password: _controllerPassword.text.trim(),
+                                      firstName:
+                                          _controllerFirstname.text.trim(),
+                                      lastName: _controllerLastname.text.trim(),
+                                      color: color);
+                              if (error != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    notifySnackBar('Downloading...', context));
-                                String? error = await context
-                                    .read<FirebaseService>()
-                                    .signUp(
-                                        email: _controllerEmail.text.trim(),
-                                        password:
-                                            _controllerPassword.text.trim(),
-                                        firstName:
-                                            _controllerFirstname.text.trim(),
-                                        lastName:
-                                            _controllerLastname.text.trim(),
-                                        color: color);
-                                if (error != null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      notifySnackBar(error, context));
-                                } else {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/MainPage');
-                                }
-                              })),
-                    ],
-                  ),
+                                    notifySnackBar(error, context));
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                    context, '/MainPage');
+                              }
+                            })),
+                  ],
                 ),
                 const SizedBox(height: 20),
               ],

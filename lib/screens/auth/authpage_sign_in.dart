@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
@@ -36,85 +35,70 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50),
-            FadeAnimation(
-              delay: 0.9,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  MaterialButton(
-                    child: Text(
-                      "Create account",
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    onPressed: () => Navigator.pushReplacementNamed(
-                        context, '/AuthPageSignUp'),
-                  )
-                ],
-              ),
-            ),
-            FadeAnimation(
-              delay: 0.9,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Sign in",
-                    style: Theme.of(context).textTheme.headline3,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                MaterialButton(
+                  child: Text(
+                    "Create account",
+                    style: Theme.of(context).textTheme.headline5,
                   ),
-                ],
-              ),
+                  onPressed: () => Navigator.pushReplacementNamed(
+                      context, '/AuthPageSignUp'),
+                )
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Sign in",
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+              ],
             ),
             const SizedBox(height: 10),
-            FadeAnimation(
-              delay: 0.95,
-              child: NotifyTextField(
-                hintText: 'Your email',
-                labelText: 'Email',
-                controller: _controllerEmail,
-              ),
+            NotifyTextField(
+              hintText: 'Your email',
+              labelText: 'Email',
+              controller: _controllerEmail,
             ),
             const SizedBox(height: 10),
-            FadeAnimation(
-              delay: 0.95,
-              child: NotifyTextField(
-                hintText: 'Your password',
-                labelText: 'Password',
-                obscureText: true,
-                controller: _controllerPassword,
-              ),
+            NotifyTextField(
+              hintText: 'Your password',
+              labelText: 'Password',
+              obscureText: true,
+              controller: _controllerPassword,
             ),
             const SizedBox(height: 10),
-            FadeAnimation(
-              delay: 1.0,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: NotifyDirectButton.text(
-                      text: 'Continue',
-                      onPressed: () async {
-                        String? error =
-                            await context.read<FirebaseService>().signIn(
-                                  email: _controllerEmail.text.trim(),
-                                  password: _controllerPassword.text.trim(),
-                                );
-                        if (error != null) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(notifySnackBar(error, context));
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/MainPage');
-                        }
-                      },
-                    ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: NotifyDirectButton.text(
+                    text: 'Continue',
+                    onPressed: () async {
+                      String? error =
+                          await context.read<FirebaseService>().signIn(
+                                email: _controllerEmail.text.trim(),
+                                password: _controllerPassword.text.trim(),
+                              );
+                      if (error != null) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(notifySnackBar(error, context));
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/MainPage');
+                      }
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
           ],

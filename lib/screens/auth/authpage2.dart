@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/fade_animation.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 
 class AuthPage2 extends StatelessWidget {
@@ -10,14 +9,11 @@ class AuthPage2 extends StatelessWidget {
     return Scaffold(
         body: Stack(
       children: <Widget>[
-        FadeAnimation(
-          delay: 0.8,
-          child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/authpage2.png"),
-                fit: BoxFit.cover,
-              ),
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/authpage2.png"),
+              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -28,37 +24,31 @@ class AuthPage2 extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FadeAnimation(
-                delay: 0.9,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Text(
-                    "Calendar, notification, management",
-                    style: Theme.of(context).textTheme.headline4,
-                  ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text(
+                  "Calendar, notification, management",
+                  style: Theme.of(context).textTheme.headline4,
                 ),
               ),
               const SizedBox(height: 10),
-              FadeAnimation(
-                delay: 1.0,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: NotifyDirectButton.text(
-                            text: 'Sign up',
-                            onPressed: () => Navigator.pushNamed(
-                                context, '/AuthPageSignUp'))),
-                    const SizedBox(width: 10),
-                    Expanded(
-                        child: NotifyDirectButton.text(
-                            text: 'Sign in',
-                            onPressed: () => Navigator.pushNamed(
-                                context, '/AuthPageSignIn'))),
-                  ],
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: NotifyDirectButton.text(
+                          text: 'Sign up',
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/AuthPageSignUp'))),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: NotifyDirectButton.text(
+                          text: 'Sign in',
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/AuthPageSignIn'))),
+                ],
               ),
               const SizedBox(height: 20),
             ],

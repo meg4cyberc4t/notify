@@ -54,4 +54,32 @@ class FirebaseService {
 
   Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
       FirebaseFirestore.instance.collection('users').doc(uid).update(data);
+
+  getFollowersFromUser(String uid) async => (await FirebaseFirestore.instance
+          .collection('relations')
+          .where("to", isEqualTo: uid)
+          .get())
+      .docs
+      .map((e) => e['from'])
+      .toList();
+
+  getFollowingFromUser(String uid) async => (await FirebaseFirestore.instance
+          .collection('relations')
+          .where("from", isEqualTo: uid)
+          .get())
+      .docs
+      .map((e) => e['to'])
+      .toList();
+
+  getColleguesFromUser(String uid) async {
+    var followers = await getFollowersFromUser(uid);
+    var following = await getFollowingFromUser(uid);
+    var answers = [];
+    for (var element in following) {
+      if (followers.contains(element)) {
+        answers.add(element);
+      }
+    }
+    return answers;
+  }
 }

@@ -8,8 +8,8 @@ import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
-import 'package:notify/screens/auth/profilepage_edit.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
+import 'package:notify/screens/mainpage/profile/profilepage_edit.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 

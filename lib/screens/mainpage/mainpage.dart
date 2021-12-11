@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:notify/screens/mainpage/homepage.dart';
-import 'package:notify/screens/mainpage/profilepage.dart';
+import 'package:notify/screens/mainpage/profile/profilepage.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
@@ -19,9 +19,7 @@ class MainPage extends StatelessWidget {
           (_) => const HomePage(),
           (_) => const Scaffold(body: Center(child: Text('likes'))),
           (_) => const Scaffold(body: Center(child: Text('search'))),
-          (_) => ProfilePage(
-                userUID: context.watch<User>().uid,
-              ),
+          (_) => ProfilePage(userUID: context.watch<User>().uid),
         ],
         bottomNavigationBar: (currentIndex, onTap) => Container(
           decoration: BoxDecoration(

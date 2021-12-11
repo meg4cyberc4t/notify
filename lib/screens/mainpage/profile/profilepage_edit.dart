@@ -104,8 +104,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                               child: NotifyDirectButton.text(
                             text: 'Save',
                             onPressed: () {
-                              context
-                                  .watch<FirebaseService>()
+                              Provider.of<FirebaseService>(context, listen: false)
                                   .updateInfoAboutUser(
                                       Provider.of<User>(context, listen: false)
                                           .uid,

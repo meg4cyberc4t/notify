@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3b634082-6fd7-43f3-9d49-81176fee8667" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/mainpage/profilepage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/mainpage/profilepage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/services/authentication_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/authentication_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/auth/authpage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/auth/authpage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +40,7 @@
       <option name="presentableId" value="Default" />
       <updated>1639129878364</updated>
       <workItem from="1639129880636" duration="10000" />
+      <workItem from="1639233219477" duration="4000" />
     </task>
     <servers />
   </component>

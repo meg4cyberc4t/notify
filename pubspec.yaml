@@ -13,7 +13,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^2.1.0
   supercharged: ^2.1.1
-  simple_animations: ^4.0.1
   flutter_native_splash: ^1.3.1
   flutter_bloc: ^8.0.0
   flutter_material_color_picker: ^1.1.0+2
@@ -21,15 +20,12 @@ dependencies:
   google_nav_bar: ^5.0.5
   flutter_sticky_header: ^0.6.0
   intl: ^0.17.0
-  auto_animated: ^3.0.1
-  
   firebase: ^9.0.2
   firebase_auth: ^3.3.0
   firebase_core: ^1.10.2
   provider: ^6.0.1
   cloud_firestore: ^3.1.1
   qr_flutter: ^4.0.0
-  flutter_svg: ^1.0.0
 
 flutter:
   uses-material-design: true
@@ -49,8 +45,6 @@ flutter_icons:
   image_path: "assets/logo.png"
   remove_alpha_ios: true
   
-  
-
 flutter_native_splash:
   background_image: "assets/splashscreen.png"
   android: true
