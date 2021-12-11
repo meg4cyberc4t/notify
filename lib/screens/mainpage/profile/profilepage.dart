@@ -1,14 +1,15 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
 import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
+import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -185,19 +186,130 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10.0, vertical: 5),
-                    child: PeopleSliver(uid: widget.userUID),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: FutureBuilder(
+                              future: context
+                                  .read<FirebaseService>()
+                                  .getColleguesFromUser(widget.userUID),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                }
+                                if (snapshot.hasData) {
+                                  var data = snapshot.data as List<dynamic>;
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        data.length.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                      Text(
+                                        'Collegues',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const NotifyProgressIndicator();
+                              }),
+                        ),
+                        Container(
+                          height: 50,
+                          width: 1,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Expanded(
+                          child: FutureBuilder(
+                              future: context
+                                  .read<FirebaseService>()
+                                  .getFollowersFromUser(widget.userUID),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                }
+                                if (snapshot.hasData) {
+                                  var data = snapshot.data as List<dynamic>;
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        data.length.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                      Text(
+                                        'Followers',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return const NotifyProgressIndicator();
+                              }),
+                        ),
+                        Container(
+                          height: 50,
+                          width: 1,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Expanded(
+                          child: FutureBuilder(
+                              future: context
+                                  .read<FirebaseService>()
+                                  .getFollowingFromUser(widget.userUID),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(snapshot.error.toString());
+                                }
+                                if (snapshot.hasData) {
+                                  var data2 = snapshot.data as List<dynamic>;
+                                  return InkWell(
+                                    onTap: () {
+                                      showUsersBottomSheet(context,
+                                          snapshot.data as List<NotifyUser>);
+                                    },
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          data2.length.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                        Text(
+                                          'Following',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return const NotifyProgressIndicator();
+                              }),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 10),
                 ),
-                SliverToBoxAdapter(
-                    child: Expanded(
-                  child:
-                      NotifyDirectButton.text(text: 'text', onPressed: () {
-                        
-                      }),
-                )),
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
@@ -221,113 +333,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           }),
-    );
-  }
-}
-
-class PeopleSliver extends StatelessWidget {
-  const PeopleSliver({
-    Key? key,
-    required this.uid,
-  }) : super(key: key);
-
-  final String uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: FutureBuilder(
-              future: context.read<FirebaseService>().getColleguesFromUser(uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                if (snapshot.hasData) {
-                  var data = snapshot.data as List<dynamic>;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        data.length.toString(),
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      Text(
-                        'Collegues',
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ],
-                  );
-                }
-                return const NotifyProgressIndicator();
-              }),
-        ),
-        Container(
-          height: 50,
-          width: 1,
-          color: Theme.of(context).primaryColor,
-        ),
-        Expanded(
-          child: FutureBuilder(
-              future: context.read<FirebaseService>().getFollowersFromUser(uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                if (snapshot.hasData) {
-                  var data = snapshot.data as List<dynamic>;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        data.length.toString(),
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      Text(
-                        'Followers',
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ],
-                  );
-                }
-                return const NotifyProgressIndicator();
-              }),
-        ),
-        Container(
-          height: 50,
-          width: 1,
-          color: Theme.of(context).primaryColor,
-        ),
-        Expanded(
-          child: FutureBuilder(
-              future: context.read<FirebaseService>().getFollowingFromUser(uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                }
-                if (snapshot.hasData) {
-                  var data = snapshot.data as List<dynamic>;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        data.length.toString(),
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      Text(
-                        'Following',
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ],
-                  );
-                }
-                return const NotifyProgressIndicator();
-              }),
-        ),
-      ],
     );
   }
 }

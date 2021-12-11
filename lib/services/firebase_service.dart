@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/services/notify_user.dart';
 
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
@@ -55,31 +58,61 @@ class FirebaseService {
   Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
       FirebaseFirestore.instance.collection('users').doc(uid).update(data);
 
-  getFollowersFromUser(String uid) async => (await FirebaseFirestore.instance
-          .collection('relations')
-          .where("to", isEqualTo: uid)
-          .get())
-      .docs
-      .map((e) => e['from'])
-      .toList();
+  Future<List<NotifyUser>> getUsersListFromUsersUidList(
+      List<String> uids) async {
+    if (uids.isEmpty) {
+      return Future.value([]);
+    }
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: uids)
+        .get();
+    return Future.value(snapshot.docs.map((e) {
+      Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+      return NotifyUser(
+        uid: e.id,
+        firstName: data['first_name'],
+        lastName: data['last_name'],
+        color: Color.fromRGBO(
+          data['color_r'],
+          data['color_g'],
+          data['color_b'],
+          1,
+        ),
+        status: data['status'],
+      );
+    }).toList());
+  }
 
-  getFollowingFromUser(String uid) async => (await FirebaseFirestore.instance
-          .collection('relations')
-          .where("from", isEqualTo: uid)
-          .get())
-      .docs
-      .map((e) => e['to'])
-      .toList();
+  Future<List<NotifyUser>> getFollowersFromUser(String uid) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('relations')
+        .where("to", isEqualTo: uid)
+        .get();
+    return getUsersListFromUsersUidList(
+        snapshot.docs.map((e) => e['from'] as String).toList());
+  }
 
-  getColleguesFromUser(String uid) async {
+  Future<List<NotifyUser>> getFollowingFromUser(String uid) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('relations')
+        .where("from", isEqualTo: uid)
+        .get();
+    return getUsersListFromUsersUidList(
+        snapshot.docs.map((e) => e['to'] as String).toList());
+  }
+
+  Future<List<NotifyUser>> getColleguesFromUser(String uid) async {
     var followers = await getFollowersFromUser(uid);
     var following = await getFollowingFromUser(uid);
-    var answers = [];
-    for (var element in following) {
-      if (followers.contains(element)) {
-        answers.add(element);
+    List<NotifyUser> answers = <NotifyUser>[];
+    for (var user1 in following) {
+      for (var user2 in followers) {
+        if (user1.uid == user2.uid) {
+          answers.add(user1);
+        }
       }
     }
-    return answers;
+    return Future.value(answers);
   }
 }
