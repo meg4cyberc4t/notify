@@ -1,9 +1,9 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
+import 'package:notify/components/methods/custom_page_route.dart';
 import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
@@ -12,22 +12,16 @@ import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key, required this.userUID}) : super(key: key);
   final String userUID;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  @override
   Widget build(BuildContext context) {
-    final bool isMe = context.watch<User>().uid == widget.userUID;
+    final bool isMe = context.watch<User>().uid == userUID;
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot>(
-          stream:
-              context.read<FirebaseService>().getInfoAboutUser(widget.userUID),
+          stream: context.read<FirebaseService>().getInfoAboutUser(userUID),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -93,7 +87,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ],
                                 ),
                               );
-                              // context.read<AuthenticationService>().signOut();
                             })
                         : IconButton(
                             icon: const Icon(CupertinoIcons.add),
@@ -105,29 +98,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: const Icon(CupertinoIcons.pen),
                           onPressed: () async {
                             final Color? inputColor = await Navigator.push(
-                              context,
-                              Platform.isAndroid
-                                  ? MaterialPageRoute(
-                                      builder: (context) => ColorPickerPage(
-                                        title: (data['first_name'][0] +
-                                                data['last_name'][0])
-                                            .toUpperCase(),
-                                        initialValue: userColor,
-                                      ),
-                                    )
-                                  : CupertinoPageRoute(
-                                      builder: (context) => ColorPickerPage(
-                                        title: (data['first_name'][0] +
-                                                data['last_name'][0])
-                                            .toUpperCase(),
-                                        initialValue: userColor,
-                                      ),
-                                    ),
-                            );
+                                context,
+                                customRoute((context) => ColorPickerPage(
+                                      title: (data['first_name'][0] +
+                                              data['last_name'][0])
+                                          .toUpperCase(),
+                                      initialValue: userColor,
+                                    )));
                             if (inputColor != null) {
                               context
                                   .read<FirebaseService>()
-                                  .updateInfoAboutUser(widget.userUID, {
+                                  .updateInfoAboutUser(userUID, {
                                 "color_r": inputColor.red,
                                 "color_g": inputColor.green,
                                 "color_b": inputColor.blue,
@@ -193,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: StreamBuilder(
                               stream: context
                                   .read<FirebaseService>()
-                                  .getColleguesFromUser(widget.userUID),
+                                  .getColleguesFromUser(userUID),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
@@ -245,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: StreamBuilder(
                               stream: context
                                   .read<FirebaseService>()
-                                  .getFollowersFromUser(widget.userUID),
+                                  .getFollowersFromUser(userUID),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
@@ -282,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: StreamBuilder(
                               stream: context
                                   .read<FirebaseService>()
-                                  .getFollowingFromUser(widget.userUID),
+                                  .getFollowingFromUser(userUID),
                               builder: (context, snapshot) {
                                 if (snapshot.hasError) {
                                   return Text(snapshot.error.toString());
@@ -328,7 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       QrImage(
-                        data: widget.userUID,
+                        data: userUID,
                         version: QrVersions.auto,
                         size: 150,
                         gapless: true,

@@ -66,8 +66,9 @@ class MyApp extends StatelessWidget {
           "/AuthPageSignUp": (context) => const AuthPageSignUp(),
           "/AuthPageSignIn": (context) => const AuthPageSignIn(),
           "/MainPage": (context) => const MainPage(),
+          // "/ProfilePage": (context) => const ProfilePage(),
           "/ProfilePageEdit": (context) => const ProfilePageEdit(),
-          // "/ColorPickerPage": (context) => ColorPickerPage(sdk: sdk),
+          // "/ColorPickerPage": (context) => ColorPickerPage(),
         },
       ),
     );
