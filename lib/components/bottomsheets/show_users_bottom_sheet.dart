@@ -1,10 +1,15 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/avatar.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_user.dart';
+import 'package:provider/provider.dart';
 
 Future<T?> showUsersBottomSheet<T>(
-    BuildContext context, List<NotifyUser> users) {
+    BuildContext context, List<String> userUids) async {
+  List<NotifyUser> listUsers =
+      await Provider.of<FirebaseService>(context, listen: false)
+          .getUsersListFromUsersUidList(userUids);
   return showStickyFlexibleBottomSheet(
     minHeight: 0,
     initHeight: 0.5,
@@ -23,7 +28,7 @@ Future<T?> showUsersBottomSheet<T>(
     //   color: Theme.of(context).backgroundColor,
     // ),
     bodyBuilder: (context, bottomSheetOffset) => SliverChildListDelegate(
-      users
+      listUsers
           .map((NotifyUser user) => ListTile(
                 leading: Avatar(
                   color: user.color,

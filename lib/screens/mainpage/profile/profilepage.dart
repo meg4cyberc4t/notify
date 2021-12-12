@@ -9,7 +9,6 @@ import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -191,8 +190,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
-                          child: FutureBuilder(
-                              future: context
+                          child: StreamBuilder(
+                              stream: context
                                   .read<FirebaseService>()
                                   .getColleguesFromUser(widget.userUID),
                               builder: (context, snapshot) {
@@ -200,24 +199,39 @@ class _ProfilePageState extends State<ProfilePage> {
                                   return Text(snapshot.error.toString());
                                 }
                                 if (snapshot.hasData) {
-                                  var data = snapshot.data as List<dynamic>;
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        data.length.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                      Text(
-                                        'Collegues',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                    ],
-                                  );
+                                  return StreamBuilder<Object>(
+                                      stream:
+                                          snapshot.data as Stream<List<String>>,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return Text(
+                                              snapshot.error.toString());
+                                        }
+                                        if (snapshot.hasData) {
+                                          var data =
+                                              snapshot.data as List<dynamic>;
+
+                                          return Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                data.length.toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5,
+                                              ),
+                                              Text(
+                                                'Collegues',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5,
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                        return const NotifyProgressIndicator();
+                                      });
                                 }
                                 return const NotifyProgressIndicator();
                               }),
@@ -228,8 +242,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Theme.of(context).primaryColor,
                         ),
                         Expanded(
-                          child: FutureBuilder(
-                              future: context
+                          child: StreamBuilder(
+                              stream: context
                                   .read<FirebaseService>()
                                   .getFollowersFromUser(widget.userUID),
                               builder: (context, snapshot) {
@@ -265,8 +279,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Theme.of(context).primaryColor,
                         ),
                         Expanded(
-                          child: FutureBuilder(
-                              future: context
+                          child: StreamBuilder(
+                              stream: context
                                   .read<FirebaseService>()
                                   .getFollowingFromUser(widget.userUID),
                               builder: (context, snapshot) {
@@ -278,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   return InkWell(
                                     onTap: () {
                                       showUsersBottomSheet(context,
-                                          snapshot.data as List<NotifyUser>);
+                                          snapshot.data as List<String>);
                                     },
                                     child: Column(
                                       mainAxisAlignment:

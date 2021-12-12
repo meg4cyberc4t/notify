@@ -61,14 +61,15 @@ class FirebaseService {
   Future<List<NotifyUser>> getUsersListFromUsersUidList(
       List<String> uids) async {
     if (uids.isEmpty) {
-      return Future.value([]);
+      return Future.value(<NotifyUser>[]);
     }
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: uids)
-        .get();
-    return Future.value(snapshot.docs.map((e) {
-      Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+    return (await FirebaseFirestore.instance
+            .collection('users')
+            .where(FieldPath.documentId, whereIn: uids)
+            .get())
+        .docs
+        .map((e) {
+      Map<String, dynamic> data = e.data();
       return NotifyUser(
         uid: e.id,
         firstName: data['first_name'],
@@ -81,38 +82,42 @@ class FirebaseService {
         ),
         status: data['status'],
       );
-    }).toList());
+    }).toList();
   }
 
-  Future<List<NotifyUser>> getFollowersFromUser(String uid) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
+  Stream<List<String>> getFollowersFromUser(String uid) {
+    return FirebaseFirestore.instance
         .collection('relations')
-        .where("to", isEqualTo: uid)
-        .get();
-    return getUsersListFromUsersUidList(
-        snapshot.docs.map((e) => e['from'] as String).toList());
+        .where('to', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((e) => e['from'] as String).toList();
+    });
   }
 
-  Future<List<NotifyUser>> getFollowingFromUser(String uid) async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
+  Stream<List<String>> getFollowingFromUser(String uid) {
+    return FirebaseFirestore.instance
         .collection('relations')
-        .where("from", isEqualTo: uid)
-        .get();
-    return getUsersListFromUsersUidList(
-        snapshot.docs.map((e) => e['to'] as String).toList());
+        .where('from', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((e) => e['to'] as String).toList();
+    });
   }
 
-  Future<List<NotifyUser>> getColleguesFromUser(String uid) async {
-    var followers = await getFollowersFromUser(uid);
-    var following = await getFollowingFromUser(uid);
-    List<NotifyUser> answers = <NotifyUser>[];
-    for (var user1 in following) {
-      for (var user2 in followers) {
-        if (user1.uid == user2.uid) {
-          answers.add(user1);
+  Stream<Stream<List<String>>> getColleguesFromUser(String uid) {
+    return getFollowersFromUser(uid).map((followers) {
+      return getFollowingFromUser(uid).map((following) {
+        List<String> answer = [];
+        for (var user1 in followers) {
+          for (var user2 in following) {
+            if (user1 == user2 && !answer.contains(user1)) {
+              answer.add(user1);
+            }
+          }
         }
-      }
-    }
-    return Future.value(answers);
+        return answer;
+      });
+    });
   }
 }
