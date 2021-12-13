@@ -58,31 +58,29 @@ class FirebaseService {
   Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
       FirebaseFirestore.instance.collection('users').doc(uid).update(data);
 
-  Future<List<NotifyUser>> getUsersListFromUsersUidList(
-      List<String> uids) async {
+  Stream<List<NotifyUser>> getUsersListFromUsersUidList(List<String> uids) {
     if (uids.isEmpty) {
-      return Future.value(<NotifyUser>[]);
+      return Stream.value([]);
     }
-    return (await FirebaseFirestore.instance
-            .collection('users')
-            .where(FieldPath.documentId, whereIn: uids)
-            .get())
-        .docs
-        .map((e) {
-      Map<String, dynamic> data = e.data();
-      return NotifyUser(
-        uid: e.id,
-        firstName: data['first_name'],
-        lastName: data['last_name'],
-        color: Color.fromRGBO(
-          data['color_r'],
-          data['color_g'],
-          data['color_b'],
-          1,
-        ),
-        status: data['status'],
-      );
-    }).toList();
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: uids)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((e) {
+              Map<String, dynamic> data = e.data();
+              return NotifyUser(
+                uid: e.id,
+                firstName: data['first_name'],
+                lastName: data['last_name'],
+                color: Color.fromRGBO(
+                  data['color_r'],
+                  data['color_g'],
+                  data['color_b'],
+                  1,
+                ),
+                status: data['status'],
+              );
+            }).toList());
   }
 
   Stream<List<String>> getFollowersFromUser(String uid) {
