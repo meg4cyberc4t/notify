@@ -6,7 +6,7 @@ AppBar miniSliverHeader(BuildContext context, String title) {
     shadowColor: Colors.grey[300],
     backgroundColor: Theme.of(context).backgroundColor,
     titleSpacing: 0,
-    primary: true,
+    primary: false,
     title: Text(title, style: Theme.of(context).textTheme.headline4),
   );
 }

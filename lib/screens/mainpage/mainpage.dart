@@ -31,43 +31,40 @@ class MainPage extends StatelessWidget {
               )
             ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-              child: GNav(
-                  rippleColor: Colors.grey[300]!,
-                  hoverColor: Colors.grey[100]!,
-                  gap: 8,
-                  tabBorderRadius: 15.0,
-                  activeColor: Theme.of(context).primaryColor,
-                  iconSize: 24,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  duration: const Duration(milliseconds: 400),
-                  tabBackgroundColor: Colors.grey[100]!,
-                  color: Colors.black,
-                  tabs: const [
-                    GButton(
-                      icon: CupertinoIcons.home,
-                      text: 'Home',
-                    ),
-                    GButton(
-                      icon: CupertinoIcons.calendar,
-                      text: 'Calendar',
-                    ),
-                    GButton(
-                      icon: CupertinoIcons.search,
-                      text: 'Search',
-                    ),
-                    GButton(
-                      icon: CupertinoIcons.person,
-                      text: 'Profile',
-                    ),
-                  ],
-                  selectedIndex: currentIndex,
-                  onTabChange: (index) => onTap(index)),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+                rippleColor: Colors.grey[300]!,
+                hoverColor: Colors.grey[100]!,
+                gap: 8,
+                tabBorderRadius: 15.0,
+                activeColor: Theme.of(context).primaryColor,
+                iconSize: 24,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                duration: const Duration(milliseconds: 400),
+                tabBackgroundColor: Colors.grey[100]!,
+                color: Colors.black,
+                tabs: const [
+                  GButton(
+                    icon: CupertinoIcons.home,
+                    text: 'Home',
+                  ),
+                  GButton(
+                    icon: CupertinoIcons.calendar,
+                    text: 'Calendar',
+                  ),
+                  GButton(
+                    icon: CupertinoIcons.search,
+                    text: 'Search',
+                  ),
+                  GButton(
+                    icon: CupertinoIcons.person,
+                    text: 'Profile',
+                  ),
+                ],
+                selectedIndex: currentIndex,
+                onTabChange: (index) => onTap(index)),
           ),
         ),
       ),

@@ -15,46 +15,48 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            titleTextStyle: Theme.of(context).textTheme.headline3,
-            title: const Text('Home'),
-            centerTitle: true,
-          ),
-          SliverStickyHeader(
-            header: miniSliverHeader(
-              context,
-              'Today Tasks',
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              backgroundColor: Theme.of(context).backgroundColor,
+              titleTextStyle: Theme.of(context).textTheme.headline3,
+              title: const Text('Home'),
+              centerTitle: true,
             ),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, i) => NotificationItem(
-                  priority: i == 0,
-                  datetime: DateTime.now(),
-                  subtitle: i % 2 == 0 ? 'subtitle' : null,
-                  onTap: () {},
+            SliverStickyHeader(
+              header: miniSliverHeader(
+                context,
+                'Today Tasks',
+              ),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => NotificationItem(
+                    priority: i == 0,
+                    datetime: DateTime.now(),
+                    subtitle: i % 2 == 0 ? 'subtitle' : null,
+                    onTap: () {},
+                  ),
+                  childCount: 4,
                 ),
-                childCount: 4,
               ),
             ),
-          ),
-          SliverStickyHeader(
-            header: miniSliverHeader(context, 'Folders'),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, i) => FolderItem(
-                  header: 'Header $i',
-                  countNotifications: i,
-                  subtitle: 'subtitle',
-                  onTap: () {},
+            SliverStickyHeader(
+              header: miniSliverHeader(context, 'Folders'),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) => FolderItem(
+                    header: 'Header $i',
+                    countNotifications: i,
+                    subtitle: 'subtitle',
+                    onTap: () {},
+                  ),
+                  childCount: 10,
                 ),
-                childCount: 10,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
