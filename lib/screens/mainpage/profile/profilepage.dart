@@ -201,7 +201,6 @@ class ProfilePage extends StatelessWidget {
                                         if (snapshot.hasData) {
                                           var data =
                                               snapshot.data as List<dynamic>;
-
                                           return InkWell(
                                             onTap: () => showUsersBottomSheet(
                                                 context,
