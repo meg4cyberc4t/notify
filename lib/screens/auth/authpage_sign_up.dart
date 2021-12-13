@@ -1,8 +1,9 @@
+import 'dart:io';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notify/components/BLoC/avatar_props_validator_bloc.dart';
-import 'package:notify/components/methods/custom_page_route.dart';
 import 'package:notify/components/widgets/avatar.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
@@ -103,14 +104,18 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                     size: AvatarSize.max,
                     onTap: () async {
                       final Color? inputColor = await Navigator.push(
-                        context,
-                        customRoute(
-                          (context) => ColorPickerPage(
-                            title: props.title!,
-                            initialValue: props.color,
-                          ),
-                        ),
-                      );
+                          context,
+                          Platform.isAndroid
+                              ? MaterialPageRoute(
+                                  builder: (context) => ColorPickerPage(
+                                        title: props.title!,
+                                        initialValue: props.color,
+                                      ))
+                              : CupertinoPageRoute(
+                                  builder: (context) => ColorPickerPage(
+                                        title: props.title!,
+                                        initialValue: props.color,
+                                      )));
                       if (inputColor != null) {
                         BlocProvider.of<AvatarPropsValidatorBloc>(context)
                             .add(AvatarProps(color: inputColor));
