@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
-import 'package:notify/components/methods/custom_page_route.dart';
 import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/direct_button.dart';
 import 'package:notify/components/widgets/progress_indicator.dart';
@@ -99,12 +100,21 @@ class ProfilePage extends StatelessWidget {
                           onPressed: () async {
                             final Color? inputColor = await Navigator.push(
                                 context,
-                                customRoute((context) => ColorPickerPage(
-                                      title: (data['first_name'][0] +
-                                              data['last_name'][0])
-                                          .toUpperCase(),
-                                      initialValue: userColor,
-                                    )));
+                                Platform.isAndroid
+                                    ? MaterialPageRoute(
+                                        builder: (context) => ColorPickerPage(
+                                              title: (data['first_name'][0] +
+                                                      data['last_name'][0])
+                                                  .toUpperCase(),
+                                              initialValue: userColor,
+                                            ))
+                                    : CupertinoPageRoute(
+                                        builder: (context) => ColorPickerPage(
+                                              title: (data['first_name'][0] +
+                                                      data['last_name'][0])
+                                                  .toUpperCase(),
+                                              initialValue: userColor,
+                                            )));
                             if (inputColor != null) {
                               context
                                   .read<FirebaseService>()
@@ -192,23 +202,28 @@ class ProfilePage extends StatelessWidget {
                                           var data =
                                               snapshot.data as List<dynamic>;
 
-                                          return Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                data.length.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5,
-                                              ),
-                                              Text(
-                                                'Collegues',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5,
-                                              ),
-                                            ],
+                                          return InkWell(
+                                            onTap: () => showUsersBottomSheet(
+                                                context,
+                                                snapshot.data as List<String>),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  data.length.toString(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5,
+                                                ),
+                                                Text(
+                                                  'Collegues',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5,
+                                                ),
+                                              ],
+                                            ),
                                           );
                                         }
                                         return const NotifyProgressIndicator();
@@ -233,22 +248,27 @@ class ProfilePage extends StatelessWidget {
                                 }
                                 if (snapshot.hasData) {
                                   var data = snapshot.data as List<dynamic>;
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        data.length.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                      Text(
-                                        'Followers',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                    ],
+                                  return InkWell(
+                                    onTap: () => showUsersBottomSheet(
+                                        context, snapshot.data as List<String>),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          data.length.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                        Text(
+                                          'Followers',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 }
                                 return const NotifyProgressIndicator();
@@ -271,10 +291,8 @@ class ProfilePage extends StatelessWidget {
                                 if (snapshot.hasData) {
                                   var data2 = snapshot.data as List<dynamic>;
                                   return InkWell(
-                                    onTap: () {
-                                      showUsersBottomSheet(context,
-                                          snapshot.data as List<String>);
-                                    },
+                                    onTap: () => showUsersBottomSheet(
+                                        context, snapshot.data as List<String>),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
