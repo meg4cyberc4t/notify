@@ -16,5 +16,5 @@ class NotifyUser {
   get colorR => color.red;
   get colorG => color.green;
   get colorB => color.blue;
-  get avatarTitle => firstName[0] + lastName[0];
+  get avatarTitle => (firstName[0] + lastName[0]).toUpperCase();
 }
