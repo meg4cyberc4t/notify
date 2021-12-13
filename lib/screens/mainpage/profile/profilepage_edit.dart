@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/components/snapshot_middleware.dart';
 
 import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
@@ -37,18 +37,13 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
               .read<FirebaseService>()
               .getInfoAboutUser(context.watch<User>().uid),
           builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: NotifyProgressIndicator(),
-              );
-            } else if (!snapshot.data!.exists) {
-              return const Center(
-                child: Text("User does not exist"),
-              );
+            Widget? widget = snapshotMiddleware(snapshot);
+            if (widget != null) {
+              return widget;
+            }
+            widget = checkSnapshotDataExist(snapshot);
+            if (widget != null) {
+              return widget;
             }
 
             Map<String, dynamic> data =
@@ -104,7 +99,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                               child: NotifyDirectButton.text(
                             text: 'Save',
                             onPressed: () {
-                              Provider.of<FirebaseService>(context, listen: false)
+                              Provider.of<FirebaseService>(context,
+                                      listen: false)
                                   .updateInfoAboutUser(
                                       Provider.of<User>(context, listen: false)
                                           .uid,
