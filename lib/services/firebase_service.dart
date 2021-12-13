@@ -1,10 +1,10 @@
-import 'dart:async';
-
+import "dart:async";
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/services/notify_user.dart';
+import 'package:async/async.dart' show StreamGroup, StreamZip;
 
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
@@ -84,38 +84,56 @@ class FirebaseService {
   }
 
   Stream<List<String>> getFollowersFromUser(String uid) {
-    return FirebaseFirestore.instance
+    Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
-        .where('to', isEqualTo: uid)
+        .where('user1', isEqualTo: uid)
+        .where('user1_accept', isEqualTo: false)
+        .where('user2_accept', isEqualTo: true)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((e) => e['from'] as String).toList();
-    });
+        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
+    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user2', isEqualTo: uid)
+        .where('user2_accept', isEqualTo: false)
+        .where('user1_accept', isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
+    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
   }
 
   Stream<List<String>> getFollowingFromUser(String uid) {
-    return FirebaseFirestore.instance
+    Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
-        .where('from', isEqualTo: uid)
+        .where('user1', isEqualTo: uid)
+        .where('user1_accept', isEqualTo: true)
+        .where('user2_accept', isEqualTo: false)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((e) => e['to'] as String).toList();
-    });
+        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
+    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user2', isEqualTo: uid)
+        .where('user2_accept', isEqualTo: true)
+        .where('user1_accept', isEqualTo: false)
+        .snapshots()
+        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
+    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
   }
 
-  Stream<Stream<List<String>>> getColleguesFromUser(String uid) {
-    return getFollowersFromUser(uid).map((followers) {
-      return getFollowingFromUser(uid).map((following) {
-        List<String> answer = [];
-        for (var user1 in followers) {
-          for (var user2 in following) {
-            if (user1 == user2 && !answer.contains(user1)) {
-              answer.add(user1);
-            }
-          }
-        }
-        return answer;
-      });
-    });
+  Stream<List<String>> getColleguesFromUser(String uid) {
+    Stream<List<String>> stream1 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: uid)
+        .where('user1_accept', isEqualTo: true)
+        .where('user2_accept', isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
+    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user2', isEqualTo: uid)
+        .where('user2_accept', isEqualTo: true)
+        .where('user1_accept', isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
+    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
   }
 }

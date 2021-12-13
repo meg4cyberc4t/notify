@@ -190,43 +190,30 @@ class ProfilePage extends StatelessWidget {
                                   return Text(snapshot.error.toString());
                                 }
                                 if (snapshot.hasData) {
-                                  return StreamBuilder<Object>(
-                                      stream:
-                                          snapshot.data as Stream<List<String>>,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasError) {
-                                          return Text(
-                                              snapshot.error.toString());
-                                        }
-                                        if (snapshot.hasData) {
-                                          var data =
-                                              snapshot.data as List<dynamic>;
-                                          return InkWell(
-                                            onTap: () => showUsersBottomSheet(
-                                                context,
-                                                snapshot.data as List<String>),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  data.length.toString(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline5,
-                                                ),
-                                                Text(
-                                                  'Collegues',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline5,
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                        return const NotifyProgressIndicator();
-                                      });
+                                  List<String> data =
+                                      snapshot.data as List<String>;
+                                  return InkWell(
+                                    onTap: () =>
+                                        showUsersBottomSheet(context, data),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          data.length.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                        Text(
+                                          'Collegues',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5,
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 }
                                 return const NotifyProgressIndicator();
                               }),
@@ -246,10 +233,11 @@ class ProfilePage extends StatelessWidget {
                                   return Text(snapshot.error.toString());
                                 }
                                 if (snapshot.hasData) {
-                                  var data = snapshot.data as List<dynamic>;
+                                  List<String> data =
+                                      snapshot.data as List<String>;
                                   return InkWell(
-                                    onTap: () => showUsersBottomSheet(
-                                        context, snapshot.data as List<String>),
+                                    onTap: () =>
+                                        showUsersBottomSheet(context, data),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -288,16 +276,17 @@ class ProfilePage extends StatelessWidget {
                                   return Text(snapshot.error.toString());
                                 }
                                 if (snapshot.hasData) {
-                                  var data2 = snapshot.data as List<dynamic>;
+                                  List<String> data =
+                                      snapshot.data as List<String>;
                                   return InkWell(
-                                    onTap: () => showUsersBottomSheet(
-                                        context, snapshot.data as List<String>),
+                                    onTap: () =>
+                                        showUsersBottomSheet(context, data),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          data2.length.toString(),
+                                          data.length.toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline5,
