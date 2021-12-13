@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/components/methods/combine_latest_streams.dart';
 import 'package:notify/services/notify_user.dart';
-import 'package:async/async.dart' show StreamZip;
 
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
@@ -55,6 +55,25 @@ class FirebaseService {
   Stream<DocumentSnapshot<Map<String, dynamic>>> getInfoAboutUser(String uid) =>
       FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
 
+  Stream<bool> checkFollowed(String from, String to) {
+    Stream<bool> stream1 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: from)
+        .where('user2', isEqualTo: to)
+        .where('user1_accept', isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs.isNotEmpty);
+    Stream<bool> stream2 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: to)
+        .where('user2', isEqualTo: from)
+        .where('user2_accept', isEqualTo: true)
+        .snapshots()
+        .map((event) => event.docs.isNotEmpty);
+    return combineLatestStreams([stream1, stream2])
+        .map((event) => event[0] || event[1]);
+  }
+
   Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
       FirebaseFirestore.instance.collection('users').doc(uid).update(data);
 
@@ -98,7 +117,8 @@ class FirebaseService {
         .where('user1_accept', isEqualTo: true)
         .snapshots()
         .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
+    return combineLatestStreams([stream1, stream2])
+        .map((event) => event[0] + event[1]);
   }
 
   Stream<List<String>> getFollowingFromUser(String uid) {
@@ -116,7 +136,8 @@ class FirebaseService {
         .where('user1_accept', isEqualTo: false)
         .snapshots()
         .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
+    return combineLatestStreams([stream1, stream2])
+        .map((event) => event[0] + event[1]);
   }
 
   Stream<List<String>> getColleguesFromUser(String uid) {
@@ -134,6 +155,33 @@ class FirebaseService {
         .where('user1_accept', isEqualTo: true)
         .snapshots()
         .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return StreamZip([stream1, stream2]).map((event) => event[0] + event[1]);
+    return combineLatestStreams([stream1, stream2])
+        .map((event) => event[0] + event[1]);
+  }
+
+  Future<void> followSwitch(String to) async {
+    String from = _firebaseAuth.currentUser!.uid;
+    QuerySnapshot<Map<String, dynamic>> out = await FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: from)
+        .where('user2', isEqualTo: to)
+        .get();
+    if (out.docs.isNotEmpty) {
+      return FirebaseFirestore.instance
+          .collection('relations')
+          .doc(out.docs[0].id)
+          .update({"user1_accept": !out.docs[0].data()["user1_accept"]});
+    }
+    out = await FirebaseFirestore.instance
+        .collection('relations')
+        .where('user2', isEqualTo: from)
+        .where('user1', isEqualTo: to)
+        .get();
+    if (out.docs.isNotEmpty) {
+      return FirebaseFirestore.instance
+          .collection('relations')
+          .doc(out.docs[0].id)
+          .update({"user2_accept": !out.docs[0].data()["user2_accept"]});
+    }
   }
 }

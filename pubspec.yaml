@@ -28,6 +28,7 @@ dependencies:
   qr_flutter: ^4.0.0
   bottom_sheet: ^1.0.5
   async: ^2.8.2
+  stream_transform: ^2.0.0
 
 flutter:
   uses-material-design: true
