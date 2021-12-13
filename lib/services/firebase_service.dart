@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/services/notify_user.dart';
-import 'package:async/async.dart' show StreamGroup, StreamZip;
+import 'package:async/async.dart' show StreamZip;
 
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
