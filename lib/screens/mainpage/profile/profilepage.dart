@@ -140,7 +140,8 @@ class ProfilePage extends StatelessWidget {
                     ),
                     centerTitle: true,
                     collapseMode: CollapseMode.parallax,
-                    background: Container(
+                    background: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
                       color: userColor,
                     ),
                   ),
