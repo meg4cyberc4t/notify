@@ -167,6 +167,17 @@ class FirebaseService {
         .where('user2', isEqualTo: to)
         .get();
     if (out.docs.isNotEmpty) {
+      Map<String, dynamic> data = (await FirebaseFirestore.instance
+              .collection('relations')
+              .doc(out.docs[0].id)
+              .get())
+          .data() as Map<String, dynamic>;
+      if (data['user1_accept'] == true && data['user2_accept'] == false) {
+        return FirebaseFirestore.instance
+            .collection('relations')
+            .doc(out.docs[0].id)
+            .delete();
+      }
       return FirebaseFirestore.instance
           .collection('relations')
           .doc(out.docs[0].id)
@@ -178,10 +189,27 @@ class FirebaseService {
         .where('user1', isEqualTo: to)
         .get();
     if (out.docs.isNotEmpty) {
+      Map<String, dynamic> data = (await FirebaseFirestore.instance
+              .collection('relations')
+              .doc(out.docs[0].id)
+              .get())
+          .data() as Map<String, dynamic>;
+      if (data['user2_accept'] == true && data['user1_accept'] == false) {
+        return FirebaseFirestore.instance
+            .collection('relations')
+            .doc(out.docs[0].id)
+            .delete();
+      }
       return FirebaseFirestore.instance
           .collection('relations')
           .doc(out.docs[0].id)
           .update({"user2_accept": !out.docs[0].data()["user2_accept"]});
     }
+    FirebaseFirestore.instance.collection('relations').add({
+      "user1": from,
+      "user1_accept": true,
+      "user2": to,
+      "user2_accept": false,
+    });
   }
 }
