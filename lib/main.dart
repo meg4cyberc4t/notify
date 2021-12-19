@@ -26,6 +26,7 @@ void main() async {
       systemStatusBarContrastEnforced: true,
     ),
   );
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
