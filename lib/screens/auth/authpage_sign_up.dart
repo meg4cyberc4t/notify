@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notify/components/BLoC/avatar_props_validator_bloc.dart';
@@ -34,6 +32,17 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
     super.dispose();
   }
 
+  String getAvatarTitle() {
+    String title = "";
+    if (_controllerFirstname.text.isNotEmpty) {
+      title += _controllerFirstname.text[0];
+    }
+    if (_controllerLastname.text.isNotEmpty) {
+      title += _controllerLastname.text[0];
+    }
+    return title.toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,21 +57,13 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
             AvatarProps(color: color, title: "LA"),
           ),
           child: Builder(builder: (context) {
-            String getAvatarTitle() {
-              String letter1 = "";
-              try {
-                letter1 = _controllerFirstname.text[0];
-              } catch (_) {}
-              String letter2 = "";
-              try {
-                letter2 = _controllerLastname.text[0];
-              } catch (_) {}
-              return (letter1 + letter2).toUpperCase();
-            }
-
             void updateAvatarTitle() =>
                 BlocProvider.of<AvatarPropsValidatorBloc>(context)
                     .add(AvatarProps(title: getAvatarTitle()));
+
+            void updateAvatarColor(newColor) =>
+                BlocProvider.of<AvatarPropsValidatorBloc>(context)
+                    .add(AvatarProps(color: newColor));
 
             return Column(
               mainAxisSize: MainAxisSize.max,
@@ -102,25 +103,13 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                     title: props.title!,
                     color: props.color!,
                     size: AvatarSize.max,
-                    onTap: () async {
-                      final Color? inputColor = await Navigator.push(
-                          context,
-                          Platform.isAndroid
-                              ? MaterialPageRoute(
-                                  builder: (context) => ColorPickerPage(
-                                        title: props.title!,
-                                        initialValue: props.color,
-                                      ))
-                              : CupertinoPageRoute(
-                                  builder: (context) => ColorPickerPage(
-                                        title: props.title!,
-                                        initialValue: props.color,
-                                      )));
-                      if (inputColor != null) {
-                        BlocProvider.of<AvatarPropsValidatorBloc>(context)
-                            .add(AvatarProps(color: inputColor));
+                    onTap: () =>
+                        pushColorPickerPage(context, props.title!, props.color!)
+                            .then((Color? value) {
+                      if (value != null) {
+                        updateAvatarColor(value);
                       }
-                    },
+                    }),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -151,35 +140,39 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                   controller: _controllerPassword,
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: NotifyDirectButton.text(
-                            text: 'Continue',
-                            onPressed: () async {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  notifySnackBar('Downloading...', context));
-                              String? error = await context
-                                  .read<FirebaseService>()
-                                  .signUp(
-                                      email: _controllerEmail.text.trim(),
-                                      password: _controllerPassword.text.trim(),
-                                      firstName:
-                                          _controllerFirstname.text.trim(),
-                                      lastName: _controllerLastname.text.trim(),
-                                      color: color);
-                              if (error != null) {
+                BlocBuilder<AvatarPropsValidatorBloc, AvatarProps>(
+                  builder: (context, AvatarProps props) => Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: NotifyDirectButton.text(
+                              text: 'Continue',
+                              onPressed: () async {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    notifySnackBar(error, context));
-                              } else {
-                                Navigator.pushReplacementNamed(
-                                    context, '/MainPage');
-                              }
-                            })),
-                  ],
+                                    notifySnackBar('Downloading...', context));
+                                String? error = await context
+                                    .read<FirebaseService>()
+                                    .signUp(
+                                        email: _controllerEmail.text.trim(),
+                                        password:
+                                            _controllerPassword.text.trim(),
+                                        firstName:
+                                            _controllerFirstname.text.trim(),
+                                        lastName:
+                                            _controllerLastname.text.trim(),
+                                        color: props.color!);
+                                if (error != null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      notifySnackBar(error, context));
+                                } else {
+                                  Navigator.pushReplacementNamed(
+                                      context, '/MainPage');
+                                }
+                              })),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],

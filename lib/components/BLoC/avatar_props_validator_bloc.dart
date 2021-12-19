@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,10 +14,8 @@ class AvatarPropsValidatorBloc extends Bloc<AvatarProps, AvatarProps> {
         super(initState) {
     on<AvatarProps>((event, emit) {
       AvatarProps props = AvatarProps(
-        title: event.title ?? lastState.title ?? "LA",
-        color: event.color ??
-            lastState.color ??
-            Colors.primaries[Random().nextInt(Colors.primaries.length)],
+        title: event.title ?? lastState.title,
+        color: event.color ?? lastState.color,
       );
       emit(props);
       lastState = props;

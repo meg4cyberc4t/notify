@@ -1,7 +1,30 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:notify/components/widgets/avatar.dart';
 import 'package:notify/components/widgets/direct_button.dart';
+
+Future<Color> pushColorPickerPage(
+    BuildContext context, String title, Color initialValue) async {
+  Color? color = await Navigator.push<Color?>(
+    context,
+    Platform.isAndroid
+        ? MaterialPageRoute<Color?>(
+            builder: (context) => ColorPickerPage(
+                  title: title,
+                  initialValue: initialValue,
+                ))
+        : CupertinoPageRoute<Color?>(
+            builder: (context) => ColorPickerPage(
+              title: title,
+              initialValue: initialValue,
+            ),
+          ),
+  );
+  return Future.value(color);
+}
 
 class ColorPickerPage extends StatefulWidget {
   const ColorPickerPage({Key? key, this.initialValue, required this.title})
