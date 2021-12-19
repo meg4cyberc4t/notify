@@ -25,7 +25,8 @@ Future<T?> showUsersBottomSheet<T>(
       return SafeArea(
         child: Material(
           color: Theme.of(context).backgroundColor,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
           child: StreamBuilder(
             stream: Provider.of<FirebaseService>(context, listen: false)
                 .getUsersListFromUsersUidList(userUids),
