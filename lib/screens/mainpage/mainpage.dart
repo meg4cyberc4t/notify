@@ -5,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/mainpage/homepage.dart';
 import 'package:notify/screens/mainpage/profile/profilepage.dart';
+import 'package:notify/screens/mainpage/searchpage.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
@@ -29,7 +30,7 @@ class _MainPageState extends State<MainPage> {
         children: [
           const HomePage(),
           const Scaffold(body: Center(child: Text('likes'))),
-          const Scaffold(body: Center(child: Text('search'))),
+          const SearchPage(),
           ProfilePage(selectUser.uid),
         ],
       ),

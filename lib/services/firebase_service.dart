@@ -212,4 +212,16 @@ class FirebaseService {
       "user2_accept": false,
     });
   }
+
+  Future<List<String>> searchFromUsers(String pattern) async {
+    return (await FirebaseFirestore.instance
+            .collection('users')
+            .where('first_name', isGreaterThanOrEqualTo: pattern)
+            .where('first_name', isLessThanOrEqualTo: pattern + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+  }
 }
