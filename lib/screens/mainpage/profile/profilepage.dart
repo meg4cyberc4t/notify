@@ -14,8 +14,8 @@ import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key, required this.userUID}) : super(key: key);
-  final String userUID;
+  const ProfilePage(this.searchProfileUid, [Key? key]) : super(key: key);
+  final String? searchProfileUid;
 
   void functionLogout(BuildContext context) {
     showDialog(
@@ -40,7 +40,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   void functionFollowSwitch(BuildContext context) async {
-    await context.read<FirebaseService>().followSwitch(userUID);
+    await context.read<FirebaseService>().followSwitch(searchProfileUid!);
   }
 
   Widget rightUpButton(BuildContext context,
@@ -80,7 +80,9 @@ class ProfilePage extends StatelessWidget {
                             initialValue: userColor,
                           )));
           if (inputColor != null) {
-            context.read<FirebaseService>().updateInfoAboutUser(userUID, {
+            context
+                .read<FirebaseService>()
+                .updateInfoAboutUser(searchProfileUid!, {
               "color_r": inputColor.red,
               "color_g": inputColor.green,
               "color_b": inputColor.blue,
@@ -93,19 +95,18 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (context.watch<User?>() == null) {
-      return const NotifyProgressIndicator();
-    }
-    final bool isMe = context.watch<User>().uid == userUID;
+    final String profileUID = searchProfileUid ?? context.watch<User>().uid;
+    final bool isMe = context.watch<User>().uid == profileUID;
     return Scaffold(
       body: StreamBuilder<bool>(
         stream: context
             .read<FirebaseService>()
-            .checkFollowed(context.watch<User>().uid, userUID),
+            .checkFollowed(context.watch<User>().uid, profileUID),
         builder: (context, isFollowedSnapshot) =>
             snapshotMiddleware(isFollowedSnapshot) ??
             StreamBuilder<DocumentSnapshot>(
-              stream: context.read<FirebaseService>().getInfoAboutUser(userUID),
+              stream:
+                  context.read<FirebaseService>().getInfoAboutUser(profileUID),
               builder: (context, snapshot) {
                 Widget? widget = snapshotMiddleware(snapshot) ??
                     checkSnapshotDataExist(snapshot);
@@ -177,11 +178,11 @@ class ProfilePage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            colleguesFromUserWidget(context),
+                            colleguesFromUserWidget(context, profileUID),
                             _localDivider(context),
-                            followersFromUsersWidget(context),
+                            followersFromUsersWidget(context, profileUID),
                             _localDivider(context),
-                            followingFromUsersWidget(context),
+                            followingFromUsersWidget(context, profileUID),
                           ],
                         ),
                       ),
@@ -229,10 +230,10 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Expanded colleguesFromUserWidget(BuildContext context) {
+  Expanded colleguesFromUserWidget(BuildContext context, String uid) {
     return Expanded(
       child: StreamBuilder(
-          stream: context.read<FirebaseService>().getColleguesFromUser(userUID),
+          stream: context.read<FirebaseService>().getColleguesFromUser(uid),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
@@ -261,10 +262,12 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Expanded followersFromUsersWidget(BuildContext context) {
+  Expanded followersFromUsersWidget(BuildContext context, String profileUID) {
     return Expanded(
       child: StreamBuilder(
-          stream: context.read<FirebaseService>().getFollowersFromUser(userUID),
+          stream: context.read<FirebaseService>().getFollowersFromUser(
+                profileUID,
+              ),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
@@ -293,10 +296,11 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Expanded followingFromUsersWidget(BuildContext context) {
+  Expanded followingFromUsersWidget(BuildContext context, String profileUID) {
     return Expanded(
       child: StreamBuilder(
-          stream: context.read<FirebaseService>().getFollowingFromUser(userUID),
+          stream:
+              context.read<FirebaseService>().getFollowingFromUser(profileUID),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());

@@ -47,49 +47,54 @@ class MyApp extends StatelessWidget {
           create: (context) => context.read<FirebaseService>().currentUser,
         )
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: const Color(0xFF8474A1),
-          cardColor: const Color(0xFFCCABD8), // NotificationItem
-          dialogBackgroundColor: const Color(0xFFEFEFEF), // FolderItem
-          scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-          backgroundColor: const Color(0xFFFFFFFF),
-          appBarTheme: const AppBarTheme(centerTitle: true),
-          textTheme: GoogleFonts.exo2TextTheme()
-              .apply(displayColor: const Color(0xFF7A7979))
-              .copyWith(
-                headline5: GoogleFonts.exo2TextTheme().headline5?.copyWith(
-                      color: const Color(0xFF8474A1),
-                    ),
-                button: GoogleFonts.exo2TextTheme().button?.copyWith(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 24,
-                    ),
-              ),
+      child: StreamProvider<User?>.value(
+        value: FirebaseAuth.instance.authStateChanges(),
+        initialData: context.watch<User?>(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: const Color(0xFF8474A1),
+            cardColor: const Color(0xFFCCABD8), // NotificationItem
+            dialogBackgroundColor: const Color(0xFFEFEFEF), // FolderItem
+            scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+            backgroundColor: const Color(0xFFFFFFFF),
+            appBarTheme: const AppBarTheme(centerTitle: true),
+            textTheme: GoogleFonts.exo2TextTheme()
+                .apply(displayColor: const Color(0xFF7A7979))
+                .copyWith(
+                  headline5: GoogleFonts.exo2TextTheme().headline5?.copyWith(
+                        color: const Color(0xFF8474A1),
+                      ),
+                  button: GoogleFonts.exo2TextTheme().button?.copyWith(
+                        color: const Color(0xFFFFFFFF),
+                        fontSize: 24,
+                      ),
+                ),
+          ),
+          home: const LandingPage(),
+          routes: {
+            "/AuthPage": (context) => const AuthPage(),
+            "/AuthPage2": (context) => const AuthPage2(),
+            "/AuthPageSignUp": (context) => const AuthPageSignUp(),
+            "/AuthPageSignIn": (context) => const AuthPageSignIn(),
+            "/MainPage": (context) => const MainPage(),
+            // "/ProfilePage": (context) => const ProfilePage(),
+            "/ProfilePageEdit": (context) => const ProfilePageEdit(),
+            // "/ColorPickerPage": (context) => ColorPickerPage(),
+          },
         ),
-        home: const AuthenticationWrapper(),
-        routes: {
-          "/AuthPage": (context) => const AuthPage(),
-          "/AuthPage2": (context) => const AuthPage2(),
-          "/AuthPageSignUp": (context) => const AuthPageSignUp(),
-          "/AuthPageSignIn": (context) => const AuthPageSignIn(),
-          "/MainPage": (context) => const MainPage(),
-          // "/ProfilePage": (context) => const ProfilePage(),
-          "/ProfilePageEdit": (context) => const ProfilePageEdit(),
-          // "/ColorPickerPage": (context) => ColorPickerPage(),
-        },
       ),
     );
   }
 }
 
-class AuthenticationWrapper extends StatelessWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+class LandingPage extends StatelessWidget {
+  const LandingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User?>();
-    return firebaseUser != null ? const MainPage() : const AuthPage();
+    final User? firebaseUser = Provider.of<User?>(context);
+    final bool isSignIn = (firebaseUser != null);
+    return isSignIn ? const MainPage() : const AuthPage();
   }
 }

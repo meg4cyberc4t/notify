@@ -71,10 +71,10 @@ Future<T?> showUsersBottomSheet<T>(
                               Platform.isAndroid
                                   ? MaterialPageRoute(
                                       builder: (context) =>
-                                          ProfilePage(userUID: user.uid))
+                                          ProfilePage(user.uid))
                                   : CupertinoPageRoute(
                                       builder: (context) =>
-                                          ProfilePage(userUID: user.uid))),
+                                          ProfilePage(user.uid))),
                         ),
                       )
                       .toList(),
