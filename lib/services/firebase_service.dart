@@ -212,4 +212,88 @@ class FirebaseService {
       "user2_accept": false,
     });
   }
+
+  Future<List<String>> searchFromUsers(String pattern) async {
+    Set<String> mainSet = <String>{};
+    var elements1 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('first_name', isGreaterThanOrEqualTo: pattern)
+            .where('first_name', isLessThanOrEqualTo: pattern + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements1);
+    if (mainSet.length >= 10) {
+      return mainSet.toList();
+    }
+    var elements2 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('first_name', isGreaterThanOrEqualTo: pattern.toLowerCase())
+            .where('first_name',
+                isLessThanOrEqualTo: pattern.toLowerCase() + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements2);
+    if (mainSet.length >= 10) {
+      return mainSet.toList();
+    }
+    var elements3 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('first_name', isGreaterThanOrEqualTo: pattern.toUpperCase())
+            .where('first_name',
+                isLessThanOrEqualTo: pattern.toUpperCase() + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements3);
+    if (mainSet.length >= 10) {
+      return mainSet.toList();
+    }
+    var elements4 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('last_name', isGreaterThanOrEqualTo: pattern)
+            .where('last_name', isLessThanOrEqualTo: pattern + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements4);
+    if (mainSet.length >= 10) {
+      return mainSet.toList();
+    }
+    var elements5 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('last_name', isGreaterThanOrEqualTo: pattern.toLowerCase())
+            .where('last_name',
+                isLessThanOrEqualTo: pattern.toLowerCase() + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements5);
+    if (mainSet.length >= 10) {
+      return mainSet.toList();
+    }
+    var elements6 = (await FirebaseFirestore.instance
+            .collection('users')
+            .where('last_name', isGreaterThanOrEqualTo: pattern.toUpperCase())
+            .where('last_name',
+                isLessThanOrEqualTo: pattern.toUpperCase() + "\uf8ff")
+            .limit(10)
+            .get())
+        .docs
+        .map((QueryDocumentSnapshot e) => e.id)
+        .toList();
+    mainSet.addAll(elements6);
+    return mainSet.toList();
+  }
 }

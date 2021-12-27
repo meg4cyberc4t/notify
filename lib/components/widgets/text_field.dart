@@ -14,6 +14,8 @@ class NotifyTextField extends StatefulWidget {
     this.maxLines = 1,
     this.minLines,
     this.autocorrect,
+    this.onEditingComplete,
+    this.autofocus = false,
   }) : super(key: key);
   final bool obscureText;
   final TextEditingController? controller;
@@ -21,10 +23,13 @@ class NotifyTextField extends StatefulWidget {
   final String? labelText;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+
   final String? errorText;
   final bool? autocorrect;
   final int maxLines;
   final int? minLines;
+  final bool autofocus;
 
   @override
   State<NotifyTextField> createState() => NotifyTextFieldState();
@@ -34,6 +39,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autofocus: widget.autofocus,
       key: widget.key,
       controller: widget.controller,
       cursorColor: Theme.of(context).primaryColor,
@@ -46,6 +52,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
             color: Theme.of(context).textTheme.headline4!.color,
           ),
       obscureText: widget.obscureText,
+      onEditingComplete: widget.onEditingComplete,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(5),
         hintText: widget.hintText,

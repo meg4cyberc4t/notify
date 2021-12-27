@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'package:bottom_sheet/bottom_sheet.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/snapshot_middleware.dart';
-import 'package:notify/components/widgets/avatar.dart';
-import 'package:notify/screens/mainpage/profile/profilepage.dart';
+import 'package:notify/components/widgets/user_list_tile.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
@@ -54,29 +51,7 @@ Future<T?> showUsersBottomSheet<T>(
                 child: ListView(
                   controller: scrollController,
                   children: (snapshot.data as List<NotifyUser>)
-                      .map(
-                        (NotifyUser user) => ListTile(
-                          leading: Avatar(
-                            color: user.color,
-                            title: user.avatarTitle,
-                            size: AvatarSize.mini,
-                          ),
-                          title: Text(
-                            user.firstName + " " + user.lastName,
-                          ),
-                          subtitle: Text(user.status),
-                          tileColor: Theme.of(context).backgroundColor,
-                          onTap: () => Navigator.push(
-                              context,
-                              Platform.isAndroid
-                                  ? MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProfilePage(user.uid))
-                                  : CupertinoPageRoute(
-                                      builder: (context) =>
-                                          ProfilePage(user.uid))),
-                        ),
-                      )
+                      .map((NotifyUser user) => NotifyUserListTile(user: user))
                       .toList(),
                 ),
               );
