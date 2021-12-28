@@ -14,8 +14,8 @@ import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage(this.searchProfileUid, [Key? key]) : super(key: key);
-  final String? searchProfileUid;
+  const ProfilePage({this.uid, Key? key}) : super(key: key);
+  final String? uid;
 
   void functionLogout(BuildContext context) {
     showDialog(
@@ -40,7 +40,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   void functionFollowSwitch(BuildContext context) async {
-    await context.read<FirebaseService>().followSwitch(searchProfileUid!);
+    await context.read<FirebaseService>().followSwitch(uid!);
   }
 
   Widget rightUpButton(BuildContext context,
@@ -82,7 +82,7 @@ class ProfilePage extends StatelessWidget {
           if (inputColor != null) {
             context
                 .read<FirebaseService>()
-                .updateInfoAboutUser(searchProfileUid!, {
+                .updateInfoAboutUser(uid!, {
               "color_r": inputColor.red,
               "color_g": inputColor.green,
               "color_b": inputColor.blue,
@@ -95,7 +95,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String profileUID = searchProfileUid ?? context.watch<User>().uid;
+    final String profileUID = uid ?? context.watch<User>().uid;
     final bool isMe = context.watch<User>().uid == profileUID;
     return Scaffold(
       body: StreamBuilder<bool>(

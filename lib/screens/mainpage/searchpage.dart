@@ -13,11 +13,16 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   TextEditingController controller = TextEditingController();
   GlobalKey futureBuilderForSearch = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -37,7 +42,6 @@ class _SearchPageState extends State<SearchPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: NotifyTextField(
-                    autofocus: true,
                     autocorrect: true,
                     hintText: 'Search everyone...',
                     controller: controller,
