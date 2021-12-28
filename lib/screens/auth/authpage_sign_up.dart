@@ -57,118 +57,131 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
     return state;
   }
 
+  late Store<Color> colorStore;
+  late Store<String> titleStore;
   @override
-  Widget build(BuildContext context) {
-    final colorStore = Store<Color>(
+  void initState() {
+    super.initState();
+    colorStore = Store<Color>(
       colorReducer,
       initialState: Colors.primaries[Random().nextInt(Colors.primaries.length)],
     );
-    final titleStore = Store<String>(
+    titleStore = Store<String>(
       titleReducer,
       initialState: "LA",
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: StoreProvider<Color>(
-          store: colorStore,
-          child: StoreProvider<String>(
-            store: titleStore,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(),
-                Text(
-                  'Sign up',
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-                StoreConnector<String, String>(
-                    converter: (store) => store.state,
-                    builder: (context, title) {
-                      return StoreConnector<Color, Color>(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: StoreProvider<Color>(
+              store: colorStore,
+              child: StoreProvider<String>(
+                store: titleStore,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(),
+                    Text(
+                      'Sign up',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                    StoreConnector<String, String>(
                         converter: (store) => store.state,
-                        builder: (context, color) => Avatar(
-                          title: title,
-                          color: color,
-                          size: AvatarSize.max,
-                          onTap: () =>
-                              pushColorPickerPage(context, title, color)
-                                  .then((Color? value) {
-                            if (value != null) {
-                              colorStore.dispatch(value);
-                            }
-                          }),
-                        ),
-                      );
-                    }),
-                Column(
-                  children: [
-                    NotifyTextField(
-                      hintText: 'Your first name',
-                      labelText: 'First name',
-                      controller: _controllerFirstname,
-                      onChanged: (value) =>
-                          titleStore.dispatch(getAvatarTitle()),
-                    ),
-                    const SizedBox(height: 10),
-                    NotifyTextField(
-                      hintText: 'Your last name',
-                      labelText: 'Last name',
-                      controller: _controllerLastname,
-                      onChanged: (value) =>
-                          titleStore.dispatch(getAvatarTitle()),
-                    ),
-                    const SizedBox(height: 10),
-                    NotifyTextField(
-                      hintText: 'Your email',
-                      labelText: 'Email',
-                      controller: _controllerEmail,
-                    ),
-                    const SizedBox(height: 10),
-                    NotifyTextField(
-                      hintText: 'Your password',
-                      labelText: 'Password',
-                      obscureText: true,
-                      controller: _controllerPassword,
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    NotifyDirectButton(
-                        title: 'Continue',
-                        onPressed: () async {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              notifySnackBar('Downloading...', context));
-                          String? error = await context
-                              .read<FirebaseService>()
-                              .signUp(
-                                  email: _controllerEmail.text.trim(),
-                                  password: _controllerPassword.text.trim(),
-                                  firstName: _controllerFirstname.text.trim(),
-                                  lastName: _controllerLastname.text.trim(),
-                                  color: colorStore.state);
-                          if (error != null) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(notifySnackBar(error, context));
-                          } else {
-                            Navigator.pushReplacementNamed(
-                                context, '/MainPage');
-                          }
+                        builder: (context, title) {
+                          return StoreConnector<Color, Color>(
+                            converter: (store) => store.state,
+                            builder: (context, color) => Avatar(
+                              title: title,
+                              color: color,
+                              size: AvatarSize.max,
+                              onTap: () =>
+                                  pushColorPickerPage(context, title, color)
+                                      .then((Color? value) {
+                                if (value != null) {
+                                  colorStore.dispatch(value);
+                                }
+                              }),
+                            ),
+                          );
                         }),
-                    const SizedBox(height: 10),
-                    NotifyDirectButton(
-                      title: 'Already have',
-                      style: NotifyDirectButtonStyle.slience,
-                      onPressed: () => Navigator.pushReplacementNamed(
-                          context, '/AuthPageSignIn'),
+                    Column(
+                      children: [
+                        NotifyTextField(
+                          hintText: 'Your first name',
+                          labelText: 'First name',
+                          controller: _controllerFirstname,
+                          onChanged: (value) =>
+                              titleStore.dispatch(getAvatarTitle()),
+                        ),
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your last name',
+                          labelText: 'Last name',
+                          controller: _controllerLastname,
+                          onChanged: (value) =>
+                              titleStore.dispatch(getAvatarTitle()),
+                        ),
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your email',
+                          labelText: 'Email',
+                          controller: _controllerEmail,
+                        ),
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your password',
+                          labelText: 'Password',
+                          obscureText: true,
+                          controller: _controllerPassword,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        NotifyDirectButton(
+                            title: 'Continue',
+                            onPressed: () async {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  notifySnackBar('Downloading...', context));
+                              String? error = await context
+                                  .read<FirebaseService>()
+                                  .signUp(
+                                      email: _controllerEmail.text.trim(),
+                                      password: _controllerPassword.text.trim(),
+                                      firstName:
+                                          _controllerFirstname.text.trim(),
+                                      lastName: _controllerLastname.text.trim(),
+                                      color: colorStore.state);
+                              if (error != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    notifySnackBar(error, context));
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                    context, '/MainPage');
+                              }
+                            }),
+                        const SizedBox(height: 10),
+                        NotifyDirectButton(
+                          title: 'Already have',
+                          style: NotifyDirectButtonStyle.slience,
+                          onPressed: () => Navigator.pushReplacementNamed(
+                              context, '/AuthPageSignIn'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
