@@ -86,12 +86,14 @@ class NotifyDirectButton extends StatelessWidget {
     required this.onPressed,
     this.title,
     this.icon,
+    this.isExpanded = false,
   }) : super(key: key);
 
   final NotifyDirectButtonStyle style;
   final VoidCallback onPressed;
   final String? title;
   final IconData? icon;
+  final bool isExpanded;
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +108,10 @@ class NotifyDirectButton extends StatelessWidget {
       ),
       child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
+            mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (icon != null)
                 Icon(
