@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notify/screens/auth/authpage.dart';
-import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
@@ -57,7 +56,6 @@ class MyApp extends StatelessWidget {
           initialRoute: '/MainPage',
           routes: {
             "/AuthPage": (context) => const AuthPage(),
-            "/AuthPage2": (context) => const AuthPage2(),
             "/AuthPageSignUp": (context) => const AuthPageSignUp(),
             "/AuthPageSignIn": (context) => const AuthPageSignIn(),
             "/MainPage": (context) => const MainPage(),
