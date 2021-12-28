@@ -9,7 +9,6 @@ import 'package:notify/screens/auth/authpage2.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
-import 'package:notify/screens/mainpage/profile/profilepage_edit.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
@@ -71,30 +70,18 @@ class MyApp extends StatelessWidget {
                       ),
                 ),
           ),
-          home: const LandingPage(),
+          // home: const LandingPage(),
+          initialRoute: '/MainPage',
           routes: {
             "/AuthPage": (context) => const AuthPage(),
             "/AuthPage2": (context) => const AuthPage2(),
             "/AuthPageSignUp": (context) => const AuthPageSignUp(),
             "/AuthPageSignIn": (context) => const AuthPageSignIn(),
             "/MainPage": (context) => const MainPage(),
-            // "/ProfilePage": (context) => const ProfilePage(),
-            "/ProfilePageEdit": (context) => const ProfilePageEdit(),
             // "/ColorPickerPage": (context) => ColorPickerPage(),
           },
         ),
       ),
     );
-  }
-}
-
-class LandingPage extends StatelessWidget {
-  const LandingPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final User? firebaseUser = Provider.of<User?>(context);
-    final bool isSignIn = (firebaseUser != null);
-    return isSignIn ? const MainPage() : const AuthPage();
   }
 }
