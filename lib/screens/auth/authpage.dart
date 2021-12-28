@@ -12,13 +12,13 @@ class AuthPage extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/authpage1.png"),
+              image: AssetImage("assets/authpage.png"),
               fit: BoxFit.cover,
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -31,22 +31,15 @@ class AuthPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4,
                 ),
               ),
-              const SizedBox(height: 25),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: NotifyDirectButton(
-                      title: 'Get started',
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/AuthPageSignUp'),
-                    ),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: NotifyDirectButton(
+                  title: 'Get started',
+                  isExpanded: true,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/AuthPageSignUp'),
+                ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         )
