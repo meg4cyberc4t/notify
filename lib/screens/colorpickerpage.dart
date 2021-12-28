@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:notify/components/widgets/avatar.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 
 Future<Color> pushColorPickerPage(
     BuildContext context, String title, Color initialValue) async {
@@ -80,14 +80,18 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyDirectButton.text(
-                    text: 'Continue',
-                    onPressed: () => Navigator.pop(context, selectedColor),
-                  )),
+                    child: NotifyDirectButton(
+                      title: 'Continue',
+                      onPressed: () => Navigator.pop(context, selectedColor),
+                    ),
+                  ),
+                  // Expanded(
+                  //     child: NotifyDirectButton.text(
+                  //   text: 'Continue',
+                  //   onPressed: () => Navigator.pop(context, selectedColor),
+                  // )),
                 ],
               ),
             ),
@@ -99,10 +103,16 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyDirectButton.text(
-                    text: 'Back',
+                    child: NotifyDirectButton(
+                      title: 'Continue',
+                      onPressed: () => Navigator.pop(context, selectedColor),
+                    ),
+                  ),
+                  Expanded(
+                      child: NotifyDirectButton(
+                    title: 'Back',
+                    style: NotifyDirectButtonStyle.outlined,
                     onPressed: () => Navigator.pop(context),
-                    isOutlined: true,
                   )),
                 ],
               ),

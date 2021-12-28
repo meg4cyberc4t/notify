@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -24,28 +24,24 @@ class AuthPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "ntf manager",
-                style: Theme.of(context).textTheme.headline5,
-              ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
-                  "Let’s create a space for your notification",
+                  "Let's create a space for your notification",
                   style: Theme.of(context).textTheme.headline4,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 25),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: NotifyDirectButton.text(
-                      text: 'Get started',
+                    child: NotifyDirectButton(
+                      title: 'Get started',
                       onPressed: () =>
-                          Navigator.pushNamed(context, '/AuthPage2'),
+                          Navigator.pushNamed(context, '/AuthPageSignUp'),
                     ),
                   ),
                 ],

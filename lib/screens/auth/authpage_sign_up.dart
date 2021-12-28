@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:notify/components/widgets/avatar.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/screens/colorpickerpage.dart';
@@ -79,22 +79,20 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 50),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        child: Text(
-                          "Have account",
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                        onPressed: () => Navigator.pushReplacementNamed(
-                            context, '/AuthPageSignIn'),
-                      )
-                    ],
-                  ),
+                  const SizedBox(height: 80),
+                  // Row(
+                  //   mainAxisSize: MainAxisSize.max,
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   crossAxisAlignment: CrossAxisAlignment.end,
+                  //   children: [
+                  //     MaterialButton(
+                  //       child: Text("have account",
+                  //           style: Theme.of(context).textTheme.button),
+                  //       onPressed: () => Navigator.pushReplacementNamed(
+                  //           context, '/AuthPageSignIn'),
+                  //     )
+                  //   ],
+                  // ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,8 +158,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                          child: NotifyDirectButton.text(
-                              text: 'Continue',
+                          child: NotifyDirectButton(
+                              title: 'Continue',
                               onPressed: () async {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     notifySnackBar('Downloading...', context));
@@ -186,6 +184,61 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                               })),
                     ],
                   ),
+                  const SizedBox(height: 10),
+                  // Row(
+                  //   mainAxisSize: MainAxisSize.max,
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Expanded(
+                  //         child: NotifyDirectButton.text(
+                  //             text: 'Have account',
+                  //             isOutlined: true,
+                  //             onPressed: () async {
+                  //               ScaffoldMessenger.of(context).showSnackBar(
+                  //                   notifySnackBar('Downloading...', context));
+                  //               String? error = await context
+                  //                   .read<FirebaseService>()
+                  //                   .signUp(
+                  //                       email: _controllerEmail.text.trim(),
+                  //                       password:
+                  //                           _controllerPassword.text.trim(),
+                  //                       firstName:
+                  //                           _controllerFirstname.text.trim(),
+                  //                       lastName:
+                  //                           _controllerLastname.text.trim(),
+                  //                       color: colorStore.state);
+                  //               if (error != null) {
+                  //                 ScaffoldMessenger.of(context).showSnackBar(
+                  //                     notifySnackBar(error, context));
+                  //               } else {
+                  //                 Navigator.pushReplacementNamed(
+                  //                     context, '/MainPage');
+                  //               }
+                  //             })),
+                  //   ],
+                  // ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NotifyDirectButton(
+                          title: 'Already have',
+                          style: NotifyDirectButtonStyle.slience,
+                          onPressed: () => Navigator.pushReplacementNamed(
+                              context, '/AuthPageSignIn'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: Text(
+                  //     'Already have',
+                  //     style: Theme.of(context).textTheme.button?.copyWith(
+                  //           decoration: TextDecoration.underline,
+                  //         ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 
 class AuthPage2 extends StatelessWidget {
   const AuthPage2({Key? key}) : super(key: key);
@@ -38,14 +38,14 @@ class AuthPage2 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                      child: NotifyDirectButton.text(
-                          text: 'Sign up',
+                      child: NotifyDirectButton(
+                          title: 'Sign up',
                           onPressed: () =>
                               Navigator.pushNamed(context, '/AuthPageSignUp'))),
                   const SizedBox(width: 10),
                   Expanded(
-                      child: NotifyDirectButton.text(
-                          text: 'Sign in',
+                      child: NotifyDirectButton(
+                          title: 'Sign in',
                           onPressed: () =>
                               Navigator.pushNamed(context, '/AuthPageSignIn'))),
                 ],

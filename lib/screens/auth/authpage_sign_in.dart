@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/services/firebase_service.dart';
@@ -81,8 +81,8 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: NotifyDirectButton.text(
-                    text: 'Continue',
+                  child: NotifyDirectButton(
+                    title: 'Continue',
                     onPressed: () async {
                       String? error =
                           await context.read<FirebaseService>().signIn(
