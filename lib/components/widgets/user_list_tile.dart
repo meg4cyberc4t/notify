@@ -30,9 +30,9 @@ class NotifyUserListTile extends StatelessWidget {
       onTap: () => Navigator.push(
           context,
           Platform.isAndroid
-              ? MaterialPageRoute(builder: (context) => ProfilePage(user.uid))
+              ? MaterialPageRoute(builder: (context) => ProfilePage(uid: user.uid,))
               : CupertinoPageRoute(
-                  builder: (context) => ProfilePage(user.uid))),
+                  builder: (context) => ProfilePage(uid: user.uid))),
     );
   }
 }
