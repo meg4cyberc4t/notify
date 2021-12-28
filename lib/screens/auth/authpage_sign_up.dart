@@ -59,189 +59,116 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final colorStore = Store<Color>(colorReducer,
-        initialState:
-            Colors.primaries[Random().nextInt(Colors.primaries.length)]);
-    final titleStore = Store<String>(titleReducer, initialState: "LA");
+    final colorStore = Store<Color>(
+      colorReducer,
+      initialState: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+    );
+    final titleStore = Store<String>(
+      titleReducer,
+      initialState: "LA",
+    );
+
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-          child: StoreProvider<Color>(
-            store: colorStore,
-            child: StoreProvider<String>(
-              store: titleStore,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 80),
-                  // Row(
-                  //   mainAxisSize: MainAxisSize.max,
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   crossAxisAlignment: CrossAxisAlignment.end,
-                  //   children: [
-                  //     MaterialButton(
-                  //       child: Text("have account",
-                  //           style: Theme.of(context).textTheme.button),
-                  //       onPressed: () => Navigator.pushReplacementNamed(
-                  //           context, '/AuthPageSignIn'),
-                  //     )
-                  //   ],
-                  // ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sign up",
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  StoreConnector<String, String>(
-                      converter: (store) => store.state,
-                      builder: (context, title) {
-                        return StoreConnector<Color, Color>(
-                          converter: (store) => store.state,
-                          builder: (context, color) => Avatar(
-                            title: title,
-                            color: color,
-                            size: AvatarSize.max,
-                            onTap: () =>
-                                pushColorPickerPage(context, title, color)
-                                    .then((Color? value) {
-                              if (value != null) {
-                                colorStore.dispatch(value);
-                              }
-                            }),
-                          ),
-                        );
-                      }),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your first name',
-                    labelText: 'First name',
-                    controller: _controllerFirstname,
-                    onChanged: (value) => titleStore.dispatch(getAvatarTitle()),
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your last name',
-                    labelText: 'Last name',
-                    controller: _controllerLastname,
-                    onChanged: (value) => titleStore.dispatch(getAvatarTitle()),
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your email',
-                    labelText: 'Email',
-                    controller: _controllerEmail,
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your password',
-                    labelText: 'Password',
-                    obscureText: true,
-                    controller: _controllerPassword,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: NotifyDirectButton(
-                              title: 'Continue',
-                              onPressed: () async {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    notifySnackBar('Downloading...', context));
-                                String? error = await context
-                                    .read<FirebaseService>()
-                                    .signUp(
-                                        email: _controllerEmail.text.trim(),
-                                        password:
-                                            _controllerPassword.text.trim(),
-                                        firstName:
-                                            _controllerFirstname.text.trim(),
-                                        lastName:
-                                            _controllerLastname.text.trim(),
-                                        color: colorStore.state);
-                                if (error != null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      notifySnackBar(error, context));
-                                } else {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/MainPage');
-                                }
-                              })),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  // Row(
-                  //   mainAxisSize: MainAxisSize.max,
-                  //   crossAxisAlignment: CrossAxisAlignment.center,
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Expanded(
-                  //         child: NotifyDirectButton.text(
-                  //             text: 'Have account',
-                  //             isOutlined: true,
-                  //             onPressed: () async {
-                  //               ScaffoldMessenger.of(context).showSnackBar(
-                  //                   notifySnackBar('Downloading...', context));
-                  //               String? error = await context
-                  //                   .read<FirebaseService>()
-                  //                   .signUp(
-                  //                       email: _controllerEmail.text.trim(),
-                  //                       password:
-                  //                           _controllerPassword.text.trim(),
-                  //                       firstName:
-                  //                           _controllerFirstname.text.trim(),
-                  //                       lastName:
-                  //                           _controllerLastname.text.trim(),
-                  //                       color: colorStore.state);
-                  //               if (error != null) {
-                  //                 ScaffoldMessenger.of(context).showSnackBar(
-                  //                     notifySnackBar(error, context));
-                  //               } else {
-                  //                 Navigator.pushReplacementNamed(
-                  //                     context, '/MainPage');
-                  //               }
-                  //             })),
-                  //   ],
-                  // ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: NotifyDirectButton(
-                          title: 'Already have',
-                          style: NotifyDirectButtonStyle.slience,
-                          onPressed: () => Navigator.pushReplacementNamed(
-                              context, '/AuthPageSignIn'),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: StoreProvider<Color>(
+          store: colorStore,
+          child: StoreProvider<String>(
+            store: titleStore,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(),
+                Text(
+                  'Sign up',
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+                StoreConnector<String, String>(
+                    converter: (store) => store.state,
+                    builder: (context, title) {
+                      return StoreConnector<Color, Color>(
+                        converter: (store) => store.state,
+                        builder: (context, color) => Avatar(
+                          title: title,
+                          color: color,
+                          size: AvatarSize.max,
+                          onTap: () =>
+                              pushColorPickerPage(context, title, color)
+                                  .then((Color? value) {
+                            if (value != null) {
+                              colorStore.dispatch(value);
+                            }
+                          }),
                         ),
-                      ),
-                    ],
-                  ),
-                  // TextButton(
-                  //   onPressed: () {},
-                  //   child: Text(
-                  //     'Already have',
-                  //     style: Theme.of(context).textTheme.button?.copyWith(
-                  //           decoration: TextDecoration.underline,
-                  //         ),
-                  //   ),
-                  // ),
-                  const SizedBox(height: 20),
-                ],
-              ),
+                      );
+                    }),
+                Column(
+                  children: [
+                    NotifyTextField(
+                      hintText: 'Your first name',
+                      labelText: 'First name',
+                      controller: _controllerFirstname,
+                      onChanged: (value) =>
+                          titleStore.dispatch(getAvatarTitle()),
+                    ),
+                    const SizedBox(height: 10),
+                    NotifyTextField(
+                      hintText: 'Your last name',
+                      labelText: 'Last name',
+                      controller: _controllerLastname,
+                      onChanged: (value) =>
+                          titleStore.dispatch(getAvatarTitle()),
+                    ),
+                    const SizedBox(height: 10),
+                    NotifyTextField(
+                      hintText: 'Your email',
+                      labelText: 'Email',
+                      controller: _controllerEmail,
+                    ),
+                    const SizedBox(height: 10),
+                    NotifyTextField(
+                      hintText: 'Your password',
+                      labelText: 'Password',
+                      obscureText: true,
+                      controller: _controllerPassword,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    NotifyDirectButton(
+                        title: 'Continue',
+                        onPressed: () async {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              notifySnackBar('Downloading...', context));
+                          String? error = await context
+                              .read<FirebaseService>()
+                              .signUp(
+                                  email: _controllerEmail.text.trim(),
+                                  password: _controllerPassword.text.trim(),
+                                  firstName: _controllerFirstname.text.trim(),
+                                  lastName: _controllerLastname.text.trim(),
+                                  color: colorStore.state);
+                          if (error != null) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(notifySnackBar(error, context));
+                          } else {
+                            Navigator.pushReplacementNamed(
+                                context, '/MainPage');
+                          }
+                        }),
+                    const SizedBox(height: 10),
+                    NotifyDirectButton(
+                      title: 'Already have',
+                      style: NotifyDirectButtonStyle.slience,
+                      onPressed: () => Navigator.pushReplacementNamed(
+                          context, '/AuthPageSignIn'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
