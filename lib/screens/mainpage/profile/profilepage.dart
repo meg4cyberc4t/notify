@@ -61,7 +61,10 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget? leftUpButton(BuildContext context,
-      {required bool isMe, required String title, required Color userColor}) {
+      {required bool isMe,
+      required String title,
+      required Color userColor,
+      required String uid}) {
     if (isMe) {
       return IconButton(
         icon: const Icon(CupertinoIcons.pen),
@@ -80,9 +83,7 @@ class ProfilePage extends StatelessWidget {
                             initialValue: userColor,
                           )));
           if (inputColor != null) {
-            context
-                .read<FirebaseService>()
-                .updateInfoAboutUser(uid!, {
+            context.read<FirebaseService>().updateInfoAboutUser(uid, {
               "color_r": inputColor.red,
               "color_g": inputColor.green,
               "color_b": inputColor.blue,
@@ -95,8 +96,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String profileUID = uid ?? context.watch<User>().uid;
-    final bool isMe = context.watch<User>().uid == profileUID;
+    final String meUID = context.watch<User>().uid;
+    final String profileUID = uid ?? meUID;
+    final bool isMe = meUID == profileUID;
     return Scaffold(
       body: StreamBuilder<bool>(
         stream: context
@@ -145,6 +147,7 @@ class ProfilePage extends StatelessWidget {
                           isMe: isMe,
                           title: (data['first_name'][0] + data['last_name'][0])
                               .toUpperCase(),
+                          uid: meUID,
                           userColor: userColor),
                       expandedHeight: 300,
                       flexibleSpace: FlexibleSpaceBar(
@@ -205,8 +208,8 @@ class ProfilePage extends StatelessWidget {
             ? NotifyDirectButton.text(
                 text: 'Edit',
                 isOutlined: true,
-                onPressed: () =>
-                    Navigator.pushNamed(context, "/ProfilePageEdit"),
+                onPressed: () async =>
+                    await Navigator.pushNamed(context, "/ProfilePageEdit"),
               )
             : NotifyDirectButton.text(
                 text: isFollowed ? 'Remove' : 'Add',
