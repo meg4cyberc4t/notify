@@ -86,7 +86,7 @@ class NotifyDirectButton extends StatelessWidget {
     required this.onPressed,
     this.title,
     this.icon,
-    this.isExpanded = false,
+    this.isExpanded = true,
   }) : super(key: key);
 
   final NotifyDirectButtonStyle style;
