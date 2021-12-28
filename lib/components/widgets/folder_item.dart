@@ -23,11 +23,16 @@ class FolderItem extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
         onTap: onTap,
-        title: Text(header),
+        title: Text(
+          header,
+        ),
         subtitle: Text(
           subtitle,
         ),
-        trailing: Text("$countNotifications ntf"),
+        trailing: Text(
+          "$countNotifications ntf",
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
         tileColor: Theme.of(context).dialogBackgroundColor,
         minLeadingWidth: 0,
       ),
