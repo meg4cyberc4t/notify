@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:notify/components/widgets/avatar.dart';
+import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 
 Future<Color?> pushColorPickerPage(
@@ -60,7 +60,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
             style: Theme.of(context).textTheme.headline3,
             textAlign: TextAlign.center,
           ),
-          Avatar(
+          NotifyAvatar(
             size: AvatarSize.max,
             color: selectedColor,
             title: widget.title,

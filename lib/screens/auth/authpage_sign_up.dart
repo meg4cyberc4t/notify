@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:notify/components/widgets/avatar.dart';
+import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
-import 'package:notify/components/widgets/snack_bar.dart';
+import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/components/widgets/text_field.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
@@ -100,7 +100,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                         builder: (context, title) {
                           return StoreConnector<Color, Color>(
                             converter: (store) => store.state,
-                            builder: (context, color) => Avatar(
+                            builder: (context, color) => NotifyAvatar(
                               title: title,
                               color: color,
                               size: AvatarSize.max,
