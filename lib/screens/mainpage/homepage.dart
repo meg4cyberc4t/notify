@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:notify/components/widgets/folder_item.dart';
+import 'package:notify/components/widgets/notify_folder_item.dart';
 import 'package:notify/components/widgets/mini_sliver_header.dart';
 import 'package:notify/components/widgets/notify_notification_item.dart';
 
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage>
               header: miniSliverHeader(context, 'Folders'),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, i) => FolderItem(
+                  (context, i) => NotifyFolderItem(
                     header: 'Header $i',
                     countNotifications: i,
                     subtitle: 'subtitle',

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:notify/notify_theme.dart';
 
-class FolderItem extends StatelessWidget {
-  const FolderItem({
+class NotifyFolderItem extends StatelessWidget {
+  const NotifyFolderItem({
     Key? key,
     required this.header,
     required this.subtitle,
@@ -33,7 +34,7 @@ class FolderItem extends StatelessWidget {
           "$countNotifications ntf",
           style: Theme.of(context).textTheme.subtitle1,
         ),
-        tileColor: Theme.of(context).dialogBackgroundColor,
+        tileColor: NotifyTheme.of(context).backgroundCardColor,
         minLeadingWidth: 0,
       ),
     );
