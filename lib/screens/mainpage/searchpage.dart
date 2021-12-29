@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/components/snapshot_middleware.dart';
-import 'package:notify/components/widgets/text_field.dart';
-import 'package:notify/components/widgets/user_list_tile.dart';
+import 'package:notify/components/widgets/notify_text_field.dart';
+import 'package:notify/components/widgets/notify_user_list_tile.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
@@ -81,13 +81,19 @@ class _SearchPageState extends State<SearchPage>
                         }
                         List<NotifyUser> data =
                             snapshot.data as List<NotifyUser>;
-                        return ListView(
-                            children: data
-                                .map((user) => NotifyUserListTile(
-                                      user: user,
-                                      key: Key(user.uid),
-                                    ))
-                                .toList());
+                        return ListView.separated(
+                            itemCount: data.length,
+                            separatorBuilder: (context, index) => const Divider(
+                                  height: 1,
+                                  indent: 80,
+                                ),
+                            itemBuilder: (context, index) {
+                              var user = data[index];
+                              return NotifyUserListTile(
+                                user: user,
+                                key: Key(user.uid),
+                              );
+                            });
                       });
                 }),
           ),

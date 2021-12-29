@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
 import 'package:notify/components/snapshot_middleware.dart';
 import 'package:notify/components/widgets/alert_dialog.dart';
-import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
+import 'package:notify/components/widgets/notify_progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
@@ -205,15 +205,17 @@ class ProfilePage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
         child: isMe
-            ? NotifyDirectButton.text(
-                text: 'Edit',
-                isOutlined: true,
+            ? NotifyDirectButton(
+                title: 'Edit',
+                style: NotifyDirectButtonStyle.outlined,
                 onPressed: () async =>
                     await Navigator.pushNamed(context, "/ProfilePageEdit"),
               )
-            : NotifyDirectButton.text(
-                text: isFollowed ? 'Remove' : 'Add',
-                isOutlined: isFollowed,
+            : NotifyDirectButton(
+                title: isFollowed ? 'Remove' : 'Add',
+                style: isFollowed
+                    ? NotifyDirectButtonStyle.outlined
+                    : NotifyDirectButtonStyle.primary,
                 onPressed: () => functionFollowSwitch(context),
               ),
       ),
@@ -250,11 +252,16 @@ class ProfilePage extends StatelessWidget {
                   children: [
                     Text(
                       data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
                     Text(
                       'Collegues',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -284,11 +291,16 @@ class ProfilePage extends StatelessWidget {
                   children: [
                     Text(
                       data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
                     Text(
                       'Followers',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -317,11 +329,16 @@ class ProfilePage extends StatelessWidget {
                   children: [
                     Text(
                       data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Theme.of(context).primaryColor,
+                          ),
                     ),
                     Text(
                       'Following',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
@@ -336,7 +353,7 @@ class ProfilePage extends StatelessWidget {
     return Container(
       height: 50,
       width: 1,
-      color: Theme.of(context).primaryColor,
+      color: Colors.grey,
     );
   }
 }

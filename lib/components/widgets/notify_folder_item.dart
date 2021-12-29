@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:notify/notify_theme.dart';
 
-class FolderItem extends StatelessWidget {
-  const FolderItem({
+class NotifyFolderItem extends StatelessWidget {
+  const NotifyFolderItem({
     Key? key,
     required this.header,
     required this.subtitle,
@@ -23,12 +24,17 @@ class FolderItem extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
         onTap: onTap,
-        title: Text(header),
+        title: Text(
+          header,
+        ),
         subtitle: Text(
           subtitle,
         ),
-        trailing: Text("$countNotifications ntf"),
-        tileColor: Theme.of(context).dialogBackgroundColor,
+        trailing: Text(
+          "$countNotifications ntf",
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
+        tileColor: NotifyTheme.of(context).backgroundCardColor,
         minLeadingWidth: 0,
       ),
     );

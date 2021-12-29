@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notify/notify_theme.dart';
 
 SnackBar notifySnackBar(String title, BuildContext context) => SnackBar(
       dismissDirection: DismissDirection.down,
@@ -7,7 +8,7 @@ SnackBar notifySnackBar(String title, BuildContext context) => SnackBar(
         textAlign: TextAlign.center,
         style: Theme.of(context)
             .textTheme
-            .headline6
-            ?.copyWith(color: Theme.of(context).textTheme.button!.color),
+            .button
+            ?.copyWith(color: NotifyTheme.of(context).backgroundColor),
       ),
     );

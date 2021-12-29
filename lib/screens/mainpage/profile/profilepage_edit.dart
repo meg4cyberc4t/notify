@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/snapshot_middleware.dart';
 
-import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/text_field.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
+import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
@@ -96,8 +96,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                              child: NotifyDirectButton.text(
-                            text: 'Save',
+                              child: NotifyDirectButton(
+                            title: 'Save',
                             onPressed: () {
                               Provider.of<FirebaseService>(context,
                                       listen: false)
@@ -123,10 +123,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                              child: NotifyDirectButton.text(
-                            text: 'Back',
+                              child: NotifyDirectButton(
+                            title: 'Back',
                             onPressed: () => Navigator.pop(context),
-                            isOutlined: true,
+                            style: NotifyDirectButtonStyle.outlined,
                           )),
                         ],
                       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:notify/notify_theme.dart';
 
 class NotifyProgressIndicator extends StatefulWidget {
   const NotifyProgressIndicator({Key? key}) : super(key: key);
@@ -100,7 +101,6 @@ class _NotifyProgressIndicatorState extends State<NotifyProgressIndicator>
     _controller2.dispose();
     _controller3.dispose();
     _controller4.dispose();
-
     super.dispose();
   }
 
@@ -114,10 +114,14 @@ class _NotifyProgressIndicatorState extends State<NotifyProgressIndicator>
             angle: -45.0 * 0.0174533,
             child: Stack(
               children: <Widget>[
-                _cube(1, Theme.of(context).primaryColor, animation: _rotate2),
-                _cube(2, Theme.of(context).primaryColor, animation: _rotate3),
-                _cube(3, Theme.of(context).primaryColor, animation: _rotate4),
-                _cube(4, Theme.of(context).primaryColor, animation: _rotate1),
+                _cube(1, NotifyTheme.of(context).mainAccentColor1,
+                    animation: _rotate2),
+                _cube(2, NotifyTheme.of(context).mainAccentColor1,
+                    animation: _rotate3),
+                _cube(3, NotifyTheme.of(context).mainAccentColor1,
+                    animation: _rotate4),
+                _cube(4, NotifyTheme.of(context).mainAccentColor1,
+                    animation: _rotate1),
               ],
             ),
           ),

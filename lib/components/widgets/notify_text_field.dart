@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/notify_theme.dart';
 
 class NotifyTextField extends StatefulWidget {
   const NotifyTextField({
@@ -42,7 +42,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       autofocus: widget.autofocus,
       key: widget.key,
       controller: widget.controller,
-      cursorColor: Theme.of(context).primaryColor,
+      cursorColor: NotifyTheme.of(context).mainAccentColor1,
       maxLines: widget.maxLines,
       minLines: widget.minLines,
       autocorrect: widget.autocorrect ?? true,
@@ -65,13 +65,13 @@ class NotifyTextFieldState extends State<NotifyTextField> {
             ),
         border: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
+            color: NotifyTheme.of(context).mainAccentColor1,
             width: 1,
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
+            color: NotifyTheme.of(context).mainAccentColor1,
             width: 2,
           ),
         ),
@@ -79,7 +79,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
         errorStyle: Theme.of(context)
             .textTheme
             .headline6
-            ?.copyWith(color: CupertinoColors.systemRed),
+            ?.copyWith(color: NotifyTheme.of(context).faultColor),
       ),
     );
   }

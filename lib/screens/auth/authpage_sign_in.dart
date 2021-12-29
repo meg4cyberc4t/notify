@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/snack_bar.dart';
-import 'package:notify/components/widgets/text_field.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
+import 'package:notify/components/widgets/notify_snack_bar.dart';
+import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
@@ -26,83 +26,61 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 50),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                MaterialButton(
-                  child: Text(
-                    "Create account",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  onPressed: () => Navigator.pushReplacementNamed(
-                      context, '/AuthPageSignUp'),
-                )
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Sign in",
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            NotifyTextField(
-              hintText: 'Your email',
-              labelText: 'Email',
-              controller: _controllerEmail,
-            ),
-            const SizedBox(height: 10),
-            NotifyTextField(
-              hintText: 'Your password',
-              labelText: 'Password',
-              obscureText: true,
-              controller: _controllerPassword,
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: NotifyDirectButton.text(
-                    text: 'Continue',
-                    onPressed: () async {
-                      String? error =
-                          await context.read<FirebaseService>().signIn(
-                                email: _controllerEmail.text.trim(),
-                                password: _controllerPassword.text.trim(),
-                              );
-                      if (error != null) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(notifySnackBar(error, context));
-                      } else {
-                        Navigator.pushReplacementNamed(context, '/MainPage');
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+        body: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(),
+          Text(
+            'Sign in',
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          Column(
+            children: [
+              NotifyTextField(
+                hintText: 'Your email',
+                labelText: 'Email',
+                controller: _controllerEmail,
+              ),
+              const SizedBox(height: 10),
+              NotifyTextField(
+                hintText: 'Your password',
+                labelText: 'Password',
+                obscureText: true,
+                controller: _controllerPassword,
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              NotifyDirectButton(
+                  title: 'Continue',
+                  onPressed: () async {
+                    String? error =
+                        await context.read<FirebaseService>().signIn(
+                              email: _controllerEmail.text.trim(),
+                              password: _controllerPassword.text.trim(),
+                            );
+                    if (error != null) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(notifySnackBar(error, context));
+                    } else {
+                      Navigator.pushReplacementNamed(context, '/MainPage');
+                    }
+                  }),
+              const SizedBox(height: 10),
+              NotifyDirectButton(
+                title: 'Create account',
+                style: NotifyDirectButtonStyle.slience,
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/AuthPageSignUp'),
+              ),
+            ],
+          ),
+        ],
       ),
     ));
   }

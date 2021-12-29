@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/direct_button.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -12,45 +12,34 @@ class AuthPage extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/authpage1.png"),
+              image: AssetImage("assets/authpage.png"),
               fit: BoxFit.cover,
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "ntf manager",
-                style: Theme.of(context).textTheme.headline5,
-              ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: Text(
-                  "Let’s create a space for your notification",
+                  "Let's create a space for your notification",
                   style: Theme.of(context).textTheme.headline4,
                 ),
               ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: NotifyDirectButton.text(
-                      text: 'Get started',
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/AuthPage2'),
-                    ),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: NotifyDirectButton(
+                  title: 'Get started',
+                  isExpanded: true,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/AuthPageSignUp'),
+                ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         )

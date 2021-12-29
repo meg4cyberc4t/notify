@@ -1,7 +1,7 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/snapshot_middleware.dart';
-import 'package:notify/components/widgets/user_list_tile.dart';
+import 'package:notify/components/widgets/notify_user_list_tile.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
@@ -46,13 +46,18 @@ Future<T?> showUsersBottomSheet<T>(
                   ),
                 );
               }
+
               return Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: ListView(
+                child: ListView.separated(
                   controller: scrollController,
-                  children: (snapshot.data as List<NotifyUser>)
-                      .map((NotifyUser user) => NotifyUserListTile(user: user))
-                      .toList(),
+                  itemCount: data.length,
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 1,
+                    indent: 80,
+                  ),
+                  itemBuilder: (context, index) =>
+                      NotifyUserListTile(user: data[index]),
                 ),
               );
             },
