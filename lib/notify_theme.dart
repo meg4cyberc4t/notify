@@ -47,6 +47,7 @@ class NotifyLightTheme extends NotifyTheme {
 }
 
 class NotifyDarkTheme extends NotifyTheme {
+  // TODO: Design a dark theme
   @override
   final Color backgroundColor = const Color(0xFF000000);
   @override
