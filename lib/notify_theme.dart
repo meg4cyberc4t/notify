@@ -33,6 +33,8 @@ abstract class NotifyTheme {
           fontSize: 24,
         ),
       );
+
+  final Duration duration = const Duration(milliseconds: 400);
 }
 
 class NotifyLightTheme extends NotifyTheme {
