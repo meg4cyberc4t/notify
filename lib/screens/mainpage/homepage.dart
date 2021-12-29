@@ -23,11 +23,17 @@ class _HomePageState extends State<HomePage>
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              titleTextStyle: Theme.of(context).textTheme.headline3,
-              title: const Text('Home'),
-              centerTitle: true,
+            SliverToBoxAdapter(
+              child: AppBar(
+                elevation: 0,
+                shadowColor: Colors.grey[300],
+                titleSpacing: 0,
+                centerTitle: true,
+                primary: false,
+                title: const Text('Home'),
+                backgroundColor: Theme.of(context).backgroundColor,
+                titleTextStyle: Theme.of(context).textTheme.headline3,
+              ),
             ),
             SliverStickyHeader(
               header: miniSliverHeader(
