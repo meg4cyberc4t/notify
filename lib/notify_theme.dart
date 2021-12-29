@@ -12,7 +12,8 @@ NotifyTheme getNotifyThemeDataFromBrightness(Brightness brightness) {
 }
 
 abstract class NotifyTheme {
-  static NotifyTheme of(BuildContext context) => context.watch<NotifyTheme>();
+  static NotifyTheme of(BuildContext context) =>
+      Provider.of<NotifyTheme>(context, listen: false);
 
   final Color mainAccentColor1 = const Color(0xFF8474A1);
   final Color mainAccentColor2 = const Color(0xFF6EC6CA);
