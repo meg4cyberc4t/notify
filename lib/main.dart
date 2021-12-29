@@ -17,14 +17,6 @@ void main() async {
     final license = await rootBundle.loadString('google_fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.white,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      systemStatusBarContrastEnforced: true,
-    ),
-  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -36,12 +28,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NotifyTheme notifyThemeData =
+        getNotifyThemeDataFromBrightness(Theme.of(context).brightness);
+
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: notifyThemeData.backgroundColor,
+        statusBarBrightness: notifyThemeData.brightness,
+        systemNavigationBarIconBrightness: notifyThemeData.brightness,
+        systemStatusBarContrastEnforced: true,
+      ),
+    );
+
     return MultiProvider(
       providers: [
+        Provider<NotifyTheme>(
+          create: (_) => notifyThemeData,
+        ),
         Provider<FirebaseService>(
           create: (_) => FirebaseService(FirebaseAuth.instance),
         ),
-        StreamProvider(
+        StreamProvider<User?>(
           initialData: null,
           create: (context) => context.read<FirebaseService>().currentUser,
         )
@@ -51,14 +58,21 @@ class MyApp extends StatelessWidget {
         initialData: context.watch<User?>(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: buildThemeData(),
-          // home: const LandingPage(),
+          theme: ThemeData(
+            primaryColor: notifyThemeData.mainAccentColor1,
+            cardColor: notifyThemeData.mainAccentColor2,
+            dialogBackgroundColor: notifyThemeData.backgroundCardColor,
+            scaffoldBackgroundColor: notifyThemeData.backgroundColor,
+            backgroundColor: notifyThemeData.backgroundColor,
+            appBarTheme: const AppBarTheme(centerTitle: true),
+            textTheme: notifyThemeData.mainTextTheme(),
+          ),
           initialRoute: '/MainPage',
           routes: {
+            "/MainPage": (context) => const MainPage(),
             "/AuthPage": (context) => const AuthPage(),
             "/AuthPageSignUp": (context) => const AuthPageSignUp(),
             "/AuthPageSignIn": (context) => const AuthPageSignIn(),
-            "/MainPage": (context) => const MainPage(),
             "/ProfilePageEdit": (context) => const ProfilePageEdit(),
             // "/ColorPickerPage": (context) => ColorPickerPage(),
           },

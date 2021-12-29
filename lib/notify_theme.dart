@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
-class NotifyColors {
-  static const Color mainAccent1 = Color(0xFF8474A1);
-  static const Color mainAccent2 = Color(0xFF6EC6CA);
-  static const Color mainAccent3 = Color(0xFFCCABD8);
-
-  static const Color allow1 = Color(0xFFCCABD8);
-  static const Color allow2 = Color(0xFF6EC6CA);
-  static const Color fault = Color(0xFFEF9393);
-
-  static const Color backgroundColor = Color(0xFFFFFFFF);
-  static const Color backgroundCardColor = Color(0xFFEFEFEF);
+NotifyTheme getNotifyThemeDataFromBrightness(Brightness brightness) {
+  switch (brightness) {
+    case Brightness.light:
+      return NotifyLightTheme();
+    case Brightness.dark:
+      return NotifyDarkTheme();
+  }
 }
 
-TextTheme buildTextTheme() {
-  return GoogleFonts.manropeTextTheme().copyWith(
-    button: GoogleFonts.manrope(
-      fontSize: 24,
-      color: NotifyColors.mainAccent1,
-    ),
-  );
+abstract class NotifyTheme {
+  static NotifyTheme of(BuildContext context) => context.watch<NotifyTheme>();
+
+  final Color mainAccentColor1 = const Color(0xFF8474A1);
+  final Color mainAccentColor2 = const Color(0xFF6EC6CA);
+  final Color mainAccentColor3 = const Color(0xFFCCABD8);
+
+  final Color allowColor1 = const Color(0xFFCCABD8);
+  final Color allowColor2 = const Color(0xFF6EC6CA);
+  final Color faultColor = const Color(0xFFEF9393);
+
+  Color get backgroundColor;
+  Color get backgroundCardColor;
+
+  Brightness get brightness;
+
+  TextTheme mainTextTheme() => GoogleFonts.manropeTextTheme().copyWith(
+        button: GoogleFonts.manrope(
+          color: mainAccentColor1,
+          fontSize: 24,
+        ),
+      );
 }
 
-ThemeData buildThemeData() {
-  return ThemeData(
-    primaryColor: NotifyColors.mainAccent1,
-    cardColor: NotifyColors.mainAccent3,
-    dialogBackgroundColor: NotifyColors.backgroundCardColor,
-    scaffoldBackgroundColor: NotifyColors.backgroundColor,
-    backgroundColor: NotifyColors.backgroundColor,
-    appBarTheme: const AppBarTheme(centerTitle: true),
-    textTheme: buildTextTheme(),
-  );
+class NotifyLightTheme extends NotifyTheme {
+  @override
+  final Color backgroundColor = const Color(0xFFFFFFFF);
+  @override
+  final Color backgroundCardColor = const Color(0xFFEFEFEF);
+  @override
+  Brightness brightness = Brightness.light;
+}
+
+class NotifyDarkTheme extends NotifyTheme {
+  @override
+  final Color backgroundColor = const Color(0xFF000000);
+  @override
+  final Color backgroundCardColor = const Color(0xFF616161);
+  @override
+  Brightness brightness = Brightness.dark;
 }
