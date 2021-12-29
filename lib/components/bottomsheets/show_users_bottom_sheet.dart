@@ -49,9 +49,13 @@ Future<T?> showUsersBottomSheet<T>(
 
               return Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: ListView.builder(
+                child: ListView.separated(
                   controller: scrollController,
                   itemCount: data.length,
+                  separatorBuilder: (context, index) => const Divider(
+                    height: 1,
+                    indent: 80,
+                  ),
                   itemBuilder: (context, index) =>
                       NotifyUserListTile(user: data[index]),
                 ),

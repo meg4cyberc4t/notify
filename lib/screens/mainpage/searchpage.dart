@@ -81,13 +81,19 @@ class _SearchPageState extends State<SearchPage>
                         }
                         List<NotifyUser> data =
                             snapshot.data as List<NotifyUser>;
-                        return ListView(
-                            children: data
-                                .map((user) => NotifyUserListTile(
-                                      user: user,
-                                      key: Key(user.uid),
-                                    ))
-                                .toList());
+                        return ListView.separated(
+                            itemCount: data.length,
+                            separatorBuilder: (context, index) => const Divider(
+                                  height: 1,
+                                  indent: 80,
+                                ),
+                            itemBuilder: (context, index) {
+                              var user = data[index];
+                              return NotifyUserListTile(
+                                user: user,
+                                key: Key(user.uid),
+                              );
+                            });
                       });
                 }),
           ),
