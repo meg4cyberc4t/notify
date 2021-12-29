@@ -8,7 +8,7 @@ import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
 import 'package:notify/components/snapshot_middleware.dart';
 import 'package:notify/components/widgets/alert_dialog.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
+import 'package:notify/components/widgets/notify_progress_indicator.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
+import 'package:notify/components/widgets/notify_progress_indicator.dart';
 
 Widget? snapshotMiddleware(AsyncSnapshot snapshot) {
   if (snapshot.hasError) {

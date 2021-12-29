@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/notify_bottom_bar.dart';
+import 'package:notify/components/widgets/notify_progress_indicator.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/mainpage/homepage.dart';
 import 'package:notify/screens/mainpage/profile/profilepage.dart';
@@ -20,7 +21,7 @@ class _MainPageState extends State<MainPage> {
 
   final tabs = const [
     HomePage(key: Key('HomePage')),
-    Scaffold(body: Center(child: Text('likes'))),
+    Scaffold(body: Center(child: NotifyProgressIndicator())),
     SearchPage(key: Key('ScreenPage')),
     ProfilePage(key: Key('ProfilePage')),
   ];
