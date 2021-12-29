@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/components/snapshot_middleware.dart';
 import 'package:notify/components/widgets/text_field.dart';
-import 'package:notify/components/widgets/user_list_tile.dart';
+import 'package:notify/components/widgets/notify_user_list_tile.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
