@@ -17,7 +17,6 @@ void main() async {
     final license = await rootBundle.loadString('google_fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -28,8 +27,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NotifyTheme notifyThemeData =
-        getNotifyThemeDataFromBrightness(Theme.of(context).brightness);
+    NotifyTheme notifyThemeData = getNotifyThemeDataFromBrightness(
+      Brightness.light,
+      // MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
+      //     .platformBrightness,
+    );
 
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
