@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/widgets/folder_item.dart';
 import 'package:notify/components/widgets/mini_sliver_header.dart';
-import 'package:notify/components/widgets/notification_item.dart';
+import 'package:notify/components/widgets/notify_notification_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage>
               ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, i) => NotificationItem(
+                  (context, i) => NotifyNotificationItem(
+                    title: "Title #$i",
                     priority: i == 0,
                     datetime: DateTime.now(),
                     subtitle: i % 2 == 0 ? 'subtitle' : null,
