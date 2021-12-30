@@ -41,7 +41,6 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       autofocus: widget.autofocus,
       key: widget.key,
       controller: widget.controller,
-      // cursorColor: Theme.of(context).mainAccentColor1,
       maxLines: widget.maxLines,
       minLines: widget.minLines,
       autocorrect: widget.autocorrect ?? true,
