@@ -5,10 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/components/methods/combine_latest_streams.dart';
 import 'package:notify/services/notify_user.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth;
   FirebaseService(this._firebaseAuth);
+
+  static FirebaseService of(BuildContext context) =>
+      context.read<FirebaseService>();
 
   Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
 
