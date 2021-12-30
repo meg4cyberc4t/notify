@@ -19,6 +19,7 @@ void main() async {
   });
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  
   runApp(const MyApp());
 }
 
@@ -27,15 +28,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   SystemUiOverlayStyle(
-    //     systemNavigationBarColor: notifyThemeData.backgroundColor,
-    //     statusBarBrightness: notifyThemeData.brightness,
-    //     systemNavigationBarIconBrightness: notifyThemeData.brightness,
-    //     systemStatusBarContrastEnforced: true,
-    //   ),
-    // );
-
     return MultiProvider(
       providers: [
         Provider<FirebaseService>(
@@ -51,10 +43,9 @@ class MyApp extends StatelessWidget {
         initialData: context.watch<User?>(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          themeMode: ThemeMode.light,
-          theme: ThemeData.dark(),
-          // theme: NotifyThemeData.lightThemeData,
-          // darkTheme: NotifyThemeData.darkThemeData,
+          themeMode: ThemeMode.system,
+          theme: NotifyThemeData.lightThemeData,
+          darkTheme: NotifyThemeData.darkThemeData,
           title: 'Notify',
           initialRoute: '/MainPage',
           routes: {
@@ -63,7 +54,6 @@ class MyApp extends StatelessWidget {
             "/AuthPageSignUp": (context) => const AuthPageSignUp(),
             "/AuthPageSignIn": (context) => const AuthPageSignIn(),
             "/ProfilePageEdit": (context) => const ProfilePageEdit(),
-            // "/ColorPickerPage": (context) => ColorPickerPage(),
           },
         ),
       ),
