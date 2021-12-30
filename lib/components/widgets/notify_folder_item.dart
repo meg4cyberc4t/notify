@@ -17,21 +17,16 @@ class NotifyFolderItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        side: BorderSide(color: Theme.of(context).colorScheme.primary),
       ),
       onTap: onTap,
-      title: Text(
-        header,
-      ),
-      subtitle: Text(
-        subtitle,
-      ),
-      trailing: Text(
-        "$countNotifications ntf",
-        style: Theme.of(context).textTheme.subtitle1,
-      ),
-      tileColor: Theme.of(context).cardColor,
+      title: Text(header),
+      subtitle: Text(subtitle),
+      trailing: Text("$countNotifications ntf",
+          style: Theme.of(context).textTheme.subtitle1),
+      // tileColor: Theme.of(context).appBarTheme.backgroundColor,
       minLeadingWidth: 0,
     );
   }
