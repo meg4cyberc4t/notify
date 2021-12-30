@@ -26,34 +26,39 @@ class NotifyDirectButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double iconSize = 24;
-    double elevation = 4;
-    Color foregroundColor;
     Color buttonColor;
-    BorderSide borderSide = BorderSide.none;
+    BorderSide borderSide;
+    double elevation;
     TextStyle textStyle = Theme.of(context).textTheme.button!;
+    Color textColor;
     switch (style) {
       case NotifyDirectButtonStyle.primary:
-        foregroundColor = Theme.of(context).backgroundColor;
-        buttonColor = Theme.of(context).primaryColor;
+        buttonColor = Theme.of(context).colorScheme.primary;
+        textColor = Theme.of(context).colorScheme.background;
+        borderSide = BorderSide.none;
+        elevation = 2;
         break;
       case NotifyDirectButtonStyle.outlined:
-        foregroundColor = Theme.of(context).primaryColor;
-        buttonColor = Theme.of(context).backgroundColor;
-        borderSide = BorderSide(color: Theme.of(context).primaryColor);
+        buttonColor = Theme.of(context).colorScheme.background;
+        textColor = Theme.of(context).colorScheme.primary;
+        borderSide =
+            BorderSide(color: Theme.of(context).colorScheme.primary, width: 1);
+        elevation = 2;
         break;
       case NotifyDirectButtonStyle.slience:
-        foregroundColor = Theme.of(context).primaryColor;
-        buttonColor = Theme.of(context).backgroundColor;
+        buttonColor = Theme.of(context).colorScheme.background;
+        textColor = Theme.of(context).colorScheme.primary;
+        borderSide = BorderSide.none;
         elevation = 0;
         break;
     }
-
-    return MaterialButton(
-      color: buttonColor,
+    return RawMaterialButton(
+      fillColor: buttonColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
         side: borderSide,
       ),
+      textStyle: textStyle.copyWith(color: textColor),
       child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -62,17 +67,9 @@ class NotifyDirectButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (icon != null)
-                Icon(
-                  icon,
-                  size: iconSize,
-                  color: foregroundColor,
-                ),
+                Icon(icon, size: iconSize, color: textStyle.color),
               if (icon != null && title != null) const SizedBox(width: 10),
-              if (title != null)
-                Text(
-                  "$title",
-                  style: textStyle.copyWith(color: foregroundColor),
-                ),
+              if (title != null) Text("$title"),
             ],
           )),
       onPressed: onPressed,
