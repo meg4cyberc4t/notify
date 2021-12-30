@@ -56,6 +56,7 @@ class _ColorPickerPageState extends State<ColorPickerPage> {
         children: [
           const SizedBox(),
           Text(
+            // TODO: Rewrite color picker with AppBar
             "Choose color",
             style: Theme.of(context).textTheme.headline3,
             textAlign: TextAlign.center,
