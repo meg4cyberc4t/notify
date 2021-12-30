@@ -25,48 +25,49 @@ class _HomePageState extends State<HomePage>
         child: CustomScrollView(
           controller: _controller,
           slivers: [
-            const SliverAppBar(
-              title: Text('Home'),
-            ),
             SliverStickyHeader(
               header: AppBar(
-                titleTextStyle: Theme.of(context).textTheme.headline4,
-                backgroundColor: Theme.of(context).backgroundColor,
+                primary: false,
                 title: const Text('Today tasks'),
               ),
-              sliver: SliverFixedExtentList(
-                itemExtent: 56,
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => NotifyNotificationItem(
-                    title: "Title #$i",
-                    priority: i == 0,
-                    datetime: DateTime.now(),
-                    onTap: () => _controller.jumpTo(56 * 6),
+              sliver: SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverFixedExtentList(
+                  itemExtent: 56,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => NotifyNotificationItem(
+                      title: "Title #$i",
+                      priority: i == 0,
+                      datetime: DateTime.now(),
+                      onTap: () => _controller.jumpTo(56 * 6),
+                    ),
+                    childCount: 6,
                   ),
-                  childCount: 6,
                 ),
               ),
             ),
             SliverStickyHeader(
               header: AppBar(
-                titleTextStyle: Theme.of(context).textTheme.headline4,
-                backgroundColor: Theme.of(context).backgroundColor,
+                primary: false,
                 title: const Text('Folders'),
               ),
-              sliver: SliverFixedExtentList(
-                itemExtent: 82,
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: NotifyFolderItem(
-                      header: 'Header $i',
-                      countNotifications: i,
-                      subtitle: 'subtitle',
-                      onTap: () {},
+              sliver: SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverFixedExtentList(
+                  itemExtent: 82,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: NotifyFolderItem(
+                        header: 'Header $i',
+                        countNotifications: i,
+                        subtitle: 'subtitle',
+                        onTap: () {},
+                      ),
                     ),
+                    childCount: 10,
                   ),
-                  childCount: 10,
                 ),
               ),
             ),
