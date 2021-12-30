@@ -46,7 +46,6 @@ Future<T?> showUsersBottomSheet<T>(
                   ),
                 );
               }
-
               return Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: ListView.separated(

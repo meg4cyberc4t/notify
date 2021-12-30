@@ -9,7 +9,7 @@ import 'package:notify/screens/auth/authpage_sign_up.dart';
 import 'package:notify/screens/mainpage/mainpage.dart';
 import 'package:notify/screens/mainpage/profile/profilepage_edit.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/notify_theme.dart';
+import 'package:notify/configs/notify_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -27,26 +27,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NotifyTheme notifyThemeData = getNotifyThemeDataFromBrightness(
-      Brightness.light,
-      // MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
-      //     .platformBrightness,
-    );
-
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        systemNavigationBarColor: notifyThemeData.backgroundColor,
-        statusBarBrightness: notifyThemeData.brightness,
-        systemNavigationBarIconBrightness: notifyThemeData.brightness,
-        systemStatusBarContrastEnforced: true,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   SystemUiOverlayStyle(
+    //     systemNavigationBarColor: notifyThemeData.backgroundColor,
+    //     statusBarBrightness: notifyThemeData.brightness,
+    //     systemNavigationBarIconBrightness: notifyThemeData.brightness,
+    //     systemStatusBarContrastEnforced: true,
+    //   ),
+    // );
 
     return MultiProvider(
       providers: [
-        Provider<NotifyTheme>(
-          create: (_) => notifyThemeData,
-        ),
         Provider<FirebaseService>(
           create: (_) => FirebaseService(FirebaseAuth.instance),
         ),
@@ -60,15 +51,11 @@ class MyApp extends StatelessWidget {
         initialData: context.watch<User?>(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primaryColor: notifyThemeData.mainAccentColor1,
-            cardColor: notifyThemeData.mainAccentColor2,
-            dialogBackgroundColor: notifyThemeData.backgroundCardColor,
-            scaffoldBackgroundColor: notifyThemeData.backgroundColor,
-            backgroundColor: notifyThemeData.backgroundColor,
-            appBarTheme: const AppBarTheme(centerTitle: true),
-            textTheme: notifyThemeData.mainTextTheme(),
-          ),
+          themeMode: ThemeMode.light,
+          theme: ThemeData.dark(),
+          // theme: NotifyThemeData.lightThemeData,
+          // darkTheme: NotifyThemeData.darkThemeData,
+          title: 'Notify',
           initialRoute: '/MainPage',
           routes: {
             "/MainPage": (context) => const MainPage(),

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:notify/notify_theme.dart';
 
 class NotifyBottomBar extends StatelessWidget {
   const NotifyBottomBar({
@@ -15,7 +14,7 @@ class NotifyBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: NotifyTheme.of(context).backgroundColor,
+        color: Theme.of(context).backgroundColor,
         boxShadow: [
           BoxShadow(
             blurRadius: 20,

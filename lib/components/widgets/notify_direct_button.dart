@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/notify_theme.dart';
+import 'package:notify/configs/notify_parameters.dart';
 
 enum NotifyDirectButtonStyle {
   primary,
@@ -30,21 +30,20 @@ class NotifyDirectButton extends StatelessWidget {
     Color foregroundColor;
     Color buttonColor;
     BorderSide borderSide = BorderSide.none;
-    TextStyle textStyle = NotifyTheme.of(context).mainTextTheme().button!;
+    TextStyle textStyle = Theme.of(context).textTheme.button!;
     switch (style) {
       case NotifyDirectButtonStyle.primary:
-        foregroundColor = NotifyTheme.of(context).backgroundColor;
-        buttonColor = NotifyTheme.of(context).mainAccentColor1;
+        foregroundColor = Theme.of(context).backgroundColor;
+        buttonColor = Theme.of(context).primaryColor;
         break;
       case NotifyDirectButtonStyle.outlined:
-        foregroundColor = NotifyTheme.of(context).mainAccentColor1;
-        buttonColor = NotifyTheme.of(context).backgroundColor;
-        borderSide =
-            BorderSide(color: NotifyTheme.of(context).mainAccentColor1);
+        foregroundColor = Theme.of(context).primaryColor;
+        buttonColor = Theme.of(context).backgroundColor;
+        borderSide = BorderSide(color: Theme.of(context).primaryColor);
         break;
       case NotifyDirectButtonStyle.slience:
-        foregroundColor = NotifyTheme.of(context).mainAccentColor1;
-        buttonColor = NotifyTheme.of(context).backgroundColor;
+        foregroundColor = Theme.of(context).primaryColor;
+        buttonColor = Theme.of(context).backgroundColor;
         elevation = 0;
         break;
     }
@@ -78,7 +77,7 @@ class NotifyDirectButton extends StatelessWidget {
           )),
       onPressed: onPressed,
       elevation: elevation,
-      animationDuration: NotifyTheme.of(context).duration,
+      animationDuration: NotifyParameters.duration,
     );
   }
 }
