@@ -64,6 +64,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                       height: MediaQuery.of(context).size.height * 0.2,
                     ),
                     Text(
+                      // TODO: Rewrite profile_page edit with new AppBar
                       "Edit profile",
                       style: Theme.of(context).textTheme.headline3,
                       textAlign: TextAlign.center,

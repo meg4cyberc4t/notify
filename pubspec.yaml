@@ -13,8 +13,6 @@ dependencies:
   google_fonts: ^2.1.0 # For fonts
   flutter_native_splash: ^1.3.1 # For splash screen
   flutter_material_color_picker: ^1.1.0+2 # For color picker
-  bottom_nav_layout: ^3.0.9 # For saving the state when switching between screens
-  google_nav_bar: ^5.0.5 # For navigation bar
   flutter_sticky_header: ^0.6.0 # For special header in homepage
   firebase_auth: ^3.3.0 # For authentication
   cloud_firestore: ^3.1.1 # For work with database

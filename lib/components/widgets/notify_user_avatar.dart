@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/notify_theme.dart';
+import 'package:notify/configs/notify_parameters.dart';
 
 enum AvatarSize {
   max,
@@ -58,7 +58,7 @@ class NotifyAvatar extends StatelessWidget {
         child: AnimatedContainer(
           height: height,
           width: width,
-          duration: NotifyTheme.of(context).duration,
+          duration: NotifyParameters.duration,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(15),

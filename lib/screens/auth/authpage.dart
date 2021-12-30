@@ -12,6 +12,7 @@ class AuthPage extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
+              //TODO: Set authpage.png asset for dark theme
               image: AssetImage("assets/authpage.png"),
               fit: BoxFit.cover,
             ),
@@ -36,8 +37,8 @@ class AuthPage extends StatelessWidget {
                 child: NotifyDirectButton(
                   title: 'Get started',
                   isExpanded: true,
-                  onPressed: () =>
-                      Navigator.pushNamed(context, '/AuthPageSignUp'),
+                  onPressed: () => Navigator.pushReplacementNamed(
+                      context, '/AuthPageSignUp'),
                 ),
               ),
             ],
