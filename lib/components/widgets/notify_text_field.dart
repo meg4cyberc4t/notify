@@ -46,9 +46,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       autocorrect: widget.autocorrect ?? true,
       onChanged: widget.onChanged,
       initialValue: widget.initialValue,
-      style: Theme.of(context).textTheme.headline5!.copyWith(
-            color: Theme.of(context).textTheme.headline4!.color,
-          ),
+      style: Theme.of(context).textTheme.headline6,
       obscureText: widget.obscureText,
       onEditingComplete: widget.onEditingComplete,
       decoration: InputDecoration(
