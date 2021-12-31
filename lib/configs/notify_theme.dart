@@ -40,8 +40,21 @@ class NotifyThemeData {
   );
 
   static ThemeData getThemeData(ColorScheme colorScheme, TextTheme textTheme) {
-    textTheme =
-        textTheme.copyWith(button: textTheme.button!.copyWith(fontSize: 24));
+    textTheme = textTheme.copyWith(
+      bodyText1: textTheme.bodyText1!.copyWith(fontSize: 16),
+      bodyText2: textTheme.bodyText2!.copyWith(fontSize: 14),
+      headline1: textTheme.headline1!.copyWith(fontSize: 96),
+      headline2: textTheme.headline2!.copyWith(fontSize: 60),
+      headline3: textTheme.headline3!.copyWith(fontSize: 48),
+      headline4: textTheme.headline4!.copyWith(fontSize: 34),
+      headline5: textTheme.headline5!.copyWith(fontSize: 24),
+      headline6: textTheme.headline6!.copyWith(fontSize: 20),
+      caption: textTheme.caption!.copyWith(fontSize: 12),
+      overline: textTheme.overline!.copyWith(fontSize: 10),
+      subtitle1: textTheme.subtitle1!.copyWith(fontSize: 16),
+      subtitle2: textTheme.subtitle2!.copyWith(fontSize: 14),
+      button: textTheme.button!.copyWith(fontSize: 24),
+    );
 
     final Color primarySurfaceColor = colorScheme.surface;
     final Color onPrimarySurfaceColor = colorScheme.onSurface;
