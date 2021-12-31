@@ -31,7 +31,7 @@ class _SearchPageState extends State<SearchPage>
             title: Text('Search'),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             sliver: SliverToBoxAdapter(
               child: NotifyTextField(
                 autocorrect: true,
