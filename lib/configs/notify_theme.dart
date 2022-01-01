@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NotifyThemeData {
-  static const primary = Color(0xFF8474A1);
-  static const primaryVariant = Color(0xFF6EC6CA);
+  static const primaryVariant = Color(0xFF8474A1);
+  static const primary = Color(0xFF6EC6CA);
 
   static const surface = Color(0xFFEFEFEF);
 
@@ -24,8 +24,8 @@ class NotifyThemeData {
   );
 
   static const ColorScheme lightColorScheme = ColorScheme(
-    primary: primary,
-    primaryVariant: primaryVariant,
+    primary: primaryVariant,
+    primaryVariant: primary,
     secondary: Color(0xff03dac6),
     secondaryVariant: Color(0xff018786),
     surface: surface,
