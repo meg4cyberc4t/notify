@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/widgets/notify_folder_item.dart';
 import 'package:notify/components/widgets/notify_notification_item.dart';
@@ -27,7 +28,9 @@ class _HomePageState extends State<HomePage>
           slivers: [
             SliverStickyHeader(
               header: AppBar(
-                primary: false,
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Theme.of(context).backgroundColor,
+                ),
                 title: const Text('Today tasks'),
               ),
               sliver: SliverPadding(
@@ -48,7 +51,6 @@ class _HomePageState extends State<HomePage>
             ),
             SliverStickyHeader(
               header: AppBar(
-                primary: false,
                 title: const Text('Folders'),
               ),
               sliver: SliverPadding(
