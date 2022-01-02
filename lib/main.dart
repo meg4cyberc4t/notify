@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:notify/screens/auth/authpage.dart';
 import 'package:notify/screens/auth/authpage_sign_in.dart';
 import 'package:notify/screens/auth/authpage_sign_up.dart';
@@ -18,8 +19,8 @@ void main() async {
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
   WidgetsFlutterBinding.ensureInitialized();
+  GoogleFonts.config.allowRuntimeFetching = false;
   await Firebase.initializeApp();
-  
   runApp(const MyApp());
 }
 
