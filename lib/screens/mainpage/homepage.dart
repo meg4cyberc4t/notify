@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage>
           slivers: [
             SliverStickyHeader(
               header: AppBar(
-                primary: false,
                 title: const Text('Today tasks'),
               ),
               sliver: SliverPadding(
@@ -48,7 +47,6 @@ class _HomePageState extends State<HomePage>
             ),
             SliverStickyHeader(
               header: AppBar(
-                primary: false,
                 title: const Text('Folders'),
               ),
               sliver: SliverPadding(
