@@ -83,7 +83,7 @@ class NotifyThemeData {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surface,
-        height: 60,
+        height: 50,
       ),
     );
   }
