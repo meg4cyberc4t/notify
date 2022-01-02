@@ -36,8 +36,9 @@ class AuthPage extends StatelessWidget {
                 child: NotifyDirectButton(
                   title: 'Get started',
                   isExpanded: true,
+                  style: NotifyDirectButtonStyle.outlined,
                   onPressed: () => Navigator.pushReplacementNamed(
-                      context, '/AuthPageSignUp'),
+                      context, '/AuthPageSignIn'),
                 ),
               ),
             ],
