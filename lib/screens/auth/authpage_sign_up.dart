@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:notify/components/widgets/avatar.dart';
-import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/snack_bar.dart';
-import 'package:notify/components/widgets/text_field.dart';
+import 'package:notify/components/widgets/notify_user_avatar.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
+import 'package:notify/components/widgets/notify_snack_bar.dart';
+import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
@@ -57,137 +57,130 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
     return state;
   }
 
+  late Store<Color> colorStore;
+  late Store<String> titleStore;
+  @override
+  void initState() {
+    super.initState();
+    colorStore = Store<Color>(
+      colorReducer,
+      initialState: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+    );
+    titleStore = Store<String>(
+      titleReducer,
+      initialState: "LA",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorStore = Store<Color>(colorReducer,
-        initialState:
-            Colors.primaries[Random().nextInt(Colors.primaries.length)]);
-    final titleStore = Store<String>(titleReducer, initialState: "LA");
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        scrollDirection: Axis.vertical,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-          child: StoreProvider<Color>(
-            store: colorStore,
-            child: StoreProvider<String>(
-              store: titleStore,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 50),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        child: Text(
-                          "Have account",
-                          style: Theme.of(context).textTheme.headline5,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: StoreProvider<Color>(
+              store: colorStore,
+              child: StoreProvider<String>(
+                store: titleStore,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(),
+                    Text(
+                      'Sign up',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                    StoreConnector<String, String>(
+                        converter: (store) => store.state,
+                        builder: (context, title) {
+                          return StoreConnector<Color, Color>(
+                            converter: (store) => store.state,
+                            builder: (context, color) => NotifyAvatar(
+                              title: title,
+                              color: color,
+                              size: AvatarSize.max,
+                              onTap: () =>
+                                  pushColorPickerPage(context, title, color)
+                                      .then((Color? value) {
+                                if (value != null) {
+                                  colorStore.dispatch(value);
+                                }
+                              }),
+                            ),
+                          );
+                        }),
+                    Column(
+                      children: [
+                        NotifyTextField(
+                          hintText: 'Your first name',
+                          labelText: 'First name',
+                          controller: _controllerFirstname,
+                          onChanged: (value) =>
+                              titleStore.dispatch(getAvatarTitle()),
                         ),
-                        onPressed: () => Navigator.pushReplacementNamed(
-                            context, '/AuthPageSignIn'),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sign up",
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  StoreConnector<String, String>(
-                      converter: (store) => store.state,
-                      builder: (context, title) {
-                        return StoreConnector<Color, Color>(
-                          converter: (store) => store.state,
-                          builder: (context, color) => Avatar(
-                            title: title,
-                            color: color,
-                            size: AvatarSize.max,
-                            onTap: () =>
-                                pushColorPickerPage(context, title, color)
-                                    .then((Color? value) {
-                              if (value != null) {
-                                colorStore.dispatch(value);
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your last name',
+                          labelText: 'Last name',
+                          controller: _controllerLastname,
+                          onChanged: (value) =>
+                              titleStore.dispatch(getAvatarTitle()),
+                        ),
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your email',
+                          labelText: 'Email',
+                          controller: _controllerEmail,
+                        ),
+                        const SizedBox(height: 10),
+                        NotifyTextField(
+                          hintText: 'Your password',
+                          labelText: 'Password',
+                          obscureText: true,
+                          controller: _controllerPassword,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        NotifyDirectButton(
+                            title: 'Continue',
+                            onPressed: () async {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  notifySnackBar('Downloading...', context));
+                              String? error = await context
+                                  .read<FirebaseService>()
+                                  .signUp(
+                                      email: _controllerEmail.text.trim(),
+                                      password: _controllerPassword.text.trim(),
+                                      firstName:
+                                          _controllerFirstname.text.trim(),
+                                      lastName: _controllerLastname.text.trim(),
+                                      color: colorStore.state);
+                              if (error != null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    notifySnackBar(error, context));
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                    context, '/MainPage');
                               }
                             }),
-                          ),
-                        );
-                      }),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your first name',
-                    labelText: 'First name',
-                    controller: _controllerFirstname,
-                    onChanged: (value) => titleStore.dispatch(getAvatarTitle()),
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your last name',
-                    labelText: 'Last name',
-                    controller: _controllerLastname,
-                    onChanged: (value) => titleStore.dispatch(getAvatarTitle()),
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your email',
-                    labelText: 'Email',
-                    controller: _controllerEmail,
-                  ),
-                  const SizedBox(height: 10),
-                  NotifyTextField(
-                    hintText: 'Your password',
-                    labelText: 'Password',
-                    obscureText: true,
-                    controller: _controllerPassword,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: NotifyDirectButton.text(
-                              text: 'Continue',
-                              onPressed: () async {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    notifySnackBar('Downloading...', context));
-                                String? error = await context
-                                    .read<FirebaseService>()
-                                    .signUp(
-                                        email: _controllerEmail.text.trim(),
-                                        password:
-                                            _controllerPassword.text.trim(),
-                                        firstName:
-                                            _controllerFirstname.text.trim(),
-                                        lastName:
-                                            _controllerLastname.text.trim(),
-                                        color: colorStore.state);
-                                if (error != null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      notifySnackBar(error, context));
-                                } else {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/MainPage');
-                                }
-                              })),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                        const SizedBox(height: 10),
+                        NotifyDirectButton(
+                          title: 'Already have',
+                          style: NotifyDirectButtonStyle.slience,
+                          onPressed: () => Navigator.pushReplacementNamed(
+                              context, '/AuthPageSignIn'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

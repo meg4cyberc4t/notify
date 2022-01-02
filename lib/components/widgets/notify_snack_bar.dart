@@ -7,7 +7,7 @@ SnackBar notifySnackBar(String title, BuildContext context) => SnackBar(
         textAlign: TextAlign.center,
         style: Theme.of(context)
             .textTheme
-            .headline6
-            ?.copyWith(color: Theme.of(context).textTheme.button!.color),
+            .button
+            ?.copyWith(color: Theme.of(context).backgroundColor),
       ),
     );

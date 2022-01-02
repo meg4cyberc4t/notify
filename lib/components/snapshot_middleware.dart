@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
+import 'package:notify/configs/notify_parameters.dart';
 
 Widget? snapshotMiddleware(AsyncSnapshot snapshot) {
   if (snapshot.hasError) {
@@ -9,7 +9,10 @@ Widget? snapshotMiddleware(AsyncSnapshot snapshot) {
       ),
     );
   } else if (!snapshot.hasData) {
-    return const NotifyProgressIndicator();
+    return const Center(
+      child: CircularProgressIndicator(
+          strokeWidth: NotifyParameters.circularProgressIndicatorWidth),
+    );
   }
 }
 

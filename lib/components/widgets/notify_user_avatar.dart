@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notify/configs/notify_parameters.dart';
 
 enum AvatarSize {
   max,
@@ -6,8 +7,8 @@ enum AvatarSize {
   mini,
 }
 
-class Avatar extends StatelessWidget {
-  const Avatar({
+class NotifyAvatar extends StatelessWidget {
+  const NotifyAvatar({
     required this.size,
     required this.color,
     required this.title,
@@ -22,12 +23,13 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = ThemeData.estimateBrightnessForColor(color);
     Color textColor =
-        brightness == Brightness.light ? Colors.black : Colors.white;
-    late double height;
-    late double width;
-    late TextStyle textStyle;
+        ThemeData.estimateBrightnessForColor(color) == Brightness.light
+            ? Colors.black
+            : Colors.white;
+    double height;
+    double width;
+    TextStyle textStyle;
     switch (size) {
       case AvatarSize.max:
         height = 100;
@@ -56,7 +58,7 @@ class Avatar extends StatelessWidget {
         child: AnimatedContainer(
           height: height,
           width: width,
-          duration: const Duration(milliseconds: 500),
+          duration: NotifyParameters.duration,
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(15),

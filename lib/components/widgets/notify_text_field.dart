@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NotifyTextField extends StatefulWidget {
@@ -42,44 +41,17 @@ class NotifyTextFieldState extends State<NotifyTextField> {
       autofocus: widget.autofocus,
       key: widget.key,
       controller: widget.controller,
-      cursorColor: Theme.of(context).primaryColor,
       maxLines: widget.maxLines,
       minLines: widget.minLines,
       autocorrect: widget.autocorrect ?? true,
       onChanged: widget.onChanged,
       initialValue: widget.initialValue,
-      style: Theme.of(context).textTheme.headline5!.copyWith(
-            color: Theme.of(context).textTheme.headline4!.color,
-          ),
+      style: Theme.of(context).textTheme.headline6,
       obscureText: widget.obscureText,
       onEditingComplete: widget.onEditingComplete,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(5),
         hintText: widget.hintText,
-        hintStyle: Theme.of(context).textTheme.headline5!.copyWith(
-              color: Theme.of(context).textTheme.headline4!.color,
-            ),
         labelText: widget.labelText,
-        labelStyle: Theme.of(context).textTheme.headline5!.copyWith(
-              color: Theme.of(context).textTheme.headline4!.color,
-            ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 1,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 2,
-          ),
-        ),
-        errorText: widget.errorText,
-        errorStyle: Theme.of(context)
-            .textTheme
-            .headline6
-            ?.copyWith(color: CupertinoColors.systemRed),
       ),
     );
   }

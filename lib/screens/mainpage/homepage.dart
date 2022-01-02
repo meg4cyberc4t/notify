@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:notify/components/widgets/folder_item.dart';
-import 'package:notify/components/widgets/mini_sliver_header.dart';
-import 'package:notify/components/widgets/notification_item.dart';
+import 'package:notify/components/widgets/notify_folder_item.dart';
+import 'package:notify/components/widgets/notify_notification_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,47 +11,65 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  final ScrollController _controller = ScrollController(keepScrollOffset: true);
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
+          controller: _controller,
           slivers: [
-            SliverAppBar(
-              backgroundColor: Theme.of(context).backgroundColor,
-              titleTextStyle: Theme.of(context).textTheme.headline3,
-              title: const Text('Home'),
-              centerTitle: true,
-            ),
             SliverStickyHeader(
-              header: miniSliverHeader(
-                context,
-                'Today Tasks',
+              header: AppBar(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Theme.of(context).backgroundColor,
+                ),
+                title: const Text('Today tasks'),
               ),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => NotificationItem(
-                    priority: i == 0,
-                    datetime: DateTime.now(),
-                    subtitle: i % 2 == 0 ? 'subtitle' : null,
-                    onTap: () {},
+              sliver: SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverFixedExtentList(
+                  itemExtent: 56,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => NotifyNotificationItem(
+                      title: "Title #$i",
+                      priority: i == 0,
+                      datetime: DateTime.now(),
+                      onTap: () => _controller.jumpTo(56 * 6),
+                    ),
+                    childCount: 6,
                   ),
-                  childCount: 4,
                 ),
               ),
             ),
             SliverStickyHeader(
-              header: miniSliverHeader(context, 'Folders'),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => FolderItem(
-                    header: 'Header $i',
-                    countNotifications: i,
-                    subtitle: 'subtitle',
-                    onTap: () {},
+              header: AppBar(
+                title: const Text('Folders'),
+              ),
+              sliver: SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverFixedExtentList(
+                  itemExtent: 82,
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: NotifyFolderItem(
+                        header: 'Header $i',
+                        countNotifications: i,
+                        subtitle: 'subtitle',
+                        onTap: () {},
+                      ),
+                    ),
+                    childCount: 10,
                   ),
-                  childCount: 10,
                 ),
               ),
             ),

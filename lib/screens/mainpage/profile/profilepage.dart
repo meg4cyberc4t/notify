@@ -1,102 +1,27 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
+import 'package:notify/components/methods/custom_route.dart';
 import 'package:notify/components/snapshot_middleware.dart';
-import 'package:notify/components/widgets/alert_dialog.dart';
-import 'package:notify/components/widgets/direct_button.dart';
-import 'package:notify/components/widgets/progress_indicator.dart';
+import 'package:notify/components/widgets/notify_direct_button.dart';
+import 'package:notify/configs/notify_parameters.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage(this.searchProfileUid, [Key? key]) : super(key: key);
-  final String? searchProfileUid;
-
-  void functionLogout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => NotifyAlertDialog(
-        title: 'Do you confirm the exit?',
-        listButtons: [
-          NotifyAlertDialogButtonItem(
-            title: "Back",
-            onPressed: () => Navigator.pop(context),
-          ),
-          NotifyAlertDialogButtonItem(
-            title: "Next",
-            onPressed: () {
-              context.read<FirebaseService>().signOut();
-              Navigator.pop(context);
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  void functionFollowSwitch(BuildContext context) async {
-    await context.read<FirebaseService>().followSwitch(searchProfileUid!);
-  }
-
-  Widget rightUpButton(BuildContext context,
-      {required bool isMe, required bool isFollowed}) {
-    if (isMe) {
-      return IconButton(
-        icon: const Icon(
-          Icons.logout,
-        ),
-        onPressed: () => functionLogout(context),
-      );
-    } else {
-      return IconButton(
-        icon: Icon(isFollowed ? CupertinoIcons.minus : CupertinoIcons.add),
-        onPressed: () => functionFollowSwitch(context),
-      );
-    }
-  }
-
-  Widget? leftUpButton(BuildContext context,
-      {required bool isMe, required String title, required Color userColor}) {
-    if (isMe) {
-      return IconButton(
-        icon: const Icon(CupertinoIcons.pen),
-        onPressed: () async {
-          final Color? inputColor = await Navigator.push(
-              context,
-              Platform.isAndroid
-                  ? MaterialPageRoute(
-                      builder: (context) => ColorPickerPage(
-                            title: title,
-                            initialValue: userColor,
-                          ))
-                  : CupertinoPageRoute(
-                      builder: (context) => ColorPickerPage(
-                            title: title,
-                            initialValue: userColor,
-                          )));
-          if (inputColor != null) {
-            context
-                .read<FirebaseService>()
-                .updateInfoAboutUser(searchProfileUid!, {
-              "color_r": inputColor.red,
-              "color_g": inputColor.green,
-              "color_b": inputColor.blue,
-            });
-          }
-        },
-      );
-    }
-  }
+  const ProfilePage({this.uid, Key? key}) : super(key: key);
+  final String? uid;
 
   @override
   Widget build(BuildContext context) {
-    final String profileUID = searchProfileUid ?? context.watch<User>().uid;
-    final bool isMe = context.watch<User>().uid == profileUID;
+    final String meUID = context.watch<User>().uid;
+    final String profileUID = uid ?? meUID;
+    final bool isMe = meUID == profileUID;
+
     return Scaffold(
       body: StreamBuilder<bool>(
         stream: context
@@ -130,24 +55,54 @@ class ProfilePage extends StatelessWidget {
 
                 bool isFollowed = isFollowedSnapshot.data!;
 
+                Widget _logoutButton = IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: () => FirebaseService.of(context).signOut(),
+                );
+
+                Widget _followSwitch = IconButton(
+                  icon: Icon(
+                      isFollowed ? CupertinoIcons.minus : CupertinoIcons.add),
+                  onPressed: () =>
+                      FirebaseService.of(context).followSwitch(uid!),
+                );
+
+                Widget _editColorButton = IconButton(
+                  icon: const Icon(CupertinoIcons.pen),
+                  onPressed: () async {
+                    final Color? inputColor = await Navigator.push(
+                        context,
+                        customRoute(ColorPickerPage(
+                          title: (data['first_name'][0] + data['last_name'][0])
+                              .toUpperCase(),
+                          initialValue: userColor,
+                        )));
+                    if (inputColor != null) {
+                      context
+                          .read<FirebaseService>()
+                          .updateInfoAboutUser(meUID, {
+                        "color_r": inputColor.red,
+                        "color_g": inputColor.green,
+                        "color_b": inputColor.blue,
+                      });
+                    }
+                  },
+                );
+
                 return CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      elevation: 8,
-                      centerTitle: true,
+                      // systemOverlayStyle: SystemUiOverlayStyle(
+                      //   statusBarIconBrightness:
+                      //       ThemeData.estimateBrightnessForColor(passiveColor),
+                      // ),
                       primary: true,
                       iconTheme: IconThemeData(color: passiveColor),
-                      actions: [
-                        rightUpButton(context,
-                            isMe: isMe, isFollowed: isFollowed),
-                      ],
-                      leading: leftUpButton(context,
-                          isMe: isMe,
-                          title: (data['first_name'][0] + data['last_name'][0])
-                              .toUpperCase(),
-                          userColor: userColor),
+                      actions: [(isMe) ? _logoutButton : _followSwitch],
+                      leading: (isMe) ? _editColorButton : null,
                       expandedHeight: 300,
                       flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true,
                         title: Text(
                           data['first_name'] + " " + data['last_name'],
                           style: Theme.of(context)
@@ -155,10 +110,8 @@ class ProfilePage extends StatelessWidget {
                               .headline5
                               ?.copyWith(color: passiveColor),
                         ),
-                        centerTitle: true,
-                        collapseMode: CollapseMode.parallax,
                         background: AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
+                          duration: NotifyParameters.duration,
                           color: userColor,
                         ),
                       ),
@@ -166,9 +119,38 @@ class ProfilePage extends StatelessWidget {
                       backgroundColor: userColor,
                     ),
                     if (data['status'].isNotEmpty)
-                      statusWidget(context, data['status']),
-                    middleDirectButtonWidget(context,
-                        isMe: isMe, isFollowed: isFollowed),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 5),
+                          child: Text(
+                            data['status'],
+                            style: Theme.of(context).textTheme.headline5,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      sliver: SliverToBoxAdapter(
+                          child: isMe
+                              ? NotifyDirectButton(
+                                  title: 'Edit',
+                                  style: NotifyDirectButtonStyle.outlined,
+                                  onPressed: () async =>
+                                      await Navigator.pushNamed(
+                                          context, "/ProfilePageEdit"),
+                                )
+                              : NotifyDirectButton(
+                                  title: isFollowed ? 'Remove' : 'Add',
+                                  style: isFollowed
+                                      ? NotifyDirectButtonStyle.outlined
+                                      : NotifyDirectButtonStyle.primary,
+                                  onPressed: () => FirebaseService.of(context)
+                                      .followSwitch(profileUID),
+                                )),
+                    ),
                     const SliverToBoxAdapter(child: SizedBox(height: 10)),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -176,13 +158,23 @@ class ProfilePage extends StatelessWidget {
                             horizontal: 10.0, vertical: 5),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            colleguesFromUserWidget(context, profileUID),
+                            preWidgetCountUsers(context,
+                                stream: FirebaseService.of(context)
+                                    .getColleguesFromUser(profileUID),
+                                title: "Collegues"),
                             _localDivider(context),
-                            followersFromUsersWidget(context, profileUID),
+                            preWidgetCountUsers(context,
+                                stream: FirebaseService.of(context)
+                                    .getFollowersFromUser(profileUID),
+                                title: "Followers"),
                             _localDivider(context),
-                            followingFromUsersWidget(context, profileUID),
+                            preWidgetCountUsers(context,
+                                stream: FirebaseService.of(context)
+                                    .getFollowingFromUser(profileUID),
+                                title: "Followers"),
                           ],
                         ),
                       ),
@@ -196,44 +188,11 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  SliverToBoxAdapter middleDirectButtonWidget(BuildContext context,
-      {required bool isMe, required bool isFollowed}) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-        child: isMe
-            ? NotifyDirectButton.text(
-                text: 'Edit',
-                isOutlined: true,
-                onPressed: () =>
-                    Navigator.pushNamed(context, "/ProfilePageEdit"),
-              )
-            : NotifyDirectButton.text(
-                text: isFollowed ? 'Remove' : 'Add',
-                isOutlined: isFollowed,
-                onPressed: () => functionFollowSwitch(context),
-              ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter statusWidget(BuildContext context, String title) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.headline5,
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Expanded colleguesFromUserWidget(BuildContext context, String uid) {
+  Expanded preWidgetCountUsers(BuildContext context,
+      {required Stream<List<String>> stream, required String title}) {
     return Expanded(
       child: StreamBuilder(
-          stream: context.read<FirebaseService>().getColleguesFromUser(uid),
+          stream: stream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
@@ -241,90 +200,27 @@ class ProfilePage extends StatelessWidget {
             if (snapshot.hasData) {
               List<String> data = snapshot.data as List<String>;
               return InkWell(
+                borderRadius: BorderRadius.circular(15),
                 onTap: () => showUsersBottomSheet(context, data),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                     Text(
-                      'Collegues',
-                      style: Theme.of(context).textTheme.headline5,
+                      title,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ],
                 ),
               );
             }
-            return const NotifyProgressIndicator();
-          }),
-    );
-  }
-
-  Expanded followersFromUsersWidget(BuildContext context, String profileUID) {
-    return Expanded(
-      child: StreamBuilder(
-          stream: context.read<FirebaseService>().getFollowersFromUser(
-                profileUID,
-              ),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            if (snapshot.hasData) {
-              List<String> data = snapshot.data as List<String>;
-              return InkWell(
-                onTap: () => showUsersBottomSheet(context, data),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    Text(
-                      'Followers',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const NotifyProgressIndicator();
-          }),
-    );
-  }
-
-  Expanded followingFromUsersWidget(BuildContext context, String profileUID) {
-    return Expanded(
-      child: StreamBuilder(
-          stream:
-              context.read<FirebaseService>().getFollowingFromUser(profileUID),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            if (snapshot.hasData) {
-              List<String> data = snapshot.data as List<String>;
-              return InkWell(
-                onTap: () => showUsersBottomSheet(context, data),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      data.length.toString(),
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    Text(
-                      'Following',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const NotifyProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(
+                  strokeWidth: NotifyParameters.circularProgressIndicatorWidth),
+            );
           }),
     );
   }
@@ -333,7 +229,7 @@ class ProfilePage extends StatelessWidget {
     return Container(
       height: 50,
       width: 1,
-      color: Theme.of(context).primaryColor,
+      color: Colors.grey,
     );
   }
 }
