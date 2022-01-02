@@ -34,7 +34,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-      statusBarColor: Theme.of(context).backgroundColor,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
           ? Brightness.dark
           : Brightness.light,

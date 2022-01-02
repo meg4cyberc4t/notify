@@ -92,11 +92,10 @@ class ProfilePage extends StatelessWidget {
                 return CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      systemOverlayStyle: SystemUiOverlayStyle(
-                        statusBarColor: Colors.transparent,
-                        statusBarIconBrightness:
-                            ThemeData.estimateBrightnessForColor(passiveColor),
-                      ),
+                      // systemOverlayStyle: SystemUiOverlayStyle(
+                      //   statusBarIconBrightness:
+                      //       ThemeData.estimateBrightnessForColor(passiveColor),
+                      // ),
                       primary: true,
                       iconTheme: IconThemeData(color: passiveColor),
                       actions: [(isMe) ? _logoutButton : _followSwitch],
