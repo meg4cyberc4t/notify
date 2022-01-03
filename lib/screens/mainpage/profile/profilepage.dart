@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
 import 'package:notify/components/methods/custom_route.dart';
 import 'package:notify/components/snapshot_middleware.dart';
@@ -12,14 +11,24 @@ import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({this.uid, Key? key}) : super(key: key);
   final String? uid;
 
   @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final String meUID = context.watch<User>().uid;
-    final String profileUID = uid ?? meUID;
+    final String profileUID = widget.uid ?? meUID;
     final bool isMe = meUID == profileUID;
 
     return Scaffold(
@@ -64,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                   icon: Icon(
                       isFollowed ? CupertinoIcons.minus : CupertinoIcons.add),
                   onPressed: () =>
-                      FirebaseService.of(context).followSwitch(uid!),
+                      FirebaseService.of(context).followSwitch(profileUID),
                 );
 
                 Widget _editColorButton = IconButton(
@@ -92,10 +101,6 @@ class ProfilePage extends StatelessWidget {
                 return CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      // systemOverlayStyle: SystemUiOverlayStyle(
-                      //   statusBarIconBrightness:
-                      //       ThemeData.estimateBrightnessForColor(passiveColor),
-                      // ),
                       primary: true,
                       iconTheme: IconThemeData(color: passiveColor),
                       actions: [(isMe) ? _logoutButton : _followSwitch],
