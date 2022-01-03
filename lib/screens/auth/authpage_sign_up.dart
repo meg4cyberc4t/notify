@@ -1,17 +1,22 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:notify/components/widgets/notify_user_avatar.dart';
+import 'package:notify/components/methods/custom_route.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
+import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/screens/colorpickerpage.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 
 class AuthPageSignUp extends StatefulWidget {
-  const AuthPageSignUp({Key? key}) : super(key: key);
+  const AuthPageSignUp({final Key? key}) : super(key: key);
 
   @override
   State<AuthPageSignUp> createState() => _AuthPageSignUpState();
@@ -33,7 +38,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
   }
 
   String getAvatarTitle() {
-    String title = "";
+    String title = '';
     if (_controllerFirstname.text.isNotEmpty) {
       title += _controllerFirstname.text[0];
     }
@@ -43,14 +48,14 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
     return title.toUpperCase();
   }
 
-  Color colorReducer(Color state, dynamic newState) {
+  Color colorReducer(final Color state, final dynamic newState) {
     if (newState is Color) {
       return newState;
     }
     return state;
   }
 
-  String titleReducer(String state, dynamic newState) {
+  String titleReducer(final String state, final dynamic newState) {
     if (newState is String) {
       return newState;
     }
@@ -68,124 +73,149 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
     );
     titleStore = Store<String>(
       titleReducer,
-      initialState: "LA",
+      initialState: 'LA',
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: StoreProvider<Color>(
-              store: colorStore,
-              child: StoreProvider<String>(
-                store: titleStore,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(),
-                    Text(
-                      'Sign up',
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                    StoreConnector<String, String>(
-                        converter: (store) => store.state,
-                        builder: (context, title) {
-                          return StoreConnector<Color, Color>(
-                            converter: (store) => store.state,
-                            builder: (context, color) => NotifyAvatar(
-                              title: title,
-                              color: color,
-                              size: AvatarSize.max,
-                              onTap: () =>
-                                  pushColorPickerPage(context, title, color)
-                                      .then((Color? value) {
-                                if (value != null) {
-                                  colorStore.dispatch(value);
-                                }
-                              }),
-                            ),
-                          );
-                        }),
-                    Column(
-                      children: [
-                        NotifyTextField(
-                          hintText: 'Your first name',
-                          labelText: 'First name',
-                          controller: _controllerFirstname,
-                          onChanged: (value) =>
-                              titleStore.dispatch(getAvatarTitle()),
+  Widget build(final BuildContext context) => Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: StoreProvider<Color>(
+                store: colorStore,
+                child: StoreProvider<String>(
+                  store: titleStore,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      const SizedBox(),
+                      Text(
+                        'Sign up',
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                      StoreConnector<String, String>(
+                        converter: (final Store<String> store) => store.state,
+                        builder: (
+                          final BuildContext context,
+                          final String title,
+                        ) =>
+                            StoreConnector<Color, Color>(
+                          converter: (final Store<Color> store) => store.state,
+                          builder:
+                              (final BuildContext context, final Color color) =>
+                                  NotifyAvatar(
+                            title: title,
+                            color: color,
+                            size: AvatarSize.max,
+                            onTap: () => Navigator.push(
+                              context,
+                              customRoute(
+                                ColorPickerPage(
+                                  title: title,
+                                  initialValue: color,
+                                ),
+                              ),
+                            ).then((final dynamic value) {
+                              if (value != null) {
+                                colorStore.dispatch(value);
+                              }
+                            }),
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        NotifyTextField(
-                          hintText: 'Your last name',
-                          labelText: 'Last name',
-                          controller: _controllerLastname,
-                          onChanged: (value) =>
-                              titleStore.dispatch(getAvatarTitle()),
-                        ),
-                        const SizedBox(height: 10),
-                        NotifyTextField(
-                          hintText: 'Your email',
-                          labelText: 'Email',
-                          controller: _controllerEmail,
-                        ),
-                        const SizedBox(height: 10),
-                        NotifyTextField(
-                          hintText: 'Your password',
-                          labelText: 'Password',
-                          obscureText: true,
-                          controller: _controllerPassword,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        NotifyDirectButton(
+                      ),
+                      Column(
+                        children: <Widget>[
+                          NotifyTextField(
+                            hintText: 'Your first name',
+                            labelText: 'First name',
+                            controller: _controllerFirstname,
+                            onChanged: (final String value) =>
+                                titleStore.dispatch(getAvatarTitle()),
+                          ),
+                          const SizedBox(height: 10),
+                          NotifyTextField(
+                            hintText: 'Your last name',
+                            labelText: 'Last name',
+                            controller: _controllerLastname,
+                            onChanged: (final String value) =>
+                                titleStore.dispatch(getAvatarTitle()),
+                          ),
+                          const SizedBox(height: 10),
+                          NotifyTextField(
+                            hintText: 'Your email',
+                            labelText: 'Email',
+                            controller: _controllerEmail,
+                          ),
+                          const SizedBox(height: 10),
+                          NotifyTextField(
+                            hintText: 'Your password',
+                            labelText: 'Password',
+                            obscureText: true,
+                            controller: _controllerPassword,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          NotifyDirectButton(
                             title: 'Continue',
                             onPressed: () async {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  notifySnackBar('Downloading...', context));
-                              String? error = await context
+                                notifySnackBar('Downloading...', context),
+                              );
+                              final String? error = await context
                                   .read<FirebaseService>()
                                   .signUp(
-                                      email: _controllerEmail.text.trim(),
-                                      password: _controllerPassword.text.trim(),
-                                      firstName:
-                                          _controllerFirstname.text.trim(),
-                                      lastName: _controllerLastname.text.trim(),
-                                      color: colorStore.state);
+                                    email: _controllerEmail.text.trim(),
+                                    password: _controllerPassword.text.trim(),
+                                    firstName: _controllerFirstname.text.trim(),
+                                    lastName: _controllerLastname.text.trim(),
+                                    color: colorStore.state,
+                                  );
+                              if (!mounted) {
+                                return;
+                              }
                               if (error != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    notifySnackBar(error, context));
+                                  notifySnackBar(error, context),
+                                );
                               } else {
-                                Navigator.pushReplacementNamed(
-                                    context, '/MainPage');
+                                await Navigator.pushReplacementNamed(
+                                  context,
+                                  '/MainPage',
+                                );
                               }
-                            }),
-                        const SizedBox(height: 10),
-                        NotifyDirectButton(
-                          title: 'Already have',
-                          style: NotifyDirectButtonStyle.slience,
-                          onPressed: () => Navigator.pushReplacementNamed(
-                              context, '/AuthPageSignIn'),
-                        ),
-                      ],
-                    ),
-                  ],
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          NotifyDirectButton(
+                            title: 'Already have',
+                            style: NotifyDirectButtonStyle.slience,
+                            onPressed: () => Navigator.pushReplacementNamed(
+                              context,
+                              '/AuthPageSignIn',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+
+  @override
+  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty<Store<Color>>('colorStore', colorStore))
+      ..add(DiagnosticsProperty<Store<String>>('titleStore', titleStore));
   }
 }

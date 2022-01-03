@@ -1,52 +1,73 @@
-import "dart:async";
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fauth;
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fauth;
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:notify/components/methods/combine_latest_streams.dart';
 import 'package:notify/services/notify_user.dart';
 import 'package:provider/provider.dart';
 
+/// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
+/// [FirebaseFirestore] services. Allows you to put the logic of operations into
+/// separate functions.
 class FirebaseService {
-  final fauth.FirebaseAuth _firebaseAuth;
-  FirebaseService(this._firebaseAuth);
+  final fauth.FirebaseAuth _firebaseAuth = fauth.FirebaseAuth.instance;
 
-  static FirebaseService of(BuildContext context) =>
+  /// Allows you to access the [FirebaseService] through the [context]
+  /// Example: FirebaseService.of(context)
+
+  static FirebaseService of(final BuildContext context) =>
       context.read<FirebaseService>();
 
+  /// Monitors the authorization status of the current [fauth.User]
   Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
 
-  Future<String?> signIn(
-      {required String email, required String password}) async {
+  /// Authorizes the user by [email] and [password].
+  /// Returns an error message if something happened, or null.
+  Future<String?> signIn({
+    required final String email,
+    required final String password,
+  }) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       return null;
     } on fauth.FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
+  /// Allows you to authorize the user.
+  /// Returns an error message if something happened, or null.
   Future<String?> signUp({
-    required String email,
-    required String password,
-    required String firstName,
-    required String lastName,
-    required Color color,
+    required final String email,
+    required final String password,
+    required final String firstName,
+    required final String lastName,
+    required final Color color,
   }) async {
     try {
-      fauth.UserCredential ucred = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseFirestore store = FirebaseFirestore.instance;
-      DateTime dtn = DateTime.now();
-      await store.collection('users').doc(ucred.user!.uid).set({
+      final fauth.UserCredential ucred =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final DateTime dtn = DateTime.now();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(ucred.user!.uid)
+          .set(<String, dynamic>{
         'first_name': firstName,
         'last_name': lastName,
         'color_r': color.red,
         'color_g': color.green,
         'color_b': color.blue,
-        'status':
-            "Hello! I have been using notify since  ${DateFormat.MMMM().format(dtn)} ${dtn.day}, ${dtn.year}!",
+        'status': 'Hello! I have been using notify since '
+            '${DateFormat.MMMM().format(dtn)} '
+            '${dtn.day}, ${dtn.year}!',
       });
       return null;
     } on fauth.FirebaseAuthException catch (e) {
@@ -54,138 +75,211 @@ class FirebaseService {
     }
   }
 
+  /// Disconnects the user from the [_firebaseAuth]
   Future<void> signOut() => _firebaseAuth.signOut();
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getInfoAboutUser(String uid) =>
+  /// Getting user information
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getInfoAboutUser(
+    final String uid,
+  ) =>
       FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
 
-  Stream<bool> checkFollowed(String from, String to) {
-    Stream<bool> stream1 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: from)
-        .where('user2', isEqualTo: to)
-        .where('user1_accept', isEqualTo: true)
-        .snapshots()
-        .map((event) => event.docs.isNotEmpty);
-    Stream<bool> stream2 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: to)
-        .where('user2', isEqualTo: from)
-        .where('user2_accept', isEqualTo: true)
-        .snapshots()
-        .map((event) => event.docs.isNotEmpty);
-    return combineLatestStreams([stream1, stream2])
-        .map((event) => event[0] || event[1]);
-  }
+  /// Updating user information
+  Future<void> updateInfoAboutUser(final Map<String, Object?> data) =>
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update(data);
 
-  Future<void> updateInfoAboutUser(String uid, Map<String, Object?> data) =>
-      FirebaseFirestore.instance.collection('users').doc(uid).update(data);
-
-  Stream<List<NotifyUser>> getUsersListFromUsersUidList(List<String> uids) {
+  /// Getting a list of users by having a list of their uids
+  Stream<List<NotifyUser>> getUsersListFromUsersUidList(
+    final List<String> uids,
+  ) {
     if (uids.isEmpty) {
-      return Stream.value([]);
+      return Stream<List<NotifyUser>>.value(<NotifyUser>[]);
     }
     return FirebaseFirestore.instance
         .collection('users')
         .where(FieldPath.documentId, whereIn: uids)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((e) {
-              Map<String, dynamic> data = e.data();
-              return NotifyUser(
-                uid: e.id,
-                firstName: data['first_name'],
-                lastName: data['last_name'],
-                color: Color.fromRGBO(
-                  data['color_r'],
-                  data['color_g'],
-                  data['color_b'],
-                  1,
-                ),
-                status: data['status'],
-              );
-            }).toList());
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+              .map((final QueryDocumentSnapshot<Map<String, dynamic>> e) {
+            final Map<String, dynamic> data = e.data();
+            return NotifyUser(
+              uid: e.id,
+              firstName: data['first_name'],
+              lastName: data['last_name'],
+              color: Color.fromRGBO(
+                data['color_r'],
+                data['color_g'],
+                data['color_b'],
+                1,
+              ),
+              status: data['status'],
+            );
+          }).toList(),
+        );
   }
 
-  Stream<List<String>> getFollowersFromUser(String uid) {
-    Stream<List<String>> stream1 = FirebaseFirestore.instance
+  /// Calculates the number of subscriptions the user has
+  Stream<bool> checkFollowed(final String from, final String to) {
+    final Stream<bool> stream1 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: from)
+        .where('user2', isEqualTo: to)
+        .where('user1_accept', isEqualTo: true)
+        .snapshots()
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) =>
+              event.docs.isNotEmpty,
+        );
+    final Stream<bool> stream2 = FirebaseFirestore.instance
+        .collection('relations')
+        .where('user1', isEqualTo: to)
+        .where('user2', isEqualTo: from)
+        .where('user2_accept', isEqualTo: true)
+        .snapshots()
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) =>
+              event.docs.isNotEmpty,
+        );
+    return combineLatestStreams<bool>(<Stream<bool>>[stream1, stream2]).map(
+      (final List<bool> event) => event[0] || event[1],
+    );
+  }
+
+  /// Getting all the uids that are subscribed to the user
+  Stream<List<String>> getFollowersFromUser(final String uid) {
+    final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
         .where('user1_accept', isEqualTo: false)
         .where('user2_accept', isEqualTo: true)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
-    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user2'] as String,
+              )
+              .toList(),
+        );
+    final Stream<List<String>> stream2 = FirebaseFirestore.instance
         .collection('relations')
         .where('user2', isEqualTo: uid)
         .where('user2_accept', isEqualTo: false)
         .where('user1_accept', isEqualTo: true)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return combineLatestStreams([stream1, stream2])
-        .map((event) => event[0] + event[1]);
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user1'] as String,
+              )
+              .toList(),
+        );
+
+    return combineLatestStreams<List<String>>(
+      <Stream<List<String>>>[stream1, stream2],
+    ).map((final List<List<String>> event) => event[0] + event[1]);
   }
 
-  Stream<List<String>> getFollowingFromUser(String uid) {
-    Stream<List<String>> stream1 = FirebaseFirestore.instance
+  /// Getting all the uids that the user is subscribed to
+  Stream<List<String>> getFollowingFromUser(final String uid) {
+    final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
         .where('user1_accept', isEqualTo: true)
         .where('user2_accept', isEqualTo: false)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
-    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user2'] as String,
+              )
+              .toList(),
+        );
+    final Stream<List<String>> stream2 = FirebaseFirestore.instance
         .collection('relations')
         .where('user2', isEqualTo: uid)
         .where('user2_accept', isEqualTo: true)
         .where('user1_accept', isEqualTo: false)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return combineLatestStreams([stream1, stream2])
-        .map((event) => event[0] + event[1]);
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user1'] as String,
+              )
+              .toList(),
+        );
+    return combineLatestStreams<List<String>>(
+      <Stream<List<String>>>[stream1, stream2],
+    ).map((final List<List<String>> event) => event[0] + event[1]);
   }
 
-  Stream<List<String>> getColleguesFromUser(String uid) {
-    Stream<List<String>> stream1 = FirebaseFirestore.instance
+  /// Getting all colleagues uids with user
+  Stream<List<String>> getColleguesFromUser(final String uid) {
+    final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
         .where('user1_accept', isEqualTo: true)
         .where('user2_accept', isEqualTo: true)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user2'] as String).toList());
-    Stream<List<String>> stream2 = FirebaseFirestore.instance
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user2'] as String,
+              )
+              .toList(),
+        );
+    final Stream<List<String>> stream2 = FirebaseFirestore.instance
         .collection('relations')
         .where('user2', isEqualTo: uid)
         .where('user2_accept', isEqualTo: true)
         .where('user1_accept', isEqualTo: true)
         .snapshots()
-        .map((event) => event.docs.map((e) => e['user1'] as String).toList());
-    return combineLatestStreams([stream1, stream2])
-        .map((event) => event[0] + event[1]);
+        .map(
+          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
+              .map(
+                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                    e['user1'] as String,
+              )
+              .toList(),
+        );
+    return combineLatestStreams<List<String>>(
+      <Stream<List<String>>>[stream1, stream2],
+    ).map((final List<List<String>> event) => event[0] + event[1]);
   }
 
-  Future<void> followSwitch(String to) async {
-    String from = _firebaseAuth.currentUser!.uid;
+  /// Changing the status of a "subscription" with a user
+  Future<void> followSwitch(final String to) async {
+    final String from = _firebaseAuth.currentUser!.uid;
     QuerySnapshot<Map<String, dynamic>> out = await FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: from)
         .where('user2', isEqualTo: to)
         .get();
     if (out.docs.isNotEmpty) {
-      Map<String, dynamic> data = (await FirebaseFirestore.instance
+      final Map<String, dynamic> data = (await FirebaseFirestore.instance
               .collection('relations')
               .doc(out.docs[0].id)
               .get())
-          .data() as Map<String, dynamic>;
+          .data()!;
       if (data['user1_accept'] == true && data['user2_accept'] == false) {
         return FirebaseFirestore.instance
             .collection('relations')
             .doc(out.docs[0].id)
             .delete();
       }
+      final bool oldValue = out.docs[0].data()['user1_accept'];
       return FirebaseFirestore.instance
           .collection('relations')
           .doc(out.docs[0].id)
-          .update({"user1_accept": !out.docs[0].data()["user1_accept"]});
+          .update(<String, bool>{'user1_accept': !oldValue});
     }
     out = await FirebaseFirestore.instance
         .collection('relations')
@@ -193,109 +287,103 @@ class FirebaseService {
         .where('user1', isEqualTo: to)
         .get();
     if (out.docs.isNotEmpty) {
-      Map<String, dynamic> data = (await FirebaseFirestore.instance
+      final Map<String, dynamic> data = (await FirebaseFirestore.instance
               .collection('relations')
               .doc(out.docs[0].id)
               .get())
-          .data() as Map<String, dynamic>;
+          .data()!;
       if (data['user2_accept'] == true && data['user1_accept'] == false) {
         return FirebaseFirestore.instance
             .collection('relations')
             .doc(out.docs[0].id)
             .delete();
       }
+      final bool oldValue = out.docs[0].data()['user2_accept'];
       return FirebaseFirestore.instance
           .collection('relations')
           .doc(out.docs[0].id)
-          .update({"user2_accept": !out.docs[0].data()["user2_accept"]});
+          .update(<String, bool>{'user2_accept': !oldValue});
     }
-    FirebaseFirestore.instance.collection('relations').add({
-      "user1": from,
-      "user1_accept": true,
-      "user2": to,
-      "user2_accept": false,
+    await FirebaseFirestore.instance
+        .collection('relations')
+        .add(<String, dynamic>{
+      'user1': from,
+      'user1_accept': true,
+      'user2': to,
+      'user2_accept': false,
     });
   }
 
-  Future<List<String>> searchFromUsers(String pattern) async {
-    Set<String> mainSet = <String>{};
-    var elements1 = (await FirebaseFirestore.instance
+  /// Search for a user from all by [pattern]
+  Future<List<String>> searchFromUsers(final String pattern) async {
+    final Set<String> mainSet = <String>{};
+    final Iterable<String> elements1 = (await FirebaseFirestore.instance
             .collection('users')
             .where('first_name', isGreaterThanOrEqualTo: pattern)
-            .where('first_name', isLessThanOrEqualTo: pattern + "\uf8ff")
+            .where('first_name', isLessThanOrEqualTo: '$pattern\uf8ff')
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
-        .toList();
+        .map(
+          (final QueryDocumentSnapshot<Object?> e) => e.id,
+        );
     mainSet.addAll(elements1);
-    if (mainSet.length >= 10) {
-      return mainSet.toList();
-    }
-    var elements2 = (await FirebaseFirestore.instance
+    final Iterable<String> elements2 = (await FirebaseFirestore.instance
             .collection('users')
             .where('first_name', isGreaterThanOrEqualTo: pattern.toLowerCase())
-            .where('first_name',
-                isLessThanOrEqualTo: pattern.toLowerCase() + "\uf8ff")
+            .where(
+              'first_name',
+              isLessThanOrEqualTo: '${pattern.toLowerCase()}\uf8ff',
+            )
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
-        .toList();
+        .map((final QueryDocumentSnapshot<Object?> e) => e.id);
     mainSet.addAll(elements2);
-    if (mainSet.length >= 10) {
-      return mainSet.toList();
-    }
-    var elements3 = (await FirebaseFirestore.instance
+    final Iterable<String> elements3 = (await FirebaseFirestore.instance
             .collection('users')
             .where('first_name', isGreaterThanOrEqualTo: pattern.toUpperCase())
-            .where('first_name',
-                isLessThanOrEqualTo: pattern.toUpperCase() + "\uf8ff")
+            .where(
+              'first_name',
+              isLessThanOrEqualTo: '${pattern.toUpperCase()}\uf8ff',
+            )
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
-        .toList();
+        .map((final QueryDocumentSnapshot<Object?> e) => e.id);
     mainSet.addAll(elements3);
-    if (mainSet.length >= 10) {
-      return mainSet.toList();
-    }
-    var elements4 = (await FirebaseFirestore.instance
+    final Iterable<String> elements4 = (await FirebaseFirestore.instance
             .collection('users')
             .where('last_name', isGreaterThanOrEqualTo: pattern)
-            .where('last_name', isLessThanOrEqualTo: pattern + "\uf8ff")
+            .where('last_name', isLessThanOrEqualTo: '$pattern\uf8ff')
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
-        .toList();
+        .map((final QueryDocumentSnapshot<Object?> e) => e.id);
     mainSet.addAll(elements4);
-    if (mainSet.length >= 10) {
-      return mainSet.toList();
-    }
-    var elements5 = (await FirebaseFirestore.instance
+    final Iterable<String> elements5 = (await FirebaseFirestore.instance
             .collection('users')
             .where('last_name', isGreaterThanOrEqualTo: pattern.toLowerCase())
-            .where('last_name',
-                isLessThanOrEqualTo: pattern.toLowerCase() + "\uf8ff")
+            .where(
+              'last_name',
+              isLessThanOrEqualTo: '${pattern.toLowerCase()}\uf8ff',
+            )
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
-        .toList();
+        .map((final QueryDocumentSnapshot<Object?> e) => e.id);
     mainSet.addAll(elements5);
-    if (mainSet.length >= 10) {
-      return mainSet.toList();
-    }
-    var elements6 = (await FirebaseFirestore.instance
+    final List<String> elements6 = (await FirebaseFirestore.instance
             .collection('users')
             .where('last_name', isGreaterThanOrEqualTo: pattern.toUpperCase())
-            .where('last_name',
-                isLessThanOrEqualTo: pattern.toUpperCase() + "\uf8ff")
+            .where(
+              'last_name',
+              isLessThanOrEqualTo: '${pattern.toUpperCase()}\uf8ff',
+            )
             .limit(10)
             .get())
         .docs
-        .map((QueryDocumentSnapshot e) => e.id)
+        .map((final QueryDocumentSnapshot<Object?> e) => e.id)
         .toList();
     mainSet.addAll(elements6);
     return mainSet.toList();

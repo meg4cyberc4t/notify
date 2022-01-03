@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/configs/notify_parameters.dart';
 
@@ -13,7 +16,7 @@ class NotifyAvatar extends StatelessWidget {
     required this.color,
     required this.title,
     this.onTap,
-    Key? key,
+    final Key? key,
   }) : super(key: key);
 
   final AvatarSize size;
@@ -22,8 +25,8 @@ class NotifyAvatar extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
-    Color textColor =
+  Widget build(final BuildContext context) {
+    final Color textColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.light
             ? Colors.black
             : Colors.white;
@@ -72,5 +75,15 @@ class NotifyAvatar extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<AvatarSize>('size', size))
+      ..add(StringProperty('title', title))
+      ..add(ColorProperty('color', color))
+      ..add(ObjectFlagProperty<VoidCallback?>.has('onTap', onTap));
   }
 }

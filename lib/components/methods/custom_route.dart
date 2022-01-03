@@ -1,9 +1,19 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'dart:io';
 
-PageRoute<T> customRoute<T>(Widget screen) {
-  return Platform.isIOS || Platform.isMacOS
-      ? CupertinoPageRoute<T>(builder: (context) => screen)
-      : MaterialPageRoute<T>(builder: (context) => screen);
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+/// Returns a custom [PageRoute] that is automatically changed for the system.
+/// As an argument, it is necessary to pass the screen to which the redirection
+/// will go
+PageRoute<T> customRoute<T>(final Widget screen) {
+  if (Platform.isIOS || Platform.isMacOS) {
+    return CupertinoPageRoute<T>(
+      builder: (final BuildContext context) => screen,
+    );
+  } else {
+    return MaterialPageRoute<T>(
+      builder: (final BuildContext context) => screen,
+    );
+  }
 }

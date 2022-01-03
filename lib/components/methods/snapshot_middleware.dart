@@ -1,7 +1,11 @@
+// ignore_for_file: prefer_single_quotes
+
 import 'package:flutter/material.dart';
 import 'package:notify/configs/notify_parameters.dart';
 
-Widget? snapshotMiddleware(AsyncSnapshot snapshot) {
+/// Custom middleware in [FutureBuilder] and [StreamBuilder],
+/// which shows the expected widgets when an error or loading occurs
+Widget? snapshotMiddleware(final AsyncSnapshot<dynamic> snapshot) {
   if (snapshot.hasError) {
     return SizedBox.expand(
       child: Center(
@@ -11,16 +15,7 @@ Widget? snapshotMiddleware(AsyncSnapshot snapshot) {
   } else if (!snapshot.hasData) {
     return const Center(
       child: CircularProgressIndicator(
-          strokeWidth: NotifyParameters.circularProgressIndicatorWidth),
-    );
-  }
-}
-
-Widget? checkSnapshotDataExist(AsyncSnapshot snapshot) {
-  if (!snapshot.data!.exists) {
-    return const SizedBox.expand(
-      child: Center(
-        child: Text("Data does not exist"),
+        strokeWidth: NotifyParameters.circularProgressIndicatorWidth,
       ),
     );
   }

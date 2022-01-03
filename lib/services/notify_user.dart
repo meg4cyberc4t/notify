@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 
 class NotifyUser {
@@ -13,8 +15,8 @@ class NotifyUser {
   final String lastName;
   final String status;
   final Color color;
-  get colorR => color.red;
-  get colorG => color.green;
-  get colorB => color.blue;
-  get avatarTitle => (firstName[0] + lastName[0]).toUpperCase();
+  int get colorR => color.red;
+  int get colorG => color.green;
+  int get colorB => color.blue;
+  String get avatarTitle => (firstName[0] + lastName[0]).toUpperCase();
 }

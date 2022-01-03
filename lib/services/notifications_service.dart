@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_single_quotes
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -5,11 +7,24 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+/// FlutterLocalNotificationsPlugin.instance
 FlutterLocalNotificationsPlugin plug = FlutterLocalNotificationsPlugin();
 
+/// The main service is a layer that is used for native and convenient
+/// interaction with notifications in the application
 class NotificationService {
+  /// Factory constructor for interacting with only one instance of
+  /// [NotificationService] throughout the application
+  factory NotificationService() => _instance;
+  NotificationService._();
+  static final NotificationService _instance = NotificationService._();
+
+  /// File name for the logo in notifications
   static const String notificationsIcon = "logo";
-  static initializingSettings() async {
+
+  /// Initialization of all necessary settings for Android, iOS,
+  /// obtaining permissions, setting location for time
+  static Future<void> initializingSettings() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings(NotificationService.notificationsIcon);
     const IOSInitializationSettings initializationSettingsIOS =
@@ -24,9 +39,9 @@ class NotificationService {
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onSelectNotification: _selectNotification,
     );
@@ -39,14 +54,12 @@ class NotificationService {
           sound: true,
         );
     tz.initializeTimeZones();
-    String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    final String currentTimeZone =
+        await FlutterNativeTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
   }
 
-  factory NotificationService() => _instance;
-  NotificationService._();
-  static final NotificationService _instance = NotificationService._();
-
+  /// Parameters of a single notification channel.
   static const NotificationDetails platformChannelSpecifics =
       NotificationDetails(
     android: AndroidNotificationDetails(
@@ -60,35 +73,45 @@ class NotificationService {
   );
 
   static void _onDidReceiveLocalNotification(
-      int id, String? title, String? body, String? payload) {
+    final int id,
+    final String? title,
+    final String? body,
+    final String? payload,
+  ) {
     debugPrint('Handle old notification!: $id, $title, $body, $payload');
   }
 
-  static Future<void> _selectNotification(String? payload) async {
+  static Future<void> _selectNotification(final String? payload) async {
     if (payload != null) {
       debugPrint('notification payload: $payload');
     }
   }
 
-  int id = 0;
+  int _id = 0;
 
-  Future<void> show({String? title, String? body, String? payload}) async =>
-      await plug.show(
-        id++,
+  /// The function that will launch notifications right now
+  Future<void> show({
+    final String? title,
+    final String? body,
+    final String? payload,
+  }) async =>
+      plug.show(
+        _id++,
         title,
         body,
         platformChannelSpecifics,
         payload: payload,
       );
 
+  /// A function that will launch notifications right now at a certain time
   Future<void> schedule({
-    String? title,
-    String? body,
-    required DateTime dateTime,
-    String? payload,
+    required final DateTime dateTime,
+    final String? title,
+    final String? body,
+    final String? payload,
   }) async =>
-      await plug.zonedSchedule(
-        id++,
+      plug.zonedSchedule(
+        _id++,
         title,
         body,
         tz.TZDateTime.local(

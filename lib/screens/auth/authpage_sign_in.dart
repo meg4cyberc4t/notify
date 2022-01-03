@@ -1,12 +1,13 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:provider/provider.dart';
 
 class AuthPageSignIn extends StatefulWidget {
-  const AuthPageSignIn({Key? key}) : super(key: key);
+  const AuthPageSignIn({final Key? key}) : super(key: key);
 
   @override
   State<AuthPageSignIn> createState() => _AuthPageSignInState();
@@ -24,64 +25,70 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(final BuildContext context) => Scaffold(
         body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(),
-          Text(
-            'Sign in',
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          Column(
-            children: [
-              NotifyTextField(
-                hintText: 'Your email',
-                labelText: 'Email',
-                controller: _controllerEmail,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              const SizedBox(),
+              Text(
+                'Sign in',
+                style: Theme.of(context).textTheme.headline3,
               ),
-              const SizedBox(height: 10),
-              NotifyTextField(
-                hintText: 'Your password',
-                labelText: 'Password',
-                obscureText: true,
-                controller: _controllerPassword,
+              Column(
+                children: <Widget>[
+                  NotifyTextField(
+                    hintText: 'Your email',
+                    labelText: 'Email',
+                    controller: _controllerEmail,
+                  ),
+                  const SizedBox(height: 10),
+                  NotifyTextField(
+                    hintText: 'Your password',
+                    labelText: 'Password',
+                    obscureText: true,
+                    controller: _controllerPassword,
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  NotifyDirectButton(
+                    title: 'Continue',
+                    onPressed: () async {
+                      final String? error =
+                          await FirebaseService.of(context).signIn(
+                        email: _controllerEmail.text.trim(),
+                        password: _controllerPassword.text.trim(),
+                      );
+                      if (!mounted) {
+                        return;
+                      }
+                      if (error != null) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(notifySnackBar(error, context));
+                      } else {
+                        await Navigator.pushReplacementNamed(
+                          context,
+                          '/MainPage',
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  NotifyDirectButton(
+                    title: 'Create account',
+                    style: NotifyDirectButtonStyle.slience,
+                    onPressed: () => Navigator.pushReplacementNamed(
+                      context,
+                      '/AuthPageSignUp',
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          Column(
-            children: [
-              NotifyDirectButton(
-                  title: 'Continue',
-                  onPressed: () async {
-                    String? error =
-                        await context.read<FirebaseService>().signIn(
-                              email: _controllerEmail.text.trim(),
-                              password: _controllerPassword.text.trim(),
-                            );
-                    if (error != null) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(notifySnackBar(error, context));
-                    } else {
-                      Navigator.pushReplacementNamed(context, '/MainPage');
-                    }
-                  }),
-              const SizedBox(height: 10),
-              NotifyDirectButton(
-                title: 'Create account',
-                style: NotifyDirectButtonStyle.slience,
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/AuthPageSignUp'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ));
-  }
+        ),
+      );
 }
