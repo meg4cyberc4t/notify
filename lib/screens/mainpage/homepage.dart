@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/widgets/notify_folder_item.dart';
 import 'package:notify/components/widgets/notify_notification_item.dart';
+import 'package:notify/components/widgets/notify_snack_bar.dart';
+import 'package:notify/services/notifications_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -42,7 +44,17 @@ class _HomePageState extends State<HomePage>
                       title: "Title #$i",
                       priority: i == 0,
                       datetime: DateTime.now(),
-                      onTap: () => _controller.jumpTo(56 * 6),
+                      onTap: () async {
+                        await NotificationService().schedule(
+                          title: "title",
+                          body: "desc",
+                          payload: 'payload',
+                          dateTime:
+                              DateTime.now().add(const Duration(seconds: 5)),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(notifySnackBar('Ok!', context));
+                      },
                     ),
                     childCount: 6,
                   ),

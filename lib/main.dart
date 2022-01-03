@@ -11,14 +11,16 @@ import 'package:notify/screens/mainpage/mainpage.dart';
 import 'package:notify/screens/mainpage/profile/profilepage_edit.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/configs/notify_theme.dart';
+import 'package:notify/services/notifications_service.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService.initializingSettings();
   LicenseRegistry.addLicense(() async* {
     final license = await rootBundle.loadString('google_fonts/OFL.txt');
     yield LicenseEntryWithLineBreaks(['google_fonts'], license);
   });
-  WidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
   await Firebase.initializeApp();
   runApp(const MyApp());

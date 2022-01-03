@@ -20,6 +20,8 @@ dependencies:
   bottom_sheet: ^1.0.5 # For bottom sheet
   stream_transform: ^2.0.0 # For merging streams (FirebaseService)
   flutter_redux: ^0.8.2 # For update screen state
+  flutter_local_notifications: ^9.2.0
+  flutter_native_timezone: ^2.0.0
   
 
 flutter:
