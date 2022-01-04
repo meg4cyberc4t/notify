@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
-import 'package:notify/components/widgets/notify_user_list_tile.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/static_methods/snapshot_middleware.dart';
@@ -69,8 +69,8 @@ class _SearchPageState extends State<SearchPage>
                   ),
                 );
               }
-              return StreamBuilder<List<NotifyUser>>(
-                stream: FirebaseService.of(context)
+              return FutureBuilder<List<NotifyUser>>(
+                future: FirebaseService.of(context)
                     .getUsersListFromUsersUidList(state),
                 builder: (
                   final BuildContext context,
