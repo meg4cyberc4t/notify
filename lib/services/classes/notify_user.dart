@@ -1,15 +1,31 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/services/classes/notify_item.dart';
 
-class NotifyUser {
+class NotifyUser implements NotifyItem {
   const NotifyUser({
     required this.uid,
     required this.firstName,
     required this.lastName,
-    required this.color,
     required this.status,
+    required this.color,
   });
+
+  NotifyUser.fromFirebaseDocumentSnapshot(
+    final DocumentSnapshot<Map<String, dynamic>> data,
+  )   : uid = data.id,
+        firstName = data['first_name'],
+        lastName = data['last_name'],
+        status = data['status'],
+        color = Color.fromRGBO(
+          data['color_r'],
+          data['color_g'],
+          data['color_b'],
+          1,
+        );
+
   final String uid;
   final String firstName;
   final String lastName;
