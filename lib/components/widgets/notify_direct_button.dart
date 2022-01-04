@@ -13,6 +13,9 @@ enum NotifyDirectButtonStyle {
 
   /// There is no fill, no sides.
   slience,
+
+  /// Background fill, no sides,
+  transparent,
 }
 
 /// The main button in the application
@@ -74,6 +77,12 @@ class NotifyDirectButton extends StatelessWidget {
         borderSide = BorderSide.none;
         elevation = 0;
         break;
+      case NotifyDirectButtonStyle.transparent:
+        buttonColor = Colors.transparent;
+        textColor = Theme.of(context).colorScheme.primary;
+        borderSide = BorderSide.none;
+        elevation = 0;
+        break;
     }
     return RawMaterialButton(
       fillColor: buttonColor,
@@ -91,10 +100,12 @@ class NotifyDirectButton extends StatelessWidget {
           mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (icon != null)
-              Icon(icon, size: iconSize, color: textStyle.color),
+            if (icon != null) Icon(icon, size: iconSize, color: textColor),
             if (icon != null && title != null) const SizedBox(width: 10),
-            if (title != null) Text('$title'),
+            if (title != null)
+              Text(
+                '$title',
+              ),
           ],
         ),
       ),
