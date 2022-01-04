@@ -79,41 +79,47 @@ class FirebaseService {
   Future<void> signOut() => _firebaseAuth.signOut();
 
   /// Getting user information
-  Stream<NotifyUser> getInfoAboutUser(
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getInfoAboutUser(
     final String uid,
   ) =>
-      FirebaseFirestore.instance.collection('users').doc(uid).snapshots().map(
-            (final DocumentSnapshot<Map<String, dynamic>> event) =>
-                NotifyUser.fromFirebaseDocumentSnapshot(event),
-          );
+      FirebaseFirestore.instance.collection('users').doc(uid).snapshots();
 
   /// Updating user information
-  Future<void> updateInfoAboutUser(
-    final Map<String, Object?> newData,
-  ) =>
+  Future<void> updateInfoAboutUser(final Map<String, Object?> data) =>
       FirebaseFirestore.instance
           .collection('users')
           .doc(_firebaseAuth.currentUser!.uid)
-          .update(newData);
+          .update(data);
 
   /// Getting a list of users by having a list of their uids
-  Future<List<NotifyUser>> getUsersListFromUsersUidList(
+  Stream<List<NotifyUser>> getUsersListFromUsersUidList(
     final List<String> uids,
-  ) async {
+  ) {
     if (uids.isEmpty) {
-      return <NotifyUser>[];
+      return Stream<List<NotifyUser>>.value(<NotifyUser>[]);
     }
-    final QuerySnapshot<Map<String, dynamic>> a = await FirebaseFirestore
-        .instance
+    return FirebaseFirestore.instance
         .collection('users')
         .where(FieldPath.documentId, whereIn: uids)
-        .get();
-    return a.docs
+        .snapshots()
         .map(
-          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-              NotifyUser.fromFirebaseDocumentSnapshot(e),
-        )
-        .toList();
+          (final QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+              .map((final QueryDocumentSnapshot<Map<String, dynamic>> e) {
+            final Map<String, dynamic> data = e.data();
+            return NotifyUser(
+              uid: e.id,
+              firstName: data['first_name'],
+              lastName: data['last_name'],
+              color: Color.fromRGBO(
+                data['color_r'],
+                data['color_g'],
+                data['color_b'],
+                1,
+              ),
+              status: data['status'],
+            );
+          }).toList(),
+        );
   }
 
   /// Calculates the number of subscriptions the user has
@@ -144,7 +150,7 @@ class FirebaseService {
   }
 
   /// Getting all the uids that are subscribed to the user
-  Stream<List<NotifyUser>> getFollowersFromUser(final String uid) {
+  Stream<List<String>> getFollowersFromUser(final String uid) {
     final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
@@ -176,14 +182,11 @@ class FirebaseService {
 
     return combineLatestStreams<List<String>>(
       <Stream<List<String>>>[stream1, stream2],
-    ).map((final List<List<String>> event) => event[0] + event[1]).asyncMap(
-          (final List<String> event) async =>
-              getUsersListFromUsersUidList(event),
-        );
+    ).map((final List<List<String>> event) => event[0] + event[1]);
   }
 
   /// Getting all the uids that the user is subscribed to
-  Stream<List<NotifyUser>> getFollowingFromUser(final String uid) {
+  Stream<List<String>> getFollowingFromUser(final String uid) {
     final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
@@ -214,17 +217,11 @@ class FirebaseService {
         );
     return combineLatestStreams<List<String>>(
       <Stream<List<String>>>[stream1, stream2],
-    )
-        .map((final List<List<String>> event) => event[0] + event[1])
-        .asyncMap(
-          (final List<String> event) async =>
-              getUsersListFromUsersUidList(event),
-        )
-        .asBroadcastStream();
+    ).map((final List<List<String>> event) => event[0] + event[1]);
   }
 
   /// Getting all colleagues uids with user
-  Stream<List<NotifyUser>> getColleguesFromUser(final String uid) {
+  Stream<List<String>> getColleguesFromUser(final String uid) {
     final Stream<List<String>> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: uid)
@@ -253,13 +250,9 @@ class FirebaseService {
               )
               .toList(),
         );
-    final Stream<List<String>> resultStream =
-        combineLatestStreams<List<String>>(
+    return combineLatestStreams<List<String>>(
       <Stream<List<String>>>[stream1, stream2],
     ).map((final List<List<String>> event) => event[0] + event[1]);
-    return resultStream.asyncMap(
-      (final List<String> event) async => getUsersListFromUsersUidList(event),
-    );
   }
 
   /// Changing the status of a "subscription" with a user
