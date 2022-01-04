@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notify/configs/notify_parameters.dart';
-import 'package:notify/screens/auth/authpage.dart';
-import 'package:notify/screens/mainpage/homepage.dart';
-import 'package:notify/screens/mainpage/profile/profilepage.dart';
-import 'package:notify/screens/mainpage/searchpage.dart';
+import 'package:notify/screens/auth_page.dart';
+import 'package:notify/screens/home_page.dart';
+import 'package:notify/screens/profile_page.dart';
+import 'package:notify/screens/search_page.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {

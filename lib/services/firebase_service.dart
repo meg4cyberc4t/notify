@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:notify/components/methods/combine_latest_streams.dart';
-import 'package:notify/services/notify_user.dart';
+import 'package:notify/services/classes/notify_user.dart';
+import 'package:notify/static_methods/combine_latest_streams.dart';
 import 'package:provider/provider.dart';
 
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and

@@ -2,10 +2,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/methods/custom_route.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
-import 'package:notify/screens/mainpage/profile/profilepage.dart';
-import 'package:notify/services/notify_user.dart';
+import 'package:notify/screens/profile_page.dart';
+import 'package:notify/services/classes/notify_user.dart';
+import 'package:notify/static_methods/custom_route.dart';
 
 class NotifyUserListTile extends StatelessWidget {
   const NotifyUserListTile({required final this.user, final Key? key})

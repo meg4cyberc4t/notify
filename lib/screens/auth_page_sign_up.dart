@@ -5,13 +5,13 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:notify/components/methods/custom_route.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
-import 'package:notify/screens/colorpickerpage.dart';
+import 'package:notify/screens/color_picker_page.dart';
 import 'package:notify/services/firebase_service.dart';
+import 'package:notify/static_methods/custom_route.dart';
 import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 

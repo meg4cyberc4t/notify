@@ -1,9 +1,9 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/methods/snapshot_middleware.dart';
 import 'package:notify/components/widgets/notify_user_list_tile.dart';
+import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/services/notify_user.dart';
+import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
 
 /// [showFlexibleBottomSheet] is called, to which a list of user IDs is passed,

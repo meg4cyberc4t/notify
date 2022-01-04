@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
-import 'package:notify/components/methods/custom_route.dart';
-import 'package:notify/components/methods/snapshot_middleware.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/configs/notify_parameters.dart';
-import 'package:notify/screens/colorpickerpage.dart';
+import 'package:notify/screens/color_picker_page.dart';
 import 'package:notify/services/firebase_service.dart';
+import 'package:notify/static_methods/custom_route.dart';
+import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
 
 /// The profile page allows you to view information about each user:
