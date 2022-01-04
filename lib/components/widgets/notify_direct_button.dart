@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/configs/notify_parameters.dart';
+import 'package:notify/services/notify_parameters.dart';
 
 /// Styles [NotifyDirectButtonStyle]
 enum NotifyDirectButtonStyle {

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'package:flutter/material.dart';
-import 'package:notify/configs/notify_parameters.dart';
+import 'package:notify/services/notify_parameters.dart';
 
 /// Custom middleware in [FutureBuilder] and [StreamBuilder],
 /// which shows the expected widgets when an error or loading occurs
