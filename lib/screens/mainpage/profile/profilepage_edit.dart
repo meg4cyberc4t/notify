@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_single_quotes
+// ignore_for_file: public_member_api_docs, prefer_single_quotes
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +10,7 @@ import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:provider/provider.dart';
 
-/// A page that allows you to change the information of the current user
 class ProfilePageEdit extends StatefulWidget {
-  /// The main screen constructor
   const ProfilePageEdit({final Key? key}) : super(key: key);
 
   @override
@@ -36,8 +34,7 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   Widget build(final BuildContext context) => Scaffold(
         body: SingleChildScrollView(
           child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-            stream: context
-                .read<FirebaseService>()
+            stream: FirebaseService.of(context)
                 .getInfoAboutUser(context.watch<User>().uid),
             builder: (
               final BuildContext context,
@@ -48,11 +45,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
               if (widget != null) {
                 return widget;
               }
-              if (snapshot.data!.exists) {
-                return const SizedBox.expand(
-                  child: Center(
-                    child: Text("Data does not exist"),
-                  ),
+              if (!snapshot.data!.exists) {
+                return const Center(
+                  child: Text("Data does not exist"),
                 );
               }
 
@@ -123,17 +118,10 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              child: NotifyDirectButton(
-                                title: 'Back',
-                                onPressed: () => Navigator.pop(context),
-                                style: NotifyDirectButtonStyle.outlined,
-                              ),
-                            ),
-                          ],
+                        child: NotifyDirectButton(
+                          title: 'Back',
+                          onPressed: () => Navigator.pop(context),
+                          style: NotifyDirectButtonStyle.outlined,
                         ),
                       ),
                     ],
