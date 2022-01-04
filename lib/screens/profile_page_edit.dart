@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, prefer_single_quotes
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
+import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
@@ -33,28 +33,22 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   @override
   Widget build(final BuildContext context) => Scaffold(
         body: SingleChildScrollView(
-          child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          child: StreamBuilder<NotifyUser>(
             stream: FirebaseService.of(context)
                 .getInfoAboutUser(context.watch<User>().uid),
             builder: (
               final BuildContext context,
-              final AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                  snapshot,
+              final AsyncSnapshot<NotifyUser> snapshot,
             ) {
               final Widget? widget = snapshotMiddleware(snapshot);
               if (widget != null) {
                 return widget;
               }
-              if (!snapshot.data!.exists) {
-                return const Center(
-                  child: Text("Data does not exist"),
-                );
-              }
 
-              final Map<String, dynamic> data = snapshot.data!.data()!;
-              _controllerFirstname.text = data['first_name'];
-              _controllerLastname.text = data['last_name'];
-              _controllerStatus.text = data['status'];
+              final NotifyUser user = snapshot.data!;
+              _controllerFirstname.text = user.firstName;
+              _controllerLastname.text = user.lastName;
+              _controllerStatus.text = user.status;
 
               return Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),

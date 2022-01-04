@@ -1,15 +1,15 @@
 // ignore_for_file: prefer_single_quotes
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:notify/components/bottomsheets/show_users_bottom_sheet.dart';
+import 'package:notify/components/bottomsheets/show_notify_items_bottom_sheet.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
-import 'package:notify/configs/notify_parameters.dart';
 import 'package:notify/screens/color_picker_page.dart';
+import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
+import 'package:notify/services/notify_parameters.dart';
 import 'package:notify/static_methods/custom_route.dart';
 import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
@@ -57,38 +57,20 @@ class _ProfilePageState extends State<ProfilePage>
           final AsyncSnapshot<bool> isFollowedSnapshot,
         ) =>
             snapshotMiddleware(isFollowedSnapshot) ??
-            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream:
-                  context.read<FirebaseService>().getInfoAboutUser(profileUID),
+            StreamBuilder<NotifyUser>(
+              stream: FirebaseService.of(context).getInfoAboutUser(profileUID),
               builder: (
                 final BuildContext context,
-                final AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                    snapshot,
+                final AsyncSnapshot<NotifyUser> snapshot,
               ) {
                 final Widget? widget = snapshotMiddleware(snapshot);
                 if (widget != null) {
                   return widget;
                 }
-                if (!snapshot.data!.exists) {
-                  return const SizedBox.expand(
-                    child: Center(
-                      child: Text("Data does not exist"),
-                    ),
-                  );
-                }
-                final Map<String, dynamic> data = snapshot.data!.data()!;
-                final String userFirstname = data['first_name'];
-                final String userLastname = data['last_name'];
-                final String status = data['status'];
-                final Color userColor = Color.fromRGBO(
-                  data['color_r'],
-                  data['color_g'],
-                  data['color_b'],
-                  1,
-                );
+                final NotifyUser user = snapshot.data!;
 
                 final Color passiveColor =
-                    ThemeData.estimateBrightnessForColor(userColor) ==
+                    ThemeData.estimateBrightnessForColor(user.color) ==
                             Brightness.light
                         ? Colors.black
                         : Colors.white;
@@ -115,9 +97,8 @@ class _ProfilePageState extends State<ProfilePage>
                       context,
                       customRoute(
                         ColorPickerPage(
-                          title: (userFirstname[0] + userLastname[0])
-                              .toUpperCase(),
-                          initialValue: userColor,
+                          title: user.avatarTitle,
+                          initialValue: user.color,
                         ),
                       ),
                     );
@@ -146,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage>
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
                         title: Text(
-                          '$userFirstname $userLastname',
+                          '${user.firstName} ${user.lastName}',
                           style: Theme.of(context)
                               .textTheme
                               .headline5
@@ -154,13 +135,13 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         background: AnimatedContainer(
                           duration: NotifyParameters.duration,
-                          color: userColor,
+                          color: user.color,
                         ),
                       ),
                       pinned: true,
-                      backgroundColor: userColor,
+                      backgroundColor: user.color,
                     ),
-                    if (status.isNotEmpty)
+                    if (user.status.isNotEmpty)
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -168,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage>
                             vertical: 5,
                           ),
                           child: Text(
-                            data['status'],
+                            user.status,
                             style: Theme.of(context).textTheme.headline5,
                             textAlign: TextAlign.center,
                           ),
@@ -207,25 +188,28 @@ class _ProfilePageState extends State<ProfilePage>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            preWidgetCountUsers(
+                            _preWidgetCountUsers(
                               context,
                               stream: FirebaseService.of(context)
-                                  .getColleguesFromUser(profileUID),
+                                  .getColleguesFromUser,
+                              profileUID: profileUID,
                               title: 'Collegues',
                             ),
                             _localDivider,
-                            preWidgetCountUsers(
+                            _preWidgetCountUsers(
                               context,
                               stream: FirebaseService.of(context)
-                                  .getFollowersFromUser(profileUID),
+                                  .getFollowersFromUser,
+                              profileUID: profileUID,
                               title: 'Followers',
                             ),
                             _localDivider,
-                            preWidgetCountUsers(
+                            _preWidgetCountUsers(
                               context,
                               stream: FirebaseService.of(context)
-                                  .getFollowingFromUser(profileUID),
-                              title: 'Followers',
+                                  .getFollowingFromUser,
+                              profileUID: profileUID,
+                              title: 'Following',
                             ),
                           ],
                         ),
@@ -240,26 +224,30 @@ class _ProfilePageState extends State<ProfilePage>
     );
   }
 
-  Expanded preWidgetCountUsers(
+  Expanded _preWidgetCountUsers(
     final BuildContext context, {
-    required final Stream<List<String>> stream,
+    required final Stream<List<NotifyUser>> Function(String) stream,
+    required final String profileUID,
     required final String title,
   }) =>
       Expanded(
-        child: StreamBuilder<List<String>>(
-          stream: stream,
+        child: StreamBuilder<List<NotifyUser>>(
+          stream: stream(profileUID),
           builder: (
             final BuildContext context,
-            final AsyncSnapshot<List<String>> snapshot,
+            final AsyncSnapshot<List<NotifyUser>> snapshot,
           ) {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
             }
             if (snapshot.hasData) {
-              final List<String> data = snapshot.data!;
+              final List<NotifyUser> data = snapshot.data!;
               return InkWell(
                 borderRadius: BorderRadius.circular(15),
-                onTap: () => showUsersBottomSheet(context, data),
+                onTap: () => showNotifyItemsBottomSheet(
+                  context,
+                  stream(profileUID),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
