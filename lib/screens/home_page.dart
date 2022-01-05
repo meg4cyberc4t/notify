@@ -2,9 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:notify/components/widgets/notify_folder_item.dart';
-import 'package:notify/components/widgets/notify_notification_item.dart';
-import 'package:notify/services/notifications_service.dart';
+import 'package:notify/components/widgets/notify_items_list.dart';
+import 'package:notify/services/classes/notify_folder.dart';
+import 'package:notify/services/classes/notify_item.dart';
+import 'package:notify/services/classes/notify_notification.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({final Key? key}) : super(key: key);
@@ -40,26 +41,45 @@ class _HomePageState extends State<HomePage>
                 ),
                 sliver: SliverPadding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  sliver: SliverFixedExtentList(
-                    itemExtent: 56,
-                    delegate: SliverChildBuilderDelegate(
-                      (final BuildContext context, final int i) =>
-                          NotifyNotificationItem(
-                        title: 'Title #$i',
-                        priority: i == 0,
-                        datetime: DateTime.now(),
-                        onPressed: () async {
-                          await NotificationService().schedule(
-                            title: 'title',
-                            body: 'desc',
-                            payload: 'payload',
-                            dateTime:
-                                DateTime.now().add(const Duration(seconds: 1)),
-                          );
-                        },
+                  sliver: SliverNotifyItemsList(
+                    divider: false,
+                    list: <NotifyItem>[
+                      NotifyNotification(
+                        uid: '0',
+                        title: 'Мох',
+                        description: 'description',
+                        deadline: DateTime.now(),
+                        priority: true,
                       ),
-                      childCount: 6,
-                    ),
+                      NotifyNotification(
+                        uid: '0',
+                        title: 'Стать похожим меньше на цветок, больше на',
+                        description: 'description',
+                        deadline: DateTime.now(),
+                        priority: true,
+                      ),
+                      NotifyNotification(
+                        uid: '0',
+                        title: 'Мох!',
+                        description: 'description',
+                        deadline: DateTime.now(),
+                        priority: true,
+                      ),
+                      NotifyNotification(
+                        uid: '0',
+                        title: 'Японский сад промок',
+                        description: 'description',
+                        deadline: DateTime.now(),
+                        priority: true,
+                      ),
+                      NotifyNotification(
+                        uid: '0',
+                        title: 'воду пьёт зелёный мох',
+                        description: 'description',
+                        deadline: DateTime.now(),
+                        priority: true,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -67,25 +87,30 @@ class _HomePageState extends State<HomePage>
                 header: AppBar(
                   title: const Text('Folders'),
                 ),
-                sliver: SliverPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  sliver: SliverFixedExtentList(
-                    itemExtent: 82,
-                    delegate: SliverChildBuilderDelegate(
-                      (final BuildContext context, final int i) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        child: NotifyFolderItem(
-                          title: 'Header $i',
-                          countNotifications: i,
-                          subtitle: 'subtitle',
-                          onPressed: () {},
-                        ),
+                sliver: const SliverPadding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  sliver: SliverNotifyItemsList(
+                    divider: false,
+                    list: <NotifyItem>[
+                      NotifyFolder(
+                        uid: '0',
+                        title: 'Неприметным ковром',
+                        description: 'стелется в тени цветов',
+                        notifications: <NotifyNotification>[],
                       ),
-                      childCount: 10,
-                    ),
+                      NotifyFolder(
+                        uid: '0',
+                        title: 'репней и пестиков,',
+                        description: 'шипов',
+                        notifications: <NotifyNotification>[],
+                      ),
+                      NotifyFolder(
+                        uid: '0',
+                        title: 'Мы все исчезнем,',
+                        description: 'но не мох',
+                        notifications: <NotifyNotification>[],
+                      ),
+                    ],
                   ),
                 ),
               ),

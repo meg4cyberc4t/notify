@@ -1,21 +1,65 @@
-// ignore_for_file: public_member_api_docs
+// ignore_for_file: public_member_api_docs, diagnostic_describe_all_properties
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/screens/profile_page.dart';
+import 'package:notify/services/classes/notify_folder.dart';
 import 'package:notify/services/classes/notify_item.dart';
+import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/static_methods/custom_route.dart';
+
+Widget _itemBuilder(
+  final BuildContext context,
+  final int index,
+  final NotifyItem item,
+) {
+  switch (item.runtimeType) {
+    case NotifyUser:
+      final NotifyUser user = item as NotifyUser;
+      return _NotifyUserListTile(
+        key: Key(user.uid),
+        user: user,
+      );
+    case NotifyNotification:
+      final NotifyNotification ntf = item as NotifyNotification;
+      return _NotifyNotificationItem(
+        title: ntf.title,
+        datetime: ntf.deadline,
+        priority: ntf.priority,
+        onPressed: () {},
+      );
+    case NotifyFolder:
+      final NotifyFolder folder = item as NotifyFolder;
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: _NotifyFolderItem(
+          title: folder.title,
+          subtitle: folder.description,
+          countNotifications: folder.notifications.length,
+          onPressed: () {},
+        ),
+      );
+
+    default:
+      return const SizedBox();
+  }
+}
 
 class NotifyItemsList extends StatelessWidget {
   const NotifyItemsList({
     required final this.list,
     final Key? key,
     final this.controller,
+    this.divider = true,
+    this.dividerIndent = 80,
   }) : super(key: key);
   final List<NotifyItem> list;
   final ScrollController? controller;
+  final bool divider;
+  final double dividerIndent;
   @override
   Widget build(final BuildContext context) {
     if (list.isEmpty) {
@@ -26,7 +70,7 @@ class NotifyItemsList extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.3,
             child: Center(
               child: Text(
-                'Users not found',
+                'Not found',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -41,25 +85,17 @@ class NotifyItemsList extends StatelessWidget {
         final BuildContext context,
         final int index,
       ) =>
-          const Divider(
-        height: 1,
-        indent: 80,
-      ),
+          divider
+              ? Divider(
+                  height: 1,
+                  indent: dividerIndent,
+                )
+              : const SizedBox(),
       itemBuilder: (
         final BuildContext context,
         final int index,
-      ) {
-        final NotifyItem item = list[index];
-        if (item is NotifyUser) {
-          final NotifyUser user = item;
-          return NotifyUserListTile(
-            key: Key(user.uid),
-            user: user,
-          );
-        } else {
-          return const SizedBox();
-        }
-      },
+      ) =>
+          _itemBuilder(context, index, list[index]),
     );
   }
 
@@ -72,8 +108,51 @@ class NotifyItemsList extends StatelessWidget {
   }
 }
 
-class NotifyUserListTile extends StatelessWidget {
-  const NotifyUserListTile({required final this.user, final Key? key})
+class SliverNotifyItemsList extends StatelessWidget {
+  const SliverNotifyItemsList({
+    required final this.list,
+    this.divider = true,
+    this.dividerIndent = 80,
+    final Key? key,
+  }) : super(key: key);
+  final List<NotifyItem> list;
+  final bool divider;
+  final double dividerIndent;
+  @override
+  Widget build(final BuildContext context) {
+    if (list.isEmpty) {
+      SliverToBoxAdapter(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.3,
+          child: Center(
+            child: Text(
+              'Not found',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+        ),
+      );
+    }
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (final BuildContext context, final int index) => Column(
+          children: <Widget>[
+            _itemBuilder(context, index, list[index]),
+            if (list.length - 1 != index && divider)
+              Divider(
+                height: 1,
+                indent: dividerIndent,
+              ),
+          ],
+        ),
+        childCount: list.length,
+      ),
+    );
+  }
+}
+
+class _NotifyUserListTile extends StatelessWidget {
+  const _NotifyUserListTile({required final this.user, final Key? key})
       : super(key: key);
   final NotifyUser user;
 
@@ -103,5 +182,115 @@ class NotifyUserListTile extends StatelessWidget {
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<NotifyUser>('user', user));
+  }
+}
+
+/// The [ListTile] unit that is used in the application to display notifications
+class _NotifyNotificationItem extends StatelessWidget {
+  /// The main constructor of the button.
+  /// [title] - One of the styles NotifyDirectButtonStyle
+  /// [datetime] -DateTime of execution
+  /// [onPressed] - Function when pressed
+  /// [priority] - Is the notification prioritized
+  const _NotifyNotificationItem({
+    required this.title,
+    required this.datetime,
+    required this.onPressed,
+    final Key? key,
+    this.priority = false,
+  }) : super(key: key);
+
+  /// [title] - One of the styles NotifyDirectButtonStyle
+  final String title;
+
+  /// [priority] - Is the notification prioritized
+  final bool priority;
+
+  /// [datetime] -DateTime of execution
+  final DateTime datetime;
+
+  /// [onPressed] - Function when pressed
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(final BuildContext context) => ListTile(
+        onTap: onPressed,
+        leading: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Container(
+            width: 4,
+            color: priority
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+        trailing: Text(DateFormat('H:M').format(datetime)),
+        title: Text(title),
+        minLeadingWidth: 0,
+      );
+
+  @override
+  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(StringProperty('title', title))
+      ..add(DiagnosticsProperty<bool>('priority', priority))
+      ..add(DiagnosticsProperty<DateTime>('datetime', datetime))
+      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed));
+  }
+}
+
+/// The [ListTile] unit that is used in the application to display folders
+class _NotifyFolderItem extends StatelessWidget {
+  /// [title] - Title
+  /// [subtitle] - Subtitle
+  /// [countNotifications] - Count of reminders in the folder
+  /// [onPressed] - function when pressed
+
+  const _NotifyFolderItem({
+    required this.title,
+    required this.subtitle,
+    required this.countNotifications,
+    required this.onPressed,
+    final Key? key,
+  }) : super(key: key);
+
+  /// [title] - Title
+  final String title;
+
+  /// [subtitle] - Subtitle
+  final String subtitle;
+
+  /// [countNotifications] - Count of reminders in the folder
+  final int countNotifications;
+
+  /// [onPressed] - function when pressed
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(final BuildContext context) => ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          side: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+        onTap: onPressed,
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: Text(
+          '$countNotifications ntf',
+          style: Theme.of(context).textTheme.subtitle1,
+        ),
+        // tileColor: Theme.of(context).appBarTheme.backgroundColor,
+        minLeadingWidth: 0,
+      );
+
+  @override
+  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(StringProperty('title', title))
+      ..add(StringProperty('subtitle', subtitle))
+      ..add(IntProperty('countNotifications', countNotifications))
+      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed));
   }
 }

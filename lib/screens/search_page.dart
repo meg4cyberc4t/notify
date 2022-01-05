@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage>
             title: Text('Search'),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.only(top: 10),
             sliver: SliverToBoxAdapter(
               child: NotifyTextField(
                 autocorrect: true,
@@ -80,25 +80,8 @@ class _SearchPageState extends State<SearchPage>
                   if (widget != null) {
                     return SliverToBoxAdapter(child: widget);
                   }
-                  final List<NotifyUser> data = snapshot.data!;
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (final BuildContext context, final int index) => Column(
-                        children: <Widget>[
-                          NotifyUserListTile(
-                            user: data[index],
-                            key: Key(data[index].uid),
-                          ),
-                          if (index != data.length - 1)
-                            Divider(
-                              indent: 80,
-                              height: 0.5,
-                              color: Theme.of(context).dividerColor,
-                            ),
-                        ],
-                      ),
-                      childCount: data.length,
-                    ),
+                  return SliverNotifyItemsList(
+                    list: snapshot.data!,
                   );
                 },
               );
