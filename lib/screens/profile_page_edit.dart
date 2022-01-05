@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, prefer_single_quotes
 
- import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:notify/components/widgets/notify_direct_button.dart';

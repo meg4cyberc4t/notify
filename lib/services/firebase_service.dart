@@ -82,10 +82,20 @@ class FirebaseService {
   Stream<NotifyUser> getInfoAboutUser(
     final String uid,
   ) =>
-      FirebaseFirestore.instance.collection('users').doc(uid).snapshots().map(
-            (final DocumentSnapshot<Map<String, dynamic>> event) =>
-                NotifyUser.fromFirebaseDocumentSnapshot(event),
-          );
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .withConverter(
+            fromFirestore: (
+              final DocumentSnapshot<Map<String, dynamic>> snapshot,
+              final SnapshotOptions? options,
+            ) =>
+                NotifyUser.fromJson(snapshot.data()!, snapshot.id),
+            toFirestore: (final NotifyUser value, final SetOptions? options) =>
+                value.toJson(),
+          )
+          .snapshots()
+          .map((final DocumentSnapshot<NotifyUser> event) => event.data()!);
 
   /// Updating user information
   Future<void> updateInfoAboutUser(
@@ -103,17 +113,24 @@ class FirebaseService {
     if (uids.isEmpty) {
       return <NotifyUser>[];
     }
-    final QuerySnapshot<Map<String, dynamic>> a = await FirebaseFirestore
-        .instance
+    final QuerySnapshot<NotifyUser> a = await FirebaseFirestore.instance
         .collection('users')
         .where(FieldPath.documentId, whereIn: uids)
-        .get();
-    return a.docs
-        .map(
-          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-              NotifyUser.fromFirebaseDocumentSnapshot(e),
+        .withConverter(
+          fromFirestore: (
+            final DocumentSnapshot<Map<String, dynamic>> snapshot,
+            final SnapshotOptions? options,
+          ) =>
+              NotifyUser.fromJson(snapshot.data()!, snapshot.id),
+          toFirestore: (final NotifyUser value, final SetOptions? options) =>
+              value.toJson(),
         )
-        .toList();
+        .get();
+    return Future<List<NotifyUser>>.value(
+      a.docs
+          .map((final QueryDocumentSnapshot<NotifyUser> e) => e.data())
+          .toList(),
+    );
   }
 
   /// Calculates the number of subscriptions the user has

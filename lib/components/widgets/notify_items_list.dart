@@ -20,7 +20,6 @@ Widget _itemBuilder(
     case NotifyUser:
       final NotifyUser user = item as NotifyUser;
       return _NotifyUserListTile(
-        key: Key(user.uid),
         user: user,
       );
     case NotifyNotification:

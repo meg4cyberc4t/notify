@@ -25,6 +25,12 @@ class NotifyFolder implements NotifyItem {
             )
             .toList();
 
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'title': title,
+        'description': description,
+        'notifications': notifications,
+      };
+
   final String uid;
   final String title;
   final String description;
