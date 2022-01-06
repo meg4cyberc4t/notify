@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, diagnostic_describe_all_properties
+// ignore_for_file: public_member_api_docs
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +103,9 @@ class NotifyItemsList extends StatelessWidget {
     super.debugFillProperties(properties);
     properties
       ..add(IterableProperty<NotifyItem>('list', list))
-      ..add(DiagnosticsProperty<ScrollController?>('controller', controller));
+      ..add(DiagnosticsProperty<ScrollController?>('controller', controller))
+      ..add(DiagnosticsProperty<bool>('divider', divider))
+      ..add(DoubleProperty('dividerIndent', dividerIndent));
   }
 }
 
@@ -147,6 +149,15 @@ class SliverNotifyItemsList extends StatelessWidget {
         childCount: list.length,
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(IterableProperty<NotifyItem>('list', list))
+      ..add(DiagnosticsProperty<bool>('divider', divider))
+      ..add(DoubleProperty('dividerIndent', dividerIndent));
   }
 }
 
