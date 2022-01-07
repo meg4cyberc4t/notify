@@ -26,106 +26,102 @@ class _HomePageState extends State<HomePage>
     super.build(context);
     return Scaffold(
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async =>
-              Navigator.pushNamed(context, '/CreateNotificationPage'),
-          child: CustomScrollView(
-            controller: _controller,
-            slivers: <Widget>[
-              SliverStickyHeader(
-                header: AppBar(
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarColor: Theme.of(context).backgroundColor,
-                  ),
-                  title: const Text('Today tasks'),
+        child: CustomScrollView(
+          controller: _controller,
+          slivers: <Widget>[
+            SliverStickyHeader(
+              header: AppBar(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Theme.of(context).backgroundColor,
                 ),
-                sliver: SliverPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  sliver: SliverNotifyItemsList(
-                    divider: false,
-                    list: <NotifyItem>[
-                      NotifyNotification(
-                        owner: 'owner',
-                        uid: '0',
-                        title: 'Мох',
-                        description: 'description',
-                        deadline: DateTime.now(),
-                        priority: true,
-                        repeat: 0,
-                      ),
-                      NotifyNotification(
-                        owner: 'owner',
-                        uid: '0',
-                        title: 'Стать похожим меньше на цветок, больше на',
-                        description: 'description',
-                        deadline: DateTime.now(),
-                        priority: true,
-                        repeat: 0,
-                      ),
-                      NotifyNotification(
-                        owner: 'owner',
-                        uid: '0',
-                        title: 'Мох!',
-                        description: 'description',
-                        deadline: DateTime.now(),
-                        priority: true,
-                        repeat: 0,
-                      ),
-                      NotifyNotification(
-                        owner: 'owner',
-                        uid: '0',
-                        title: 'Японский сад промок',
-                        description: 'description',
-                        deadline: DateTime.now(),
-                        priority: true,
-                        repeat: 0,
-                      ),
-                      NotifyNotification(
-                        owner: 'owner',
-                        uid: '0',
-                        title: 'воду пьёт зелёный мох',
-                        description: 'description',
-                        deadline: DateTime.now(),
-                        priority: true,
-                        repeat: 0,
-                      ),
-                    ],
-                  ),
+                title: const Text('Today tasks'),
+              ),
+              sliver: SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverNotifyItemsList(
+                  divider: false,
+                  list: <NotifyItem>[
+                    NotifyNotification(
+                      owner: 'owner',
+                      uid: '0',
+                      title: 'Мох',
+                      description: 'description',
+                      deadline: DateTime.now(),
+                      priority: true,
+                      repeat: 0,
+                    ),
+                    NotifyNotification(
+                      owner: 'owner',
+                      uid: '0',
+                      title: 'Стать похожим меньше на цветок, больше на',
+                      description: 'description',
+                      deadline: DateTime.now(),
+                      priority: true,
+                      repeat: 0,
+                    ),
+                    NotifyNotification(
+                      owner: 'owner',
+                      uid: '0',
+                      title: 'Мох!',
+                      description: 'description',
+                      deadline: DateTime.now(),
+                      priority: true,
+                      repeat: 0,
+                    ),
+                    NotifyNotification(
+                      owner: 'owner',
+                      uid: '0',
+                      title: 'Японский сад промок',
+                      description: 'description',
+                      deadline: DateTime.now(),
+                      priority: true,
+                      repeat: 0,
+                    ),
+                    NotifyNotification(
+                      owner: 'owner',
+                      uid: '0',
+                      title: 'воду пьёт зелёный мох',
+                      description: 'description',
+                      deadline: DateTime.now(),
+                      priority: true,
+                      repeat: 0,
+                    ),
+                  ],
                 ),
               ),
-              SliverStickyHeader(
-                header: AppBar(
-                  title: const Text('Folders'),
-                ),
-                sliver: const SliverPadding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  sliver: SliverNotifyItemsList(
-                    divider: false,
-                    list: <NotifyItem>[
-                      NotifyFolder(
-                        uid: '0',
-                        title: 'Неприметным ковром',
-                        description: 'стелется в тени цветов',
-                        notifications: <NotifyNotification>[],
-                      ),
-                      NotifyFolder(
-                        uid: '0',
-                        title: 'репней и пестиков,',
-                        description: 'шипов',
-                        notifications: <NotifyNotification>[],
-                      ),
-                      NotifyFolder(
-                        uid: '0',
-                        title: 'Мы все исчезнем,',
-                        description: 'но не мох',
-                        notifications: <NotifyNotification>[],
-                      ),
-                    ],
-                  ),
+            ),
+            SliverStickyHeader(
+              header: AppBar(
+                title: const Text('Folders'),
+              ),
+              sliver: const SliverPadding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverNotifyItemsList(
+                  divider: false,
+                  list: <NotifyItem>[
+                    NotifyFolder(
+                      uid: '0',
+                      title: 'Неприметным ковром',
+                      description: 'стелется в тени цветов',
+                      notifications: <NotifyNotification>[],
+                    ),
+                    NotifyFolder(
+                      uid: '0',
+                      title: 'репней и пестиков,',
+                      description: 'шипов',
+                      notifications: <NotifyNotification>[],
+                    ),
+                    NotifyFolder(
+                      uid: '0',
+                      title: 'Мы все исчезнем,',
+                      description: 'но не мох',
+                      notifications: <NotifyNotification>[],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
