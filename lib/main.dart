@@ -5,12 +5,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notify/configs/notify_theme.dart';
 import 'package:notify/screens/auth_page.dart';
 import 'package:notify/screens/auth_page_sign_in.dart';
 import 'package:notify/screens/auth_page_sign_up.dart';
-import 'package:notify/screens/create_task_page.dart';
+import 'package:notify/screens/create_notification_page.dart';
 import 'package:notify/screens/main_page.dart';
 import 'package:notify/screens/profile_page_edit.dart';
 import 'package:notify/services/firebase_service.dart';
@@ -48,9 +49,13 @@ class MyApp extends StatelessWidget {
           value: FirebaseAuth.instance.authStateChanges(),
           initialData: context.watch<User?>(),
           child: MaterialApp(
+            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+              GlobalMaterialLocalizations.delegate,
+            ],
             debugShowCheckedModeBanner: false,
             theme: NotifyThemeData.lightThemeData,
             darkTheme: NotifyThemeData.darkThemeData,
+            locale: const Locale('ru', 'RU'),
             title: 'Notify',
             initialRoute: '/MainPage',
             routes: <String, WidgetBuilder>{
@@ -59,7 +64,8 @@ class MyApp extends StatelessWidget {
               '/AuthPageSignUp': (final _) => const AuthPageSignUp(),
               '/AuthPageSignIn': (final _) => const AuthPageSignIn(),
               '/ProfilePageEdit': (final _) => const ProfilePageEdit(),
-              '/CreateNotificationPage': (final _) => const CreateNotificationPage(),
+              '/CreateNotificationPage': (final _) =>
+                  const CreateNotificationPage(),
             },
           ),
         ),

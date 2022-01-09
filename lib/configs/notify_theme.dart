@@ -91,6 +91,15 @@ mixin NotifyThemeData {
         backgroundColor: colorScheme.surface,
         height: 50,
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.all<Color>(colorScheme.primary),
+        trackColor:
+            MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.5)),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        checkColor: MaterialStateProperty.all<Color>(colorScheme.onPrimary),
+        fillColor: MaterialStateProperty.all<Color>(colorScheme.primary),
+      ),
     );
   }
 
