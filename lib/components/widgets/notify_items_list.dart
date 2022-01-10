@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/configs/notify_theme.dart';
+import 'package:notify/screens/notification_page.dart';
 import 'package:notify/screens/profile_page.dart';
 import 'package:notify/services/classes/notify_folder.dart';
 import 'package:notify/services/classes/notify_item.dart';
@@ -34,7 +35,11 @@ Widget _itemBuilder(
           datetime: ntf.deadline,
           priority: ntf.priority,
           repeatIt: ntf.repeat,
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).push(
+            customRoute(
+              NotificationPage(id: ntf.uid),
+            ),
+          ),
         ),
       );
     case NotifyFolder:
