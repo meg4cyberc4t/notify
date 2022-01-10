@@ -2,12 +2,12 @@
 
 import 'dart:async';
 
-import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/components/bottomsheets/show_repeat_it_bottom_sheet.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/firebase_service.dart';
@@ -249,7 +249,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                                   }),
                                 );
                                 final int? newValue =
-                                    await _showRepeatItBottomSheet(
+                                    await showRepeatItBottomSheet(
                                   context,
                                   value,
                                 );
@@ -325,74 +325,4 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
       ..add(DiagnosticsProperty<ValueNotifier<bool>>('imporant', imporant))
       ..add(DiagnosticsProperty<ValueNotifier<int>>('repeatIt', repeatIt));
   }
-}
-
-Future<T?> _showRepeatItBottomSheet<T>(
-  final BuildContext context,
-  final int value,
-) async {
-  final List<Map<String, String>> items = <Map<String, String>>[
-    <String, String>{
-      'title': 'One-time',
-      'description': 'We will remind you of the reminder only once'
-    },
-    <String, String>{
-      'title': 'Everyday',
-      'description': 'We will remind you at the specified time'
-    },
-    <String, String>{
-      'title': 'Everyweek',
-      'description': 'We will remind you at the specified'
-          ' time and day of the week'
-    },
-    <String, String>{
-      'title': 'Everymonth',
-      'description': 'Remind yourself of this in the coming months'
-    },
-    <String, String>{
-      'title': 'Everyyear',
-      'description': 'Reminder once a year!'
-    }
-  ];
-  final List<Widget> children = <Widget>[];
-  for (int i = 0; i < items.length; i++) {
-    children.add(
-      CheckboxListTile(
-        value: value == i,
-        title: Text(items[i]['title']!),
-        subtitle: Text(items[i]['description']!),
-        onChanged: (final _) => Navigator.of(context).pop(i),
-      ),
-    );
-  }
-
-  final double ratio = 400 / MediaQuery.of(context).size.height;
-  return showFlexibleBottomSheet<T>(
-    minHeight: 0,
-    initHeight: ratio,
-    maxHeight: ratio,
-    context: context,
-    isDismissible: true,
-    isCollapsible: true,
-    isModal: true,
-    anchors: <double>[0, ratio],
-    builder: (
-      final BuildContext context,
-      final FlexibleDraggableScrollableSheetScrollController scrollController,
-      final double bottomSheetOffset,
-    ) =>
-        SafeArea(
-      child: Material(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(15),
-          topRight: Radius.circular(15),
-        ),
-        child: ListView(
-          controller: scrollController,
-          children: children,
-        ),
-      ),
-    ),
-  );
 }
