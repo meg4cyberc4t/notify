@@ -19,7 +19,7 @@ class NotifyNotification implements NotifyItem {
   )   : uid = data.id,
         title = data['title'],
         description = data['description'],
-        deadline = data['deadline'],
+        deadline = (data['deadline'] as Timestamp).toDate(),
         priority = data['priority'],
         repeat = data['repeat'],
         owner = data['owner'];
@@ -35,9 +35,9 @@ class NotifyNotification implements NotifyItem {
 
   final String uid;
   final String title;
-  final String description;
-  final DateTime deadline;
+  final String owner;
   final bool priority;
   final int repeat;
-  final String owner;
+  final String description;
+  final DateTime deadline;
 }
