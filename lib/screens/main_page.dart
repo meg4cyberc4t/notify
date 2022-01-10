@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notify/screens/auth_page.dart';
-import 'package:notify/screens/create_notification_page.dart';
 import 'package:notify/screens/home_page.dart';
 import 'package:notify/screens/profile_page.dart';
 import 'package:notify/screens/search_page.dart';
@@ -25,14 +24,13 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> tabs = const <Widget>[
     HomePage(key: Key('HomePage')),
-    CreateNotificationPage(),
-    // Scaffold(
-    //   body: Center(
-    //     child: CircularProgressIndicator(
-    //       strokeWidth: NotifyParameters.circularProgressIndicatorWidth,
-    //     ),
-    //   ),
-    // ),
+    Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(
+          strokeWidth: NotifyParameters.circularProgressIndicatorWidth,
+        ),
+      ),
+    ),
     SearchPage(key: Key('ScreenPage')),
     ProfilePage(key: Key('ProfilePage')),
   ];
