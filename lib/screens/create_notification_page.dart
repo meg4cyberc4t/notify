@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:async';
+
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_parameters.dart';
 import 'package:provider/provider.dart';
 
@@ -21,13 +24,20 @@ class CreateNotificationPage extends StatefulWidget {
 }
 
 class _CreateNotificationPageState extends State<CreateNotificationPage> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
   final ValueNotifier<DateTime> _deadline =
       ValueNotifier<DateTime>(DateTime.now());
   final ValueNotifier<bool> _expanded = ValueNotifier<bool>(false);
   final ValueNotifier<bool> imporant = ValueNotifier<bool>(false);
   final ValueNotifier<int> repeatIt = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -203,8 +213,14 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                                 SwitchListTile(
                               inactiveThumbColor: Theme.of(context).hintColor,
                               value: value,
-                              onChanged: (final _) =>
-                                  imporant.value = !imporant.value,
+                              onChanged: (final _) {
+                                Vibrate.canVibrate.then((final bool value) {
+                                  if (value) {
+                                    Vibrate.feedback(FeedbackType.light);
+                                  }
+                                });
+                                imporant.value = !imporant.value;
+                              },
                               title: Text(
                                 'Important',
                                 style: Theme.of(context).textTheme.headline6,
@@ -225,6 +241,13 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                               inactiveThumbColor: Theme.of(context).hintColor,
                               value: value != 0,
                               onChanged: (final _) async {
+                                unawaited(
+                                  Vibrate.canVibrate.then((final bool value) {
+                                    if (value) {
+                                      Vibrate.feedback(FeedbackType.light);
+                                    }
+                                  }),
+                                );
                                 final int? newValue =
                                     await _showRepeatItBottomSheet(
                                   context,
@@ -260,12 +283,29 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                   children: <Widget>[
                     NotifyDirectButton(
                       title: 'Create',
-                      onPressed: () {},
+                      onPressed: () {
+                        final String title = _titleController.text.trim();
+                        final String desc = _descriptionController.text.trim();
+                        if (repeatIt.value > 4 && repeatIt.value < 0) {
+                          return;
+                        }
+                        if (title.isEmpty) {
+                          return;
+                        }
+                        FirebaseService.of(context).createNotification(
+                          title: title,
+                          description: desc,
+                          deadline: _deadline.value,
+                          priority: imporant.value,
+                          repeat: repeatIt.value,
+                        );
+                        Navigator.of(context).pop();
+                      },
                     ),
                     const SizedBox(height: 10),
                     NotifyDirectButton(
                       title: 'Back',
-                      onPressed: () {},
+                      onPressed: Navigator.of(context).pop,
                       style: NotifyDirectButtonStyle.outlined,
                     ),
                   ],

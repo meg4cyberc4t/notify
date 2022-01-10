@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/static_methods/combine_latest_streams.dart';
 import 'package:provider/provider.dart';
@@ -412,4 +413,75 @@ class FirebaseService {
     mainSet.addAll(elements6);
     return mainSet.toList();
   }
+
+  /// A function for creating notifications.
+  /// repeat:
+  /// 0 - One-time
+  /// 1 - Everyday
+  /// 2 - Everyweek
+  /// 3 - Everymonth
+  /// 4 - Everyyear
+  Future<void> createNotification({
+    required final String title,
+    required final DateTime deadline,
+    required final bool priority,
+    required final int repeat,
+    final String description = '',
+  }) async {
+    final DocumentReference<dynamic> doc = await FirebaseFirestore.instance
+        .collection('notifications')
+        .add(<String, dynamic>{
+      'title': title,
+      'description': description,
+      'deadline': deadline,
+      'priority': priority,
+      'repeat': repeat,
+      'owner': _firebaseAuth.currentUser!.uid,
+    });
+    await FirebaseFirestore.instance
+        .collection('relations_ntf_user')
+        .add(<String, dynamic>{
+      'user_uid': _firebaseAuth.currentUser!.uid,
+      'ntf_uid': doc.id
+    });
+  }
+
+  /// The function of receiving notification by id
+  Future<NotifyNotification> getNotificationFromId(final String uid) async =>
+      (await FirebaseFirestore.instance
+              .collection('notifications')
+              .withConverter(
+                fromFirestore: (
+                  final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                  final SnapshotOptions? options,
+                ) =>
+                    NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
+                toFirestore: (
+                  final NotifyNotification value,
+                  final SetOptions? options,
+                ) =>
+                    value.toJson(),
+              )
+              .where(FieldPath.documentId, isEqualTo: uid)
+              .get())
+          .docs[0]
+          .data();
+
+  /// A function for getting all the reminders that the user can get
+  Stream<List<NotifyNotification>> getMyNotificationsSnapshot() =>
+      FirebaseFirestore.instance
+          .collection('relations_ntf_user')
+          .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
+          .snapshots()
+          .asyncMap((final QuerySnapshot<Map<String, dynamic>> event) async {
+        final List<NotifyNotification> result = <NotifyNotification>[];
+        for (int i = 0; i < event.docs.length; i++) {
+          result.add(
+            await getNotificationFromId(
+              event.docs[i].data()['ntf_uid'],
+            ),
+          );
+        }
+        return result;
+      });
 }
