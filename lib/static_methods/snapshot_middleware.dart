@@ -12,7 +12,7 @@ Widget? snapshotMiddleware(final AsyncSnapshot<dynamic> snapshot) {
         child: Text(snapshot.error.toString()),
       ),
     );
-  } else if (!snapshot.hasData) {
+  } else if (!snapshot.hasData || snapshot.data == null) {
     return const Center(
       child: CircularProgressIndicator(
         strokeWidth: NotifyParameters.circularProgressIndicatorWidth,
