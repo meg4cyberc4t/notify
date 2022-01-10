@@ -467,6 +467,38 @@ class FirebaseService {
           .docs[0]
           .data();
 
+  /// The stream of receiving notification by id
+  Future<void> editNotificationFromId(
+    final String id,
+    final Map<String, dynamic> data,
+  ) async =>
+      FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(id)
+          .update(data);
+
+  /// The stream of receiving notification by id
+  Stream<NotifyNotification> getNotificationFromIdSnapshots(final String uid) =>
+      FirebaseFirestore.instance
+          .collection('notifications')
+          .withConverter(
+            fromFirestore: (
+              final DocumentSnapshot<Map<String, dynamic>> snapshot,
+              final SnapshotOptions? options,
+            ) =>
+                NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
+            toFirestore: (
+              final NotifyNotification value,
+              final SetOptions? options,
+            ) =>
+                value.toJson(),
+          )
+          .doc(uid)
+          .snapshots()
+          .map(
+            (final DocumentSnapshot<NotifyNotification> event) => event.data()!,
+          );
+
   /// A function for getting all the reminders that the user can get
   Stream<List<NotifyNotification>> getMyNotificationsSnapshot() =>
       FirebaseFirestore.instance
