@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
+import 'package:notify/configs/notify_theme.dart';
 import 'package:notify/screens/profile_page.dart';
 import 'package:notify/services/classes/notify_folder.dart';
 import 'package:notify/services/classes/notify_item.dart';
@@ -237,8 +238,8 @@ class _NotifyNotificationItem extends StatelessWidget {
               Container(
                 width: 4,
                 color: priority
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.secondary,
+                    ? NotifyThemeData.primaryVariant
+                    : NotifyThemeData.primary,
               ),
               const SizedBox(width: 15),
               Column(
@@ -264,13 +265,6 @@ class _NotifyNotificationItem extends StatelessWidget {
           ),
         ),
       );
-
-  //
-  //       trailing: Text(DateFormat(DateFormat.HOUR24_MINUTE).format(datetime)),
-  //       subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
-  //       title: Text(title),
-  //       minLeadingWidth: 0,
-  //     );
 
   @override
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
