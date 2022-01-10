@@ -6,6 +6,8 @@ import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_folder.dart';
 import 'package:notify/services/classes/notify_item.dart';
 import 'package:notify/services/classes/notify_notification.dart';
+import 'package:notify/services/firebase_service.dart';
+import 'package:notify/static_methods/snapshot_middleware.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({final Key? key}) : super(key: key);
@@ -25,6 +27,11 @@ class _HomePageState extends State<HomePage>
   Widget build(final BuildContext context) {
     super.build(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () =>
+            Navigator.of(context).pushNamed('/CreateNotificationPage'),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           controller: _controller,
@@ -37,56 +44,24 @@ class _HomePageState extends State<HomePage>
                 title: const Text('Today tasks'),
               ),
               sliver: SliverPadding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                sliver: SliverNotifyItemsList(
-                  divider: false,
-                  list: <NotifyItem>[
-                    NotifyNotification(
-                      owner: 'owner',
-                      uid: '0',
-                      title: 'Мох',
-                      description: 'description',
-                      deadline: DateTime.now(),
-                      priority: true,
-                      repeat: 0,
-                    ),
-                    NotifyNotification(
-                      owner: 'owner',
-                      uid: '0',
-                      title: 'Стать похожим меньше на цветок, больше на',
-                      description: 'description',
-                      deadline: DateTime.now(),
-                      priority: true,
-                      repeat: 0,
-                    ),
-                    NotifyNotification(
-                      owner: 'owner',
-                      uid: '0',
-                      title: 'Мох!',
-                      description: 'description',
-                      deadline: DateTime.now(),
-                      priority: true,
-                      repeat: 0,
-                    ),
-                    NotifyNotification(
-                      owner: 'owner',
-                      uid: '0',
-                      title: 'Японский сад промок',
-                      description: 'description',
-                      deadline: DateTime.now(),
-                      priority: true,
-                      repeat: 0,
-                    ),
-                    NotifyNotification(
-                      owner: 'owner',
-                      uid: '0',
-                      title: 'воду пьёт зелёный мох',
-                      description: 'description',
-                      deadline: DateTime.now(),
-                      priority: true,
-                      repeat: 0,
-                    ),
-                  ],
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                sliver: StreamBuilder<List<NotifyNotification>>(
+                  stream:
+                      FirebaseService.of(context).getMyNotificationsSnapshot(),
+                  builder: (
+                    final BuildContext context,
+                    final AsyncSnapshot<List<NotifyNotification>> snapshot,
+                  ) {
+                    final Widget? widget = snapshotMiddleware(snapshot);
+                    if (widget != null) {
+                      return SliverToBoxAdapter(
+                        child: SizedBox(height: 300, child: widget),
+                      );
+                    }
+                    return SliverNotifyItemsList(
+                      list: snapshot.data!,
+                    );
+                  },
                 ),
               ),
             ),
