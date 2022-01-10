@@ -21,8 +21,12 @@ Widget _itemBuilder(
   switch (item.runtimeType) {
     case NotifyUser:
       final NotifyUser user = item as NotifyUser;
-      return _NotifyUserListTile(
-        user: user,
+      return Row(
+        children: <Widget>[
+          NotifyUserListTile(
+            user: user,
+          ),
+        ],
       );
     case NotifyNotification:
       final NotifyNotification ntf = item as NotifyNotification;
@@ -173,29 +177,66 @@ class SliverNotifyItemsList extends StatelessWidget {
   }
 }
 
-class _NotifyUserListTile extends StatelessWidget {
-  const _NotifyUserListTile({required final this.user, final Key? key})
-      : super(key: key);
+class NotifyUserListTile extends StatelessWidget {
+  const NotifyUserListTile({
+    required final this.user,
+    final this.isExpanded = true,
+    final Key? key,
+  }) : super(key: key);
   final NotifyUser user;
+  final bool isExpanded;
 
   @override
-  Widget build(final BuildContext context) => ListTile(
-        leading: NotifyAvatar(
-          color: user.color,
-          title: user.avatarTitle,
-          size: AvatarSize.mini,
-        ),
-        title: Text('${user.firstName} ${user.lastName}'),
-        subtitle: Text(
-          user.status.isNotEmpty ? user.status : '...',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        tileColor: Theme.of(context).backgroundColor,
+  Widget build(final BuildContext context) => InkWell(
         onTap: () => Navigator.push(
           context,
           customRoute(
             ProfilePage(uid: user.uid),
+          ),
+        ),
+        child: Padding(
+          padding: isExpanded ? const EdgeInsets.all(10) : EdgeInsets.zero,
+          child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                NotifyAvatar(
+                  color: user.color,
+                  title: user.avatarTitle,
+                  size: AvatarSize.mini,
+                ),
+                const SizedBox(width: 15),
+                SizedBox(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '${user.firstName} ${user.lastName}',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                      if (user.status.isNotEmpty) const SizedBox(width: 10),
+                      if (user.status.isNotEmpty)
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 85,
+                          child: Text(
+                            user.status,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(color: Theme.of(context).hintColor),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

@@ -280,30 +280,24 @@ class _NotificationPageState extends State<NotificationPage> {
                       ),
                     ),
                   ),
-                  Column(
-                    children: <Widget>[
-                      Text(
-                        'Owner:',
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              color: Theme.of(context).hintColor,
-                            ),
-                        textAlign: TextAlign.start,
-                      ),
-                      const SizedBox(height: 10),
-                      StreamBuilder<NotifyUser>(
-                        stream: FirebaseService.of(context)
-                            .getInfoAboutUser(ntf.owner),
-                        builder: (
-                          final BuildContext context,
-                          final AsyncSnapshot<NotifyUser> snapshot,
-                        ) =>
-                            Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: snapshotMiddleware(snapshot) ??
-                              NotifyUserListTile(user: snapshot.data!),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Owner:',
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Theme.of(context).hintColor,
                         ),
-                      ),
-                    ],
+                    textAlign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 10),
+                  StreamBuilder<NotifyUser>(
+                    stream:
+                        FirebaseService.of(context).getInfoAboutUser(ntf.owner),
+                    builder: (
+                      final BuildContext context,
+                      final AsyncSnapshot<NotifyUser> snapshot,
+                    ) =>
+                        snapshotMiddleware(snapshot) ??
+                        NotifyUserListTile(user: snapshot.data!),
                   ),
                 ],
               ),
