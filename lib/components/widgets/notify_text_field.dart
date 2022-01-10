@@ -17,6 +17,7 @@ class NotifyTextField extends StatefulWidget {
     this.minLines,
     this.autocorrect,
     this.autofocus = false,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   /// Hiding text inside a field. Use with passwords
@@ -53,6 +54,8 @@ class NotifyTextField extends StatefulWidget {
   /// Autofocus on the text field when available.
   final bool autofocus;
 
+  final ValueChanged<String>? onFieldSubmitted;
+
   @override
   State<NotifyTextField> createState() => NotifyTextFieldState();
   @override
@@ -88,6 +91,7 @@ class NotifyTextFieldState extends State<NotifyTextField> {
         minLines: widget.minLines,
         autocorrect: widget.autocorrect ?? true,
         onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onFieldSubmitted,
         initialValue: widget.initialValue,
         style: Theme.of(context).textTheme.headline6,
         obscureText: widget.obscureText,
