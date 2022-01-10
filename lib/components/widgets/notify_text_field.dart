@@ -54,6 +54,7 @@ class NotifyTextField extends StatefulWidget {
   /// Autofocus on the text field when available.
   final bool autofocus;
 
+  ///The function that is called when the field is submitted
   final ValueChanged<String>? onFieldSubmitted;
 
   @override
@@ -76,7 +77,13 @@ class NotifyTextField extends StatefulWidget {
       ..add(DiagnosticsProperty<bool?>('autocorrect', autocorrect))
       ..add(IntProperty('maxLines', maxLines))
       ..add(IntProperty('minLines', minLines))
-      ..add(DiagnosticsProperty<bool>('autofocus', autofocus));
+      ..add(DiagnosticsProperty<bool>('autofocus', autofocus))
+      ..add(
+        ObjectFlagProperty<ValueChanged<String>?>.has(
+          'onFieldSubmitted',
+          onFieldSubmitted,
+        ),
+      );
   }
 }
 
