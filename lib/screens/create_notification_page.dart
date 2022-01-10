@@ -130,6 +130,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                             Vibrate.feedback(FeedbackType.light);
                           }
                         });
+
                         _deadline.value = DateTime(
                           _deadline.value.year,
                           _deadline.value.month,
@@ -155,7 +156,13 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                     ),
                   );
                   if (newValue != null) {
-                    _deadline.value = newValue;
+                    _deadline.value = DateTime(
+                          newValue.year,
+                          newValue.month,
+                          newValue.day,
+                          _deadline.value.hour,
+                          _deadline.value.minute,
+                        );
                   }
                 },
                 child: Padding(
