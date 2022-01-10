@@ -24,11 +24,17 @@ Widget _itemBuilder(
       );
     case NotifyNotification:
       final NotifyNotification ntf = item as NotifyNotification;
-      return _NotifyNotificationItem(
-        title: ntf.title,
-        datetime: ntf.deadline,
-        priority: ntf.priority,
-        onPressed: () {},
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: _NotifyNotificationItem(
+          key: Key('notification-${ntf.uid}'),
+          title: ntf.title,
+          subtitle: ntf.description,
+          datetime: ntf.deadline,
+          priority: ntf.priority,
+          repeatIt: ntf.repeat,
+          onPressed: () {},
+        ),
       );
     case NotifyFolder:
       final NotifyFolder folder = item as NotifyFolder;
@@ -204,40 +210,67 @@ class _NotifyNotificationItem extends StatelessWidget {
   /// [priority] - Is the notification prioritized
   const _NotifyNotificationItem({
     required this.title,
+    required this.subtitle,
+    required this.priority,
+    required this.repeatIt,
     required this.datetime,
     required this.onPressed,
     final Key? key,
-    this.priority = false,
   }) : super(key: key);
 
-  /// [title] - One of the styles NotifyDirectButtonStyle
   final String title;
-
-  /// [priority] - Is the notification prioritized
+  final String subtitle;
   final bool priority;
-
-  /// [datetime] -DateTime of execution
+  final int repeatIt;
   final DateTime datetime;
-
-  /// [onPressed] - Function when pressed
   final VoidCallback onPressed;
 
   @override
-  Widget build(final BuildContext context) => ListTile(
+  Widget build(final BuildContext context) => InkWell(
         onTap: onPressed,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Container(
-            width: 4,
-            color: priority
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.secondary,
+        child: SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 4,
+                color: priority
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.secondary,
+              ),
+              const SizedBox(width: 15),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(title, style: Theme.of(context).textTheme.subtitle1),
+                  if (subtitle.isNotEmpty) const SizedBox(width: 10),
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Theme.of(context).hintColor),
+                    ),
+                ],
+              ),
+              const Spacer(),
+              Text(DateFormat(DateFormat.HOUR24_MINUTE).format(datetime)),
+              const SizedBox(width: 10),
+            ],
           ),
         ),
-        trailing: Text(DateFormat('H:M').format(datetime)),
-        title: Text(title),
-        minLeadingWidth: 0,
       );
+
+  //
+  //       trailing: Text(DateFormat(DateFormat.HOUR24_MINUTE).format(datetime)),
+  //       subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
+  //       title: Text(title),
+  //       minLeadingWidth: 0,
+  //     );
 
   @override
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
@@ -246,7 +279,9 @@ class _NotifyNotificationItem extends StatelessWidget {
       ..add(StringProperty('title', title))
       ..add(DiagnosticsProperty<bool>('priority', priority))
       ..add(DiagnosticsProperty<DateTime>('datetime', datetime))
-      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed));
+      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed))
+      ..add(StringProperty('subtitle', subtitle))
+      ..add(IntProperty('repeatIt', repeatIt));
   }
 }
 
