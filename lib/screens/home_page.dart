@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
-import 'package:notify/services/classes/notify_folder.dart';
-import 'package:notify/services/classes/notify_item.dart';
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/static_methods/snapshot_middleware.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({final Key? key}) : super(key: key);
@@ -45,57 +43,51 @@ class _HomePageState extends State<HomePage>
               ),
               sliver: SliverPadding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                sliver: StreamBuilder<List<NotifyNotification>>(
+                sliver:
+                    CustomStreamBuilder<List<NotifyNotification>>.notifySliver(
                   stream:
                       FirebaseService.of(context).getMyNotificationsSnapshot(),
-                  builder: (
+                  onData: (
                     final BuildContext context,
-                    final AsyncSnapshot<List<NotifyNotification>> snapshot,
-                  ) {
-                    final Widget? widget = snapshotMiddleware(snapshot);
-                    if (widget != null) {
-                      return SliverToBoxAdapter(
-                        child: SizedBox(height: 300, child: widget),
-                      );
-                    }
-                    return SliverNotifyItemsList(
-                      list: snapshot.data!,
-                    );
-                  },
+                    final List<NotifyNotification> data,
+                  ) =>
+                      SliverNotifyItemsList(
+                    list: data,
+                  ),
                 ),
               ),
             ),
-            SliverStickyHeader(
-              header: AppBar(
-                title: const Text('Folders'),
-              ),
-              sliver: const SliverPadding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                sliver: SliverNotifyItemsList(
-                  divider: false,
-                  list: <NotifyItem>[
-                    NotifyFolder(
-                      uid: '0',
-                      title: 'Неприметным ковром',
-                      description: 'стелется в тени цветов',
-                      notifications: <NotifyNotification>[],
-                    ),
-                    NotifyFolder(
-                      uid: '0',
-                      title: 'репней и пестиков,',
-                      description: 'шипов',
-                      notifications: <NotifyNotification>[],
-                    ),
-                    NotifyFolder(
-                      uid: '0',
-                      title: 'Мы все исчезнем,',
-                      description: 'но не мох',
-                      notifications: <NotifyNotification>[],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // SliverStickyHeader(
+            //   header: AppBar(
+            //     title: const Text('Folders'),
+            //   ),
+            //   sliver: const SliverPadding(
+            //     padding: EdgeInsets.symmetric(vertical: 10),
+            //     sliver: SliverNotifyItemsList(
+            //       divider: false,
+            //       list: <NotifyItem>[
+            //         NotifyFolder(
+            //           uid: '0',
+            //           title: 'Неприметным ковром',
+            //           description: 'стелется в тени цветов',
+            //           notifications: <NotifyNotification>[],
+            //         ),
+            //         NotifyFolder(
+            //           uid: '0',
+            //           title: 'репней и пестиков,',
+            //           description: 'шипов',
+            //           notifications: <NotifyNotification>[],
+            //         ),
+            //         NotifyFolder(
+            //           uid: '0',
+            //           title: 'Мы все исчезнем,',
+            //           description: 'но не мох',
+            //           notifications: <NotifyNotification>[],
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
