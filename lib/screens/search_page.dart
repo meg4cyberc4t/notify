@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:notify/components/builders/custom_future_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
@@ -44,46 +44,39 @@ class _SearchPageState extends State<SearchPage>
               ),
             ),
           ),
-          FutureBuilder<List<String>>(
+          CustomFutureBuilder<List<String>>.notifySliver(
             key: futureBuilderForSearch,
             future: context
                 .read<FirebaseService>()
                 .searchFromUsers(controller.text.trim()),
-            builder: (
+            onData: (
               final BuildContext context,
-              final AsyncSnapshot<List<String>> snapshot,
+              final List<String> state,
             ) {
-              final Widget? widget = snapshotMiddleware(snapshot);
-              if (widget != null) {
-                return SliverToBoxAdapter(child: widget);
-              }
-              final List<String> state = snapshot.data!;
               if (state.isEmpty) {
                 return SliverToBoxAdapter(
-                  child: Center(
-                    child: Text(
-                      'No found',
-                      style: Theme.of(context).textTheme.headline6,
-                      textAlign: TextAlign.center,
+                  child: SizedBox(
+                    height: 300,
+                    child: Center(
+                      child: Text(
+                        'No found',
+                        style: Theme.of(context).textTheme.headline6,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 );
               }
-              return FutureBuilder<List<NotifyUser>>(
+              return CustomFutureBuilder<List<NotifyUser>>.notifySliver(
                 future: FirebaseService.of(context)
                     .getUsersListFromUsersUidList(state),
-                builder: (
+                onData: (
                   final BuildContext context,
-                  final AsyncSnapshot<List<NotifyUser>> snapshot,
-                ) {
-                  final Widget? widget = snapshotMiddleware(snapshot);
-                  if (widget != null) {
-                    return SliverToBoxAdapter(child: widget);
-                  }
-                  return SliverNotifyItemsList(
-                    list: snapshot.data!,
-                  );
-                },
+                  final List<NotifyUser> list,
+                ) =>
+                    SliverNotifyItemsList(
+                  list: list,
+                ),
               );
             },
           ),

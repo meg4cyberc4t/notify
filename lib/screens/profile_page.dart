@@ -5,13 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:notify/components/bottomsheets/show_notify_items_bottom_sheet.dart';
+import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/screens/color_picker_page.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_parameters.dart';
 import 'package:notify/static_methods/custom_route.dart';
-import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
 
 /// The profile page allows you to view information about each user:
@@ -48,178 +48,167 @@ class _ProfilePageState extends State<ProfilePage>
     final bool isMe = meUID == profileUID;
 
     return Scaffold(
-      body: StreamBuilder<bool>(
+      body: CustomStreamBuilder<bool>.notify(
         stream: context
             .read<FirebaseService>()
             .checkFollowed(context.watch<User>().uid, profileUID),
-        builder: (
+        onData: (
           final BuildContext context,
-          final AsyncSnapshot<bool> isFollowedSnapshot,
+          final bool isFollowed,
         ) =>
-            snapshotMiddleware(isFollowedSnapshot) ??
-            StreamBuilder<NotifyUser>(
-              stream: FirebaseService.of(context).getInfoAboutUser(profileUID),
-              builder: (
-                final BuildContext context,
-                final AsyncSnapshot<NotifyUser> snapshot,
-              ) {
-                final Widget? widget = snapshotMiddleware(snapshot);
-                if (widget != null) {
-                  return widget;
-                }
-                final NotifyUser user = snapshot.data!;
+            CustomStreamBuilder<NotifyUser>.notify(
+          stream:
+              FirebaseService.of(context).getInfoAboutUserAsStream(profileUID),
+          onData: (
+            final BuildContext context,
+            final NotifyUser user,
+          ) {
+            final Color passiveColor =
+                ThemeData.estimateBrightnessForColor(user.color) ==
+                        Brightness.light
+                    ? Colors.black
+                    : Colors.white;
+            final Widget _logoutButton = IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () => FirebaseService.of(context).signOut(),
+            );
 
-                final Color passiveColor =
-                    ThemeData.estimateBrightnessForColor(user.color) ==
-                            Brightness.light
-                        ? Colors.black
-                        : Colors.white;
+            final Widget _followSwitch = IconButton(
+              icon: Icon(
+                isFollowed ? CupertinoIcons.minus : CupertinoIcons.add,
+              ),
+              onPressed: () =>
+                  FirebaseService.of(context).followSwitch(profileUID),
+            );
 
-                final bool isFollowed = isFollowedSnapshot.data!;
-
-                final Widget _logoutButton = IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () => FirebaseService.of(context).signOut(),
-                );
-
-                final Widget _followSwitch = IconButton(
-                  icon: Icon(
-                    isFollowed ? CupertinoIcons.minus : CupertinoIcons.add,
+            final Widget _editColorButton = IconButton(
+              icon: const Icon(CupertinoIcons.pen),
+              onPressed: () async {
+                final Color? inputColor = await Navigator.push(
+                  context,
+                  customRoute(
+                    ColorPickerPage(
+                      title: user.avatarTitle,
+                      initialValue: user.color,
+                    ),
                   ),
-                  onPressed: () =>
-                      FirebaseService.of(context).followSwitch(profileUID),
                 );
-
-                final Widget _editColorButton = IconButton(
-                  icon: const Icon(CupertinoIcons.pen),
-                  onPressed: () async {
-                    final Color? inputColor = await Navigator.push(
-                      context,
-                      customRoute(
-                        ColorPickerPage(
-                          title: user.avatarTitle,
-                          initialValue: user.color,
-                        ),
-                      ),
-                    );
-                    if (inputColor != null) {
-                      if (mounted) {
-                        await FirebaseService.of(context)
-                            .updateInfoAboutUser(<String, dynamic>{
-                          'color_r': inputColor.red,
-                          'color_g': inputColor.green,
-                          'color_b': inputColor.blue,
-                        });
-                      }
-                    }
-                  },
-                );
-
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    SliverAppBar(
-                      iconTheme: IconThemeData(color: passiveColor),
-                      actions: <Widget>[
-                        if (isMe) _logoutButton else _followSwitch
-                      ],
-                      leading: isMe ? _editColorButton : null,
-                      expandedHeight: 300,
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        title: Text(
-                          '${user.firstName} ${user.lastName}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(color: passiveColor),
-                        ),
-                        background: AnimatedContainer(
-                          duration: NotifyParameters.duration,
-                          color: user.color,
-                        ),
-                      ),
-                      pinned: true,
-                      backgroundColor: user.color,
-                    ),
-                    if (user.status.isNotEmpty)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          child: Text(
-                            user.status,
-                            style: Theme.of(context).textTheme.headline5,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      sliver: SliverToBoxAdapter(
-                        child: isMe
-                            ? NotifyDirectButton(
-                                title: 'Edit',
-                                style: NotifyDirectButtonStyle.outlined,
-                                onPressed: () async => Navigator.pushNamed(
-                                  context,
-                                  '/ProfilePageEdit',
-                                ),
-                              )
-                            : NotifyDirectButton(
-                                title: isFollowed ? 'Remove' : 'Add',
-                                style: isFollowed
-                                    ? NotifyDirectButtonStyle.outlined
-                                    : NotifyDirectButtonStyle.primary,
-                                onPressed: () => FirebaseService.of(context)
-                                    .followSwitch(profileUID),
-                              ),
-                      ),
-                    ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            _preWidgetCountUsers(
-                              context,
-                              stream: FirebaseService.of(context)
-                                  .getColleguesFromUser,
-                              profileUID: profileUID,
-                              title: 'Collegues',
-                            ),
-                            _localDivider,
-                            _preWidgetCountUsers(
-                              context,
-                              stream: FirebaseService.of(context)
-                                  .getFollowersFromUser,
-                              profileUID: profileUID,
-                              title: 'Followers',
-                            ),
-                            _localDivider,
-                            _preWidgetCountUsers(
-                              context,
-                              stream: FirebaseService.of(context)
-                                  .getFollowingFromUser,
-                              profileUID: profileUID,
-                              title: 'Following',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 10)),
-                  ],
-                );
+                if (inputColor != null) {
+                  if (mounted) {
+                    await FirebaseService.of(context)
+                        .updateInfoAboutUser(<String, dynamic>{
+                      'color_r': inputColor.red,
+                      'color_g': inputColor.green,
+                      'color_b': inputColor.blue,
+                    });
+                  }
+                }
               },
-            ),
+            );
+
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  iconTheme: IconThemeData(color: passiveColor),
+                  actions: <Widget>[if (isMe) _logoutButton else _followSwitch],
+                  leading: isMe ? _editColorButton : null,
+                  expandedHeight: 300,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(
+                      '${user.firstName} ${user.lastName}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          ?.copyWith(color: passiveColor),
+                    ),
+                    background: AnimatedContainer(
+                      duration: NotifyParameters.duration,
+                      color: user.color,
+                    ),
+                  ),
+                  pinned: true,
+                  backgroundColor: user.color,
+                ),
+                if (user.status.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      child: Text(
+                        user.status,
+                        style: Theme.of(context).textTheme.headline5,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  sliver: SliverToBoxAdapter(
+                    child: isMe
+                        ? NotifyDirectButton(
+                            title: 'Edit',
+                            style: NotifyDirectButtonStyle.outlined,
+                            onPressed: () async => Navigator.pushNamed(
+                              context,
+                              '/ProfilePageEdit',
+                            ),
+                          )
+                        : NotifyDirectButton(
+                            title: isFollowed ? 'Remove' : 'Add',
+                            style: isFollowed
+                                ? NotifyDirectButtonStyle.outlined
+                                : NotifyDirectButtonStyle.primary,
+                            onPressed: () => FirebaseService.of(context)
+                                .followSwitch(profileUID),
+                          ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        _preWidgetCountUsers(
+                          context,
+                          stream:
+                              FirebaseService.of(context).getColleguesFromUser,
+                          profileUID: profileUID,
+                          title: 'Collegues',
+                        ),
+                        _localDivider,
+                        _preWidgetCountUsers(
+                          context,
+                          stream:
+                              FirebaseService.of(context).getFollowersFromUser,
+                          profileUID: profileUID,
+                          title: 'Followers',
+                        ),
+                        _localDivider,
+                        _preWidgetCountUsers(
+                          context,
+                          stream:
+                              FirebaseService.of(context).getFollowingFromUser,
+                          profileUID: profileUID,
+                          title: 'Following',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

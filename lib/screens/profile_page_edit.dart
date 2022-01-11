@@ -2,12 +2,11 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:notify/static_methods/snapshot_middleware.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePageEdit extends StatefulWidget {
@@ -33,19 +32,13 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   @override
   Widget build(final BuildContext context) => Scaffold(
         body: SingleChildScrollView(
-          child: StreamBuilder<NotifyUser>(
+          child: CustomStreamBuilder<NotifyUser>.notify(
             stream: FirebaseService.of(context)
-                .getInfoAboutUser(context.watch<User>().uid),
-            builder: (
+                .getInfoAboutUserAsStream(context.watch<User>().uid),
+            onData: (
               final BuildContext context,
-              final AsyncSnapshot<NotifyUser> snapshot,
+              final NotifyUser user,
             ) {
-              final Widget? widget = snapshotMiddleware(snapshot);
-              if (widget != null) {
-                return widget;
-              }
-
-              final NotifyUser user = snapshot.data!;
               _controllerFirstname.text = user.firstName;
               _controllerLastname.text = user.lastName;
               _controllerStatus.text = user.status;
