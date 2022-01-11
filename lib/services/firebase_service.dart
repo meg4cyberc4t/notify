@@ -80,7 +80,7 @@ class FirebaseService {
   Future<void> signOut() => _firebaseAuth.signOut();
 
   /// Getting user information
-  Stream<NotifyUser> getInfoAboutUser(
+  Stream<NotifyUser> getInfoAboutUserAsStream(
     final String uid,
   ) =>
       FirebaseFirestore.instance
