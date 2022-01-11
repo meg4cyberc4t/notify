@@ -1,6 +1,8 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
+// ignore_for_file: public_member_api_docs
+
 Future<T?> showRepeatItBottomSheet<T>(
   final BuildContext context,
   final int value,
