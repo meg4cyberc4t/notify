@@ -244,7 +244,9 @@ class NotifyUserListTile extends StatelessWidget {
   @override
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<NotifyUser>('user', user));
+    properties
+      ..add(DiagnosticsProperty<NotifyUser>('user', user))
+      ..add(DiagnosticsProperty<bool>('isExpanded', isExpanded));
   }
 }
 
