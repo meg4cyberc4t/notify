@@ -500,20 +500,74 @@ class FirebaseService {
           );
 
   /// A function for getting all the reminders that the user can get
-  Stream<List<NotifyNotification>> getMyNotificationsSnapshot() =>
+  Stream<Stream<List<NotifyNotification>>> getTodayNotificationsSnapshot() =>
       FirebaseFirestore.instance
           .collection('relations_ntf_user')
           .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
+          .withConverter(
+            fromFirestore: (
+              final DocumentSnapshot<Map<String, dynamic>> snapshot,
+              final SnapshotOptions? options,
+            ) =>
+                snapshot.data()!,
+            toFirestore: (
+              final Object? value,
+              final SetOptions? options,
+            ) =>
+                value! as Map<String, dynamic>,
+          )
           .snapshots()
-          .asyncMap((final QuerySnapshot<Map<String, dynamic>> event) async {
-        final List<NotifyNotification> result = <NotifyNotification>[];
-        for (int i = 0; i < event.docs.length; i++) {
-          result.add(
-            await getNotificationFromId(
-              event.docs[i].data()['ntf_uid'],
-            ),
-          );
-        }
-        return result;
+          .asyncMap((final QuerySnapshot<Map<String, dynamic>> event) {
+        final List<String> ids = event.docs
+            .map(
+              (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+                  e.data()['ntf_uid'] as String,
+            )
+            .toList();
+        final DateTime _now = DateTime.now();
+
+        final DateTime _start = DateTime(
+          _now.year,
+          _now.month,
+          _now.day,
+        );
+        final DateTime _end = DateTime(
+          _now.year,
+          _now.month,
+          _now.day,
+          23,
+          59,
+          59,
+        );
+
+        return FirebaseFirestore.instance
+            .collection('notifications')
+            .where(FieldPath.documentId, whereIn: ids)
+            .withConverter(
+              fromFirestore: (
+                final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                final SnapshotOptions? options,
+              ) =>
+                  NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
+              toFirestore: (
+                final NotifyNotification value,
+                final SetOptions? options,
+              ) =>
+                  value.toJson(),
+            )
+            .snapshots()
+            .map(
+              (final QuerySnapshot<NotifyNotification> event) => event.docs
+                  .map(
+                    (final QueryDocumentSnapshot<NotifyNotification> e) =>
+                        e.data(),
+                  )
+                  .where(
+                    (final NotifyNotification element) =>
+                        element.deadline.isAfter(_start) &&
+                        element.deadline.isBefore(_end),
+                  )
+                  .toList(),
+            );
       });
 }

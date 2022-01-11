@@ -43,16 +43,24 @@ class _HomePageState extends State<HomePage>
               ),
               sliver: SliverPadding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                sliver:
-                    CustomStreamBuilder<List<NotifyNotification>>.notifySliver(
-                  stream:
-                      FirebaseService.of(context).getMyNotificationsSnapshot(),
+                sliver: CustomStreamBuilder<
+                    Stream<List<NotifyNotification>>>.notifySliver(
+                  stream: FirebaseService.of(context)
+                      .getTodayNotificationsSnapshot(),
                   onData: (
                     final BuildContext context,
-                    final List<NotifyNotification> data,
+                    final Stream<List<NotifyNotification>> stream,
                   ) =>
-                      SliverNotifyItemsList(
-                    list: data,
+                      CustomStreamBuilder<
+                          List<NotifyNotification>>.notifySliver(
+                    stream: stream,
+                    onData: (
+                      final BuildContext context,
+                      final List<NotifyNotification> data,
+                    ) =>
+                        SliverNotifyItemsList(
+                      list: data,
+                    ),
                   ),
                 ),
               ),
