@@ -550,27 +550,48 @@ class FirebaseService {
         )
         .toList();
 
-    final List<NotifyNotification> ntfs = (await FirebaseFirestore.instance
-            .collection('notifications')
-            .where(FieldPath.documentId, whereIn: myNtfIds)
-            .withConverter(
-              fromFirestore: (
-                final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                final SnapshotOptions? options,
-              ) =>
-                  NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
-              toFirestore: (
-                final NotifyNotification value,
-                final SetOptions? options,
-              ) =>
-                  value.toJson(),
-            )
-            .get())
-        .docs
-        .map(
-          (final QueryDocumentSnapshot<NotifyNotification> e) => e.data(),
-        )
-        .toList();
+    final List<List<String>> slicedArray = <List<String>>[];
+
+    const int arraySize = 10;
+
+    for (int i = 0; i < myNtfIds.length; i += arraySize) {
+      if (i + arraySize > myNtfIds.length) {
+        slicedArray.add(myNtfIds.sublist(i, myNtfIds.length - 1));
+      } else {
+        slicedArray.add(myNtfIds.sublist(i, i + arraySize));
+      }
+    }
+    final List<NotifyNotification> ntfs = <NotifyNotification>[];
+
+    for (final List<String> ids in slicedArray) {
+      if (ids.isNotEmpty) {
+        ntfs.addAll(
+          (await FirebaseFirestore.instance
+                  .collection('notifications')
+                  .where(FieldPath.documentId, whereIn: ids)
+                  .withConverter(
+                    fromFirestore: (
+                      final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                      final SnapshotOptions? options,
+                    ) =>
+                        NotifyNotification.fromFirebaseDocumentSnapshot(
+                      snapshot,
+                    ),
+                    toFirestore: (
+                      final NotifyNotification value,
+                      final SetOptions? options,
+                    ) =>
+                        value.toJson(),
+                  )
+                  .get())
+              .docs
+              .map(
+                (final QueryDocumentSnapshot<NotifyNotification> e) => e.data(),
+              )
+              .toList(),
+        );
+      }
+    }
     return ntfs;
   }
 
