@@ -2,7 +2,6 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart'
     show DatePicker, DatePickerController;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_notification.dart';
@@ -29,9 +28,6 @@ class _CalendarPageState extends State<CalendarPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Theme.of(context).backgroundColor,
-        ),
         title: const Text('Calendar'),
       ),
       body: Column(
@@ -55,7 +51,6 @@ class _CalendarPageState extends State<CalendarPage>
                   DateTime.now(),
                   controller: _controller,
                   initialSelectedDate: activeDates[0],
-                  deactivatedColor: Theme.of(context).hintColor,
                   monthTextStyle: Theme.of(context).textTheme.subtitle2!,
                   dayTextStyle: Theme.of(context).textTheme.subtitle2!,
                   dateTextStyle: Theme.of(context).textTheme.subtitle1!,

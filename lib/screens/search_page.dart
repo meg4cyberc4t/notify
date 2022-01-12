@@ -30,11 +30,13 @@ class _SearchPageState extends State<SearchPage>
       resizeToAvoidBottomInset: false,
       body: CustomScrollView(
         slivers: <Widget>[
-          const SliverAppBar(
-            title: Text('Search'),
+          SliverToBoxAdapter(
+            child: AppBar(
+              title: const Text('Search'),
+            ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(10),
             sliver: SliverToBoxAdapter(
               child: NotifyTextField(
                 autocorrect: true,

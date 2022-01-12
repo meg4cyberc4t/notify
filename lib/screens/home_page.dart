@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_notification.dart';
@@ -30,37 +28,31 @@ class _HomePageState extends State<HomePage>
         onPressed: () =>
             Navigator.of(context).pushNamed('/CreateNotificationPage'),
       ),
+      appBar: AppBar(
+        title: const Text('Today tasks'),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           controller: _controller,
           slivers: <Widget>[
-            SliverStickyHeader(
-              header: AppBar(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Theme.of(context).backgroundColor,
-                ),
-                title: const Text('Today tasks'),
-              ),
-              sliver: SliverPadding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                sliver: CustomStreamBuilder<
-                    Stream<List<NotifyNotification>>>.notifySliver(
-                  stream: FirebaseService.of(context)
-                      .getNotificationsAboutDateSnapshot(DateTime.now()),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              sliver: CustomStreamBuilder<
+                  Stream<List<NotifyNotification>>>.notifySliver(
+                stream: FirebaseService.of(context)
+                    .getNotificationsAboutDateSnapshot(DateTime.now()),
+                onData: (
+                  final BuildContext context,
+                  final Stream<List<NotifyNotification>> stream,
+                ) =>
+                    CustomStreamBuilder<List<NotifyNotification>>.notifySliver(
+                  stream: stream,
                   onData: (
                     final BuildContext context,
-                    final Stream<List<NotifyNotification>> stream,
+                    final List<NotifyNotification> data,
                   ) =>
-                      CustomStreamBuilder<
-                          List<NotifyNotification>>.notifySliver(
-                    stream: stream,
-                    onData: (
-                      final BuildContext context,
-                      final List<NotifyNotification> data,
-                    ) =>
-                        SliverNotifyItemsList(
-                      list: data,
-                    ),
+                      SliverNotifyItemsList(
+                    list: data,
                   ),
                 ),
               ),
