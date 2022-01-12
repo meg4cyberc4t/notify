@@ -17,8 +17,6 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 
-  final ScrollController _controller = ScrollController();
-
   @override
   Widget build(final BuildContext context) {
     super.build(context);
@@ -32,56 +30,58 @@ class _HomePageState extends State<HomePage>
         title: const Text('Today tasks'),
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          controller: _controller,
-          slivers: <Widget>[
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              sliver:
-                  CustomFutureBuilder<List<NotifyNotification>>.notifySliver(
-                future: FirebaseService.of(context)
-                    .getNotificationsAboutDate(DateTime.now()),
-                onData: (
-                  final BuildContext context,
-                  final List<NotifyNotification> data,
-                ) =>
-                    SliverNotifyItemsList(
-                  list: data,
+        child: RefreshIndicator(
+          onRefresh: () async => setState(() {}),
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                sliver:
+                    CustomFutureBuilder<List<NotifyNotification>>.notifySliver(
+                  future: FirebaseService.of(context)
+                      .getNotificationsAboutDate(DateTime.now()),
+                  onData: (
+                    final BuildContext context,
+                    final List<NotifyNotification> data,
+                  ) =>
+                      SliverNotifyItemsList(
+                    list: data,
+                  ),
                 ),
               ),
-            ),
-            // SliverStickyHeader(
-            //   header: AppBar(
-            //     title: const Text('Folders'),
-            //   ),
-            //   sliver: const SliverPadding(
-            //     padding: EdgeInsets.symmetric(vertical: 10),
-            //     sliver: SliverNotifyItemsList(
-            //       divider: false,
-            //       list: <NotifyItem>[
-            //         NotifyFolder(
-            //           uid: '0',
-            //           title: 'Неприметным ковром',
-            //           description: 'стелется в тени цветов',
-            //           notifications: <NotifyNotification>[],
-            //         ),
-            //         NotifyFolder(
-            //           uid: '0',
-            //           title: 'репней и пестиков,',
-            //           description: 'шипов',
-            //           notifications: <NotifyNotification>[],
-            //         ),
-            //         NotifyFolder(
-            //           uid: '0',
-            //           title: 'Мы все исчезнем,',
-            //           description: 'но не мох',
-            //           notifications: <NotifyNotification>[],
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+              // SliverStickyHeader(
+              //   header: AppBar(
+              //     title: const Text('Folders'),
+              //   ),
+              //   sliver: const SliverPadding(
+              //     padding: EdgeInsets.symmetric(vertical: 10),
+              //     sliver: SliverNotifyItemsList(
+              //       divider: false,
+              //       list: <NotifyItem>[
+              //         NotifyFolder(
+              //           uid: '0',
+              //           title: 'Неприметным ковром',
+              //           description: 'стелется в тени цветов',
+              //           notifications: <NotifyNotification>[],
+              //         ),
+              //         NotifyFolder(
+              //           uid: '0',
+              //           title: 'репней и пестиков,',
+              //           description: 'шипов',
+              //           notifications: <NotifyNotification>[],
+              //         ),
+              //         NotifyFolder(
+              //           uid: '0',
+              //           title: 'Мы все исчезнем,',
+              //           description: 'но не мох',
+              //           notifications: <NotifyNotification>[],
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

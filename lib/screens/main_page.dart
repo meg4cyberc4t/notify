@@ -105,7 +105,8 @@ class _MainPageState extends State<MainPage> {
   @override
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(IntProperty('selectedIndex', selectedIndex));
-    properties.add(DiagnosticsProperty<bool>('firstBoot', firstBoot));
+    properties
+      ..add(IntProperty('selectedIndex', selectedIndex))
+      ..add(DiagnosticsProperty<bool>('firstBoot', firstBoot));
   }
 }
