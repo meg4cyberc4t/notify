@@ -37,7 +37,7 @@ Future<T?> showEditFieldBottomSheet<T>(
               autofocus: true,
               initialValue: initialValue,
               onFieldSubmitted: (final String? value) =>
-                  Navigator.of(context).pop(value),
+                  Navigator.of(context).pop(value?.trim()),
             ),
           ),
         ),

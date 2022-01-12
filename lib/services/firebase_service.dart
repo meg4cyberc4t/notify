@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +14,9 @@ import 'package:provider/provider.dart';
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
 /// [FirebaseFirestore] services. Allows you to put the logic of operations into
 /// separate functions.
+
+// https://github.com/furkansarihan/firestore_collection/blob/master/lib/firestore_document.dart
+
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth = fauth.FirebaseAuth.instance;
 
@@ -80,6 +85,26 @@ class FirebaseService {
   Future<void> signOut() => _firebaseAuth.signOut();
 
   /// Getting user information
+  Future<NotifyUser> getInfoAboutUser(
+    final String uid,
+  ) async =>
+      (await FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .withConverter(
+                fromFirestore: (
+                  final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                  final SnapshotOptions? options,
+                ) =>
+                    NotifyUser.fromJson(snapshot.data()!, snapshot.id),
+                toFirestore:
+                    (final NotifyUser value, final SetOptions? options) =>
+                        value.toJson(),
+              )
+              .get())
+          .data()!;
+
+  /// Getting user information
   Stream<NotifyUser> getInfoAboutUserAsStream(
     final String uid,
   ) =>
@@ -96,7 +121,9 @@ class FirebaseService {
                 value.toJson(),
           )
           .snapshots()
-          .map((final DocumentSnapshot<NotifyUser> event) => event.data()!);
+          .map(
+            (final DocumentSnapshot<NotifyUser> event) => event.data()!,
+          );
 
   /// Updating user information
   Future<void> updateInfoAboutUser(
@@ -135,7 +162,30 @@ class FirebaseService {
   }
 
   /// Calculates the number of subscriptions the user has
-  Stream<bool> checkFollowed(final String from, final String to) {
+  Future<bool> checkFollowed(final String from, final String to) async {
+    final bool check1 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user1', isEqualTo: from)
+            .where('user2', isEqualTo: to)
+            .where('user1_accept', isEqualTo: true)
+            .get())
+        .docs
+        .isNotEmpty;
+
+    final bool check2 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user1', isEqualTo: to)
+            .where('user2', isEqualTo: from)
+            .where('user2_accept', isEqualTo: true)
+            .get())
+        .docs
+        .isNotEmpty;
+
+    return check1 || check2;
+  }
+
+  /// Calculates the number of subscriptions the user has
+  Stream<bool> checkFollowedAsStream(final String from, final String to) {
     final Stream<bool> stream1 = FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: from)
@@ -162,122 +212,94 @@ class FirebaseService {
   }
 
   /// Getting all the uids that are subscribed to the user
-  Stream<List<NotifyUser>> getFollowersFromUser(final String uid) {
-    final Stream<List<String>> stream1 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: uid)
-        .where('user1_accept', isEqualTo: false)
-        .where('user2_accept', isEqualTo: true)
-        .snapshots()
+  Future<List<NotifyUser>> getFollowersFromUser(final String uid) async {
+    final List<String> query1 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user1', isEqualTo: uid)
+            .where('user1_accept', isEqualTo: false)
+            .where('user2_accept', isEqualTo: true)
+            .get())
+        .docs
         .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user2'] as String,
-              )
-              .toList(),
-        );
-    final Stream<List<String>> stream2 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user2', isEqualTo: uid)
-        .where('user2_accept', isEqualTo: false)
-        .where('user1_accept', isEqualTo: true)
-        .snapshots()
-        .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user1'] as String,
-              )
-              .toList(),
-        );
+          (final QueryDocumentSnapshot<Object?> e) => e['user2'] as String,
+        )
+        .toList();
 
-    return combineLatestStreams<List<String>>(
-      <Stream<List<String>>>[stream1, stream2],
-    ).map((final List<List<String>> event) => event[0] + event[1]).asyncMap(
-          (final List<String> event) async =>
-              getUsersListFromUsersUidList(event),
-        );
+    final List<String> query2 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user2', isEqualTo: uid)
+            .where('user2_accept', isEqualTo: false)
+            .where('user1_accept', isEqualTo: true)
+            .get())
+        .docs
+        .map(
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e['user1'] as String,
+        )
+        .toList();
+
+    return getUsersListFromUsersUidList(query1 + query2);
   }
 
   /// Getting all the uids that the user is subscribed to
-  Stream<List<NotifyUser>> getFollowingFromUser(final String uid) {
-    final Stream<List<String>> stream1 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: uid)
-        .where('user1_accept', isEqualTo: true)
-        .where('user2_accept', isEqualTo: false)
-        .snapshots()
+  Future<List<NotifyUser>> getFollowingFromUser(final String uid) async {
+    final List<String> query1 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user1', isEqualTo: uid)
+            .where('user1_accept', isEqualTo: true)
+            .where('user2_accept', isEqualTo: false)
+            .get())
+        .docs
         .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user2'] as String,
-              )
-              .toList(),
-        );
-    final Stream<List<String>> stream2 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user2', isEqualTo: uid)
-        .where('user2_accept', isEqualTo: true)
-        .where('user1_accept', isEqualTo: false)
-        .snapshots()
-        .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user1'] as String,
-              )
-              .toList(),
-        );
-    return combineLatestStreams<List<String>>(
-      <Stream<List<String>>>[stream1, stream2],
-    )
-        .map((final List<List<String>> event) => event[0] + event[1])
-        .asyncMap(
-          (final List<String> event) async =>
-              getUsersListFromUsersUidList(event),
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e['user2'] as String,
         )
-        .asBroadcastStream();
+        .toList();
+
+    final List<String> query2 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user2', isEqualTo: uid)
+            .where('user2_accept', isEqualTo: true)
+            .where('user1_accept', isEqualTo: false)
+            .get())
+        .docs
+        .map(
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e['user1'] as String,
+        )
+        .toList();
+
+    return getUsersListFromUsersUidList(query1 + query2);
   }
 
   /// Getting all colleagues uids with user
-  Stream<List<NotifyUser>> getColleguesFromUser(final String uid) {
-    final Stream<List<String>> stream1 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: uid)
-        .where('user1_accept', isEqualTo: true)
-        .where('user2_accept', isEqualTo: true)
-        .snapshots()
+  Future<List<NotifyUser>> getColleguesFromUser(final String uid) async {
+    final List<String> query1 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user1', isEqualTo: uid)
+            .where('user1_accept', isEqualTo: true)
+            .where('user2_accept', isEqualTo: true)
+            .get())
+        .docs
         .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user2'] as String,
-              )
-              .toList(),
-        );
-    final Stream<List<String>> stream2 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user2', isEqualTo: uid)
-        .where('user2_accept', isEqualTo: true)
-        .where('user1_accept', isEqualTo: true)
-        .snapshots()
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e['user2'] as String,
+        )
+        .toList();
+
+    final List<String> query2 = (await FirebaseFirestore.instance
+            .collection('relations')
+            .where('user2', isEqualTo: uid)
+            .where('user2_accept', isEqualTo: true)
+            .where('user1_accept', isEqualTo: true)
+            .get())
+        .docs
         .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) => event.docs
-              .map(
-                (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                    e['user1'] as String,
-              )
-              .toList(),
-        );
-    final Stream<List<String>> resultStream =
-        combineLatestStreams<List<String>>(
-      <Stream<List<String>>>[stream1, stream2],
-    ).map((final List<List<String>> event) => event[0] + event[1]);
-    return resultStream.asyncMap(
-      (final List<String> event) async => getUsersListFromUsersUidList(event),
-    );
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e['user1'] as String,
+        )
+        .toList();
+    return getUsersListFromUsersUidList(query1 + query2);
   }
 
   /// Changing the status of a "subscription" with a user
@@ -450,6 +472,7 @@ class FirebaseService {
   Future<NotifyNotification> getNotificationFromId(final String uid) async =>
       (await FirebaseFirestore.instance
               .collection('notifications')
+              .doc(uid)
               .withConverter(
                 fromFirestore: (
                   final DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -462,10 +485,8 @@ class FirebaseService {
                 ) =>
                     value.toJson(),
               )
-              .where(FieldPath.documentId, isEqualTo: uid)
               .get())
-          .docs[0]
-          .data();
+          .data()!;
 
   /// The stream of receiving notification by id
   Future<void> editNotificationFromId(
@@ -477,72 +498,61 @@ class FirebaseService {
           .doc(id)
           .update(data);
 
-  /// The stream of receiving notification by id
-  Stream<NotifyNotification> getNotificationFromIdSnapshots(final String uid) =>
-      FirebaseFirestore.instance
-          .collection('notifications')
-          .withConverter(
-            fromFirestore: (
-              final DocumentSnapshot<Map<String, dynamic>> snapshot,
-              final SnapshotOptions? options,
-            ) =>
-                NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
-            toFirestore: (
-              final NotifyNotification value,
-              final SetOptions? options,
-            ) =>
-                value.toJson(),
-          )
-          .doc(uid)
-          .snapshots()
-          .map(
-            (final DocumentSnapshot<NotifyNotification> event) => event.data()!,
-          );
-
   /// A function for getting all the reminders that the user can get
-  Stream<Stream<List<NotifyNotification>>> getNotificationsAboutDateSnapshot(
+  Future<List<NotifyNotification>> getNotificationsAboutDate(
     final DateTime datetime,
-  ) =>
-      FirebaseFirestore.instance
-          .collection('relations_ntf_user')
-          .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
-          .withConverter(
-            fromFirestore: (
-              final DocumentSnapshot<Map<String, dynamic>> snapshot,
-              final SnapshotOptions? options,
-            ) =>
-                snapshot.data()!,
-            toFirestore: (
-              final Object? value,
-              final SetOptions? options,
-            ) =>
-                value! as Map<String, dynamic>,
-          )
-          .snapshots()
-          .asyncMap((final QuerySnapshot<Map<String, dynamic>> event) {
-        final List<String> ids = event.docs
-            .map(
-              (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                  e.data()['ntf_uid'] as String,
-            )
-            .toList();
-        final DateTime _start = DateTime(
-          datetime.year,
-          datetime.month,
-          datetime.day,
-        );
-        final DateTime _end = DateTime(
-          datetime.year,
-          datetime.month,
-          datetime.day,
-          23,
-          59,
-          59,
-        );
+  ) async {
+    final List<NotifyNotification> ntfs = await getMyNotifications();
+    final DateTime _start = DateTime(
+      datetime.year,
+      datetime.month,
+      datetime.day,
+    );
+    final DateTime _end = DateTime(
+      datetime.year,
+      datetime.month,
+      datetime.day,
+      23,
+      59,
+      59,
+    );
+    final List<NotifyNotification> result = <NotifyNotification>[];
+    for (final NotifyNotification element in ntfs) {
+      if (element.deadline.isAfter(_start) && element.deadline.isBefore(_end)) {
+        result.add(element);
+      }
+    }
+    return result;
+  }
 
-        return FirebaseFirestore.instance
+  /// A method that will send absolutely all the notifications that the user has
+  Future<List<NotifyNotification>> getMyNotifications() async {
+    final List<String> myNtfIds = (await FirebaseFirestore.instance
+            .collection('relations_ntf_user')
+            .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
+            .withConverter(
+              fromFirestore: (
+                final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                final SnapshotOptions? options,
+              ) =>
+                  snapshot.data()!,
+              toFirestore: (
+                final Object? value,
+                final SetOptions? options,
+              ) =>
+                  value! as Map<String, dynamic>,
+            )
+            .get())
+        .docs
+        .map(
+          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+              e.data()['ntf_uid'] as String,
+        )
+        .toList();
+
+    final List<NotifyNotification> ntfs = (await FirebaseFirestore.instance
             .collection('notifications')
-            .where(FieldPath.documentId, whereIn: ids)
+            .where(FieldPath.documentId, whereIn: myNtfIds)
             .withConverter(
               fromFirestore: (
                 final DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -555,81 +565,28 @@ class FirebaseService {
               ) =>
                   value.toJson(),
             )
-            .snapshots()
-            .map(
-              (final QuerySnapshot<NotifyNotification> event) => event.docs
-                  .map(
-                    (final QueryDocumentSnapshot<NotifyNotification> e) =>
-                        e.data(),
-                  )
-                  .where(
-                    (final NotifyNotification element) =>
-                        element.deadline.isAfter(_start) &&
-                        element.deadline.isBefore(_end),
-                  )
-                  .toList(),
-            );
-      });
+            .get())
+        .docs
+        .map(
+          (final QueryDocumentSnapshot<NotifyNotification> e) => e.data(),
+        )
+        .toList();
+    return ntfs;
+  }
 
   /// A function for getting all the reminders that the user can get
-  Stream<Stream<List<DateTime>>> getActiveDates() => FirebaseFirestore.instance
-          .collection('relations_ntf_user')
-          .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
-          .withConverter(
-            fromFirestore: (
-              final DocumentSnapshot<Map<String, dynamic>> snapshot,
-              final SnapshotOptions? options,
-            ) =>
-                snapshot.data()!,
-            toFirestore: (
-              final Object? value,
-              final SetOptions? options,
-            ) =>
-                value! as Map<String, dynamic>,
-          )
-          .snapshots()
-          .asyncMap((final QuerySnapshot<Map<String, dynamic>> event) {
-        final List<String> ids = event.docs
-            .map(
-              (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-                  e.data()['ntf_uid'] as String,
-            )
-            .toList();
-
-        return FirebaseFirestore.instance
-            .collection('notifications')
-            .where(FieldPath.documentId, whereIn: ids)
-            .withConverter(
-              fromFirestore: (
-                final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                final SnapshotOptions? options,
-              ) =>
-                  NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
-              toFirestore: (
-                final NotifyNotification value,
-                final SetOptions? options,
-              ) =>
-                  value.toJson(),
-            )
-            .snapshots()
-            .map((final QuerySnapshot<NotifyNotification> event) {
-          final Set<DateTime> activeDates = <DateTime>{};
-
-          final List<NotifyNotification> dates = event.docs
-              .map(
-                (final QueryDocumentSnapshot<NotifyNotification> e) => e.data(),
-              )
-              .toList();
-          for (final NotifyNotification element in dates) {
-            activeDates.add(
-              DateTime(
-                element.deadline.year,
-                element.deadline.month,
-                element.deadline.day,
-              ),
-            );
-          }
-          return activeDates.toList();
-        });
-      });
+  Future<List<DateTime>> getActiveDates() async {
+    final List<NotifyNotification> myNotifications = await getMyNotifications();
+    final Set<DateTime> activeDates = <DateTime>{};
+    for (final NotifyNotification element in myNotifications) {
+      activeDates.add(
+        DateTime(
+          element.deadline.year,
+          element.deadline.month,
+          element.deadline.day,
+        ),
+      );
+    }
+    return activeDates.toList();
+  }
 }

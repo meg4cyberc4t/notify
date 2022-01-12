@@ -79,18 +79,17 @@ class CustomStreamBuilder<T> extends StatelessWidget {
         initialData: initialData,
         builder:
             (final BuildContext context, final AsyncSnapshot<T?> snapshot) {
-          if (snapshot.hasData) {
-            return onData(context, snapshot.data!);
+          final T? data = snapshot.data;
+          if (snapshot.hasData && data != null) {
+            return onData(context, data);
           }
           switch (snapshot.connectionState) {
             case ConnectionState.active:
-              final T? data = snapshot.data;
               if (snapshot.hasError || data == null) {
                 return onError(context, snapshot.error);
               }
               return onData(context, data);
             case ConnectionState.done:
-              final T? data = snapshot.data;
               if (snapshot.hasError || data == null) {
                 return onError(context, snapshot.error);
               }

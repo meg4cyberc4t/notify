@@ -1,6 +1,5 @@
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_item.dart';
 
@@ -9,7 +8,7 @@ import 'package:notify/services/classes/notify_item.dart';
 /// user.
 Future<T?> showNotifyItemsBottomSheet<T>(
   final BuildContext context,
-  final Stream<List<NotifyItem>> loadStream,
+  final List<NotifyItem> list,
 ) async =>
     showFlexibleBottomSheet(
       minHeight: 0,
@@ -31,18 +30,11 @@ Future<T?> showNotifyItemsBottomSheet<T>(
             topLeft: Radius.circular(15),
             topRight: Radius.circular(15),
           ),
-          child: CustomStreamBuilder<List<NotifyItem>>.notify(
-            stream: loadStream,
-            onData: (
-              final BuildContext context,
-              final List<NotifyItem> data,
-            ) =>
-                Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: NotifyItemsList(
-                controller: scrollController,
-                list: data,
-              ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: NotifyItemsList(
+              controller: scrollController,
+              list: list,
             ),
           ),
         ),

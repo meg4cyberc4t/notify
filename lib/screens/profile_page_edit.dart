@@ -2,7 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/components/builders/custom_stream_builder.dart';
+import 'package:notify/components/builders/custom_future_builder.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/classes/notify_user.dart';
@@ -32,9 +32,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   @override
   Widget build(final BuildContext context) => Scaffold(
         body: SingleChildScrollView(
-          child: CustomStreamBuilder<NotifyUser>.notify(
-            stream: FirebaseService.of(context)
-                .getInfoAboutUserAsStream(context.watch<User>().uid),
+          child: CustomFutureBuilder<NotifyUser>.notify(
+            future: FirebaseService.of(context)
+                .getInfoAboutUser(context.watch<User>().uid),
             onData: (
               final BuildContext context,
               final NotifyUser user,
