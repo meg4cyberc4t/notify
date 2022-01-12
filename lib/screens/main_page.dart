@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notify/screens/auth_page.dart';
+import 'package:notify/screens/calendar_page.dart';
 import 'package:notify/screens/home_page.dart';
 import 'package:notify/screens/profile_page.dart';
 import 'package:notify/screens/search_page.dart';
@@ -24,13 +25,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> tabs = const <Widget>[
     HomePage(key: Key('HomePage')),
-    Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: NotifyParameters.circularProgressIndicatorWidth,
-        ),
-      ),
-    ),
+    CalendarPage(key: Key('CalendarPage')),
     SearchPage(key: Key('ScreenPage')),
     ProfilePage(key: Key('ProfilePage')),
   ];

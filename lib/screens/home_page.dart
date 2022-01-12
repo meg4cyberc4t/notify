@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage>
                 sliver: CustomStreamBuilder<
                     Stream<List<NotifyNotification>>>.notifySliver(
                   stream: FirebaseService.of(context)
-                      .getTodayNotificationsSnapshot(),
+                      .getNotificationsAboutDateSnapshot(DateTime.now()),
                   onData: (
                     final BuildContext context,
                     final Stream<List<NotifyNotification>> stream,
