@@ -79,6 +79,9 @@ class CustomFutureBuilder<T> extends StatelessWidget {
         initialData: initialData,
         builder:
             (final BuildContext context, final AsyncSnapshot<T?> snapshot) {
+          if (snapshot.hasData) {
+            return onData(context, snapshot.data!);
+          }
           switch (snapshot.connectionState) {
             case ConnectionState.active:
               final T? data = snapshot.data;
