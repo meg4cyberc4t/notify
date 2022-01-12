@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/screens/auth_page.dart';
 import 'package:notify/screens/calendar_page.dart';
 import 'package:notify/screens/home_page.dart';
@@ -22,6 +24,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final PageController _controller = PageController();
   int selectedIndex = 0;
+  bool firstBoot = true;
 
   final List<Widget> tabs = const <Widget>[
     HomePage(key: Key('HomePage')),
@@ -45,6 +48,21 @@ class _MainPageState extends State<MainPage> {
 
     if (context.watch<User?>() == null) {
       return const AuthPage();
+    }
+    if (firstBoot) {
+      Connectivity().checkConnectivity().then((final ConnectivityResult value) {
+        if (value == ConnectivityResult.none) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            notifySnackBar(
+              'There is no internet connection. '
+              'The latest saved version is used',
+              context,
+            ),
+          );
+          debugPrint('No internet!');
+        }
+      });
+      firstBoot = false;
     }
     return Scaffold(
       body: PageView(
@@ -88,5 +106,6 @@ class _MainPageState extends State<MainPage> {
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(IntProperty('selectedIndex', selectedIndex));
+    properties.add(DiagnosticsProperty<bool>('firstBoot', firstBoot));
   }
 }
