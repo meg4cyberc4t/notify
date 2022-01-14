@@ -2,7 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/components/bottomsheets/show_delete_item_alert_dialog.dart';
 import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/configs/notify_theme.dart';
 import 'package:notify/screens/notification_page.dart';
@@ -34,12 +36,7 @@ Widget _itemBuilder(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: _NotifyNotificationItem(
           key: Key('notification-${ntf.uid}'),
-          title: ntf.title,
-          subtitle: ntf.description,
-          datetime: ntf.deadline,
-          priority: ntf.priority,
-          repeatIt: ntf.repeat,
-          disabled: ntf.deadline.isBefore(DateTime.now()),
+          ntf: ntf,
           onPressed: () => Navigator.of(context).push(
             customRoute(
               NotificationPage(id: ntf.uid),
@@ -259,75 +256,87 @@ class _NotifyNotificationItem extends StatelessWidget {
   /// [onPressed] - Function when pressed
   /// [priority] - Is the notification prioritized
   const _NotifyNotificationItem({
-    required this.title,
-    required this.subtitle,
-    required this.priority,
-    required this.repeatIt,
-    required this.datetime,
+    required this.ntf,
     required this.onPressed,
-    this.disabled = false,
     final Key? key,
   }) : super(key: key);
 
-  final String title;
-  final String subtitle;
-  final bool priority;
-  final int repeatIt;
-  final DateTime datetime;
+  final NotifyNotification ntf;
   final VoidCallback onPressed;
-  final bool disabled;
 
   @override
-  Widget build(final BuildContext context) => InkWell(
-        onTap: disabled ? null : onPressed,
-        child: SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 4,
-                color: disabled
-                    ? Theme.of(context).hintColor
-                    : priority
-                        ? NotifyThemeData.primaryVariant
-                        : NotifyThemeData.primary,
-              ),
-              const SizedBox(width: 15),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: disabled ? Theme.of(context).hintColor : null,
-                        ),
-                  ),
-                  if (subtitle.isNotEmpty) const SizedBox(width: 10),
-                  if (subtitle.isNotEmpty)
+  Widget build(final BuildContext context) => Slidable(
+        key: Key(ntf.payload),
+        endActionPane: ActionPane(
+          motion: const StretchMotion(),
+          dismissible: DismissiblePane(
+            onDismissed: () async {
+              await showDeleteItemAlertDialog(context, ntf);
+            },
+          ),
+          children: <SlidableAction>[
+            SlidableAction(
+              onPressed: (final BuildContext context) =>
+                  showDeleteItemAlertDialog(context, ntf),
+              backgroundColor: Colors.red,
+              foregroundColor: Theme.of(context).backgroundColor,
+              icon: Icons.delete,
+            ),
+          ],
+        ),
+        child: InkWell(
+          onTap: ntf.disabled ? null : onPressed,
+          child: SizedBox(
+            height: 50,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  width: 4,
+                  color: ntf.disabled
+                      ? Theme.of(context).hintColor
+                      : ntf.priority
+                          ? NotifyThemeData.primaryVariant
+                          : NotifyThemeData.primary,
+                ),
+                const SizedBox(width: 15),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     Text(
-                      subtitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2!
-                          .copyWith(color: Theme.of(context).hintColor),
+                      ntf.title,
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            color: ntf.disabled
+                                ? Theme.of(context).hintColor
+                                : null,
+                          ),
                     ),
-                ],
-              ),
-              const Spacer(),
-              Text(
-                DateFormat(DateFormat.HOUR24_MINUTE).format(datetime),
-                style: !disabled
-                    ? null
-                    : TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        color: disabled ? Theme.of(context).hintColor : null,
+                    if (ntf.description.isNotEmpty) const SizedBox(width: 10),
+                    if (ntf.description.isNotEmpty)
+                      Text(
+                        ntf.description,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: Theme.of(context).hintColor),
                       ),
-              ),
-              const SizedBox(width: 10),
-            ],
+                  ],
+                ),
+                const Spacer(),
+                Text(
+                  DateFormat(DateFormat.HOUR24_MINUTE).format(ntf.deadline),
+                  style: !ntf.disabled
+                      ? null
+                      : TextStyle(
+                          color:
+                              ntf.disabled ? Theme.of(context).hintColor : null,
+                        ),
+                ),
+                const SizedBox(width: 10),
+              ],
+            ),
           ),
         ),
       );
@@ -336,13 +345,7 @@ class _NotifyNotificationItem extends StatelessWidget {
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(StringProperty('title', title))
-      ..add(DiagnosticsProperty<bool>('priority', priority))
-      ..add(DiagnosticsProperty<DateTime>('datetime', datetime))
-      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed))
-      ..add(StringProperty('subtitle', subtitle))
-      ..add(IntProperty('repeatIt', repeatIt))
-      ..add(DiagnosticsProperty<bool>('disabled', disabled));
+        .add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed));
   }
 }
 

@@ -44,4 +44,7 @@ class NotifyNotification implements NotifyItem {
   final String description;
   final DateTime deadline;
   final int id;
+
+  String get payload => 'notification-$uid';
+  bool get disabled => deadline.isBefore(DateTime.now());
 }
