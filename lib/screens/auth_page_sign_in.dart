@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:firebase_auth/firebase_auth.dart' as fauth
+    show FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_snack_bar.dart';
@@ -57,21 +59,19 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                   NotifyDirectButton(
                     title: 'Continue',
                     onPressed: () async {
-                      final String? error =
-                          await FirebaseService.of(context).signIn(
-                        email: _controllerEmail.text.trim(),
-                        password: _controllerPassword.text.trim(),
-                      );
-                      if (!mounted) {
-                        return;
-                      }
-                      if (error != null) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(notifySnackBar(error, context));
-                      } else {
-                        await Navigator.pushReplacementNamed(
-                          context,
-                          '/MainPage',
+                      try {
+                        await FirebaseService.of(context).signIn(
+                          email: _controllerEmail.text.trim(),
+                          password: _controllerPassword.text.trim(),
+                        );
+                        if (mounted) {
+                          await Navigator.of(context)
+                              .pushReplacementNamed('/MainPage');
+                        }
+                      } on fauth.FirebaseAuthException catch (err) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          notifySnackBar(err.message!, context),
                         );
                       }
                     },

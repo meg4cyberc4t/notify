@@ -2,6 +2,8 @@
 
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart' as fauth
+    show FirebaseAuthException;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -12,7 +14,6 @@ import 'package:notify/components/widgets/notify_user_avatar.dart';
 import 'package:notify/screens/color_picker_page.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/static_methods/custom_route.dart';
-import 'package:provider/provider.dart';
 import 'package:redux/redux.dart';
 
 class AuthPageSignUp extends StatefulWidget {
@@ -167,26 +168,24 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 notifySnackBar('Downloading...', context),
                               );
-                              final String? error = await context
-                                  .read<FirebaseService>()
-                                  .signUp(
-                                    email: _controllerEmail.text.trim(),
-                                    password: _controllerPassword.text.trim(),
-                                    firstName: _controllerFirstname.text.trim(),
-                                    lastName: _controllerLastname.text.trim(),
-                                    color: colorStore.state,
-                                  );
-                              if (!mounted) {
-                                return;
-                              }
-                              if (error != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  notifySnackBar(error, context),
+                              try {
+                                await FirebaseService.of(context).signUp(
+                                  email: _controllerEmail.text.trim(),
+                                  password: _controllerPassword.text.trim(),
+                                  firstName: _controllerFirstname.text.trim(),
+                                  lastName: _controllerLastname.text.trim(),
+                                  color: colorStore.state,
                                 );
-                              } else {
-                                await Navigator.pushReplacementNamed(
-                                  context,
-                                  '/MainPage',
+                                if (mounted) {
+                                  await Navigator.of(context)
+                                      .pushReplacementNamed(
+                                    '/MainPage',
+                                  );
+                                }
+                              } on fauth.FirebaseAuthException catch (err) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  notifySnackBar(err.message!, context),
                                 );
                               }
                             },
@@ -195,8 +194,8 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                           NotifyDirectButton(
                             title: 'Already have',
                             style: NotifyDirectButtonStyle.slience,
-                            onPressed: () => Navigator.pushReplacementNamed(
-                              context,
+                            onPressed: () =>
+                                Navigator.of(context).pushReplacementNamed(
                               '/AuthPageSignIn',
                             ),
                           ),

@@ -21,7 +21,6 @@ class FirebaseService {
 
   /// Allows you to access the [FirebaseService] through the [context]
   /// Example: FirebaseService.of(context)
-
   static FirebaseService of(final BuildContext context) =>
       context.read<FirebaseService>();
 
@@ -29,58 +28,50 @@ class FirebaseService {
   Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
 
   /// Authorizes the user by [email] and [password].
-  /// Returns an error message if something happened, or null.
-  Future<String?> signIn({
+  /// If something goes wrong, function to throw
+  /// an [fauth.FirebaseAuthException].
+  Future<void> signIn({
     required final String email,
     required final String password,
-  }) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+  }) async =>
+      _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return null;
-    } on fauth.FirebaseAuthException catch (e) {
-      return e.message;
-    }
-  }
 
   /// Allows you to authorize the user.
-  /// Returns an error message if something happened, or null.
-  Future<String?> signUp({
+  /// If something goes wrong, function to throw
+  /// an [fauth.FirebaseAuthException].
+  Future<void> signUp({
     required final String email,
     required final String password,
     required final String firstName,
     required final String lastName,
     required final Color color,
   }) async {
-    try {
-      final fauth.UserCredential ucred =
-          await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final DateTime dtn = DateTime.now();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(ucred.user!.uid)
-          .set(<String, dynamic>{
-        'first_name': firstName,
-        'last_name': lastName,
-        'color_r': color.red,
-        'color_g': color.green,
-        'color_b': color.blue,
-        'status': 'Hello! I have been using notify since '
-            '${DateFormat.MMMM().format(dtn)} '
-            '${dtn.day}, ${dtn.year}!',
-      });
-      return null;
-    } on fauth.FirebaseAuthException catch (e) {
-      return e.message;
-    }
+    final fauth.UserCredential ucred =
+        await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    final DateTime dtn = DateTime.now();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(ucred.user!.uid)
+        .set(<String, dynamic>{
+      'first_name': firstName,
+      'last_name': lastName,
+      'color_r': color.red,
+      'color_g': color.green,
+      'color_b': color.blue,
+      'status': 'Hello! I have been using notify since '
+          '${DateFormat.MMMM().format(dtn)} '
+          '${dtn.day}, ${dtn.year}!',
+      'notifications': <NotifyNotification>[],
+    });
   }
 
-  /// Disconnects the user from the [_firebaseAuth]
+  /// Disconnects the user from the [_firebaseAuth].
   Future<void> signOut() => _firebaseAuth.signOut();
 
   /// Getting user information
