@@ -16,9 +16,6 @@ import 'package:provider/provider.dart';
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
 /// [FirebaseFirestore] services. Allows you to put the logic of operations into
 /// separate functions.
-
-// https://github.com/furkansarihan/firestore_collection/blob/master/lib/firestore_document.dart
-
 class FirebaseService {
   final fauth.FirebaseAuth _firebaseAuth = fauth.FirebaseAuth.instance;
 
