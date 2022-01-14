@@ -52,7 +52,9 @@ Future<T?> showEditDateBottomSheet<T>(
                         CupertinoDatePicker(
                       mode: CupertinoDatePickerMode.time,
                       use24hFormat: true,
-                      initialDateTime: initialValue,
+                      initialDateTime: initialValue.add(
+                        const Duration(seconds: 1),
+                      ),
                       onDateTimeChanged: (final DateTime value) {
                         Vibrate.canVibrate.then((final bool value) {
                           if (value) {

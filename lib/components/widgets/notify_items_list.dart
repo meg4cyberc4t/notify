@@ -39,6 +39,7 @@ Widget _itemBuilder(
           datetime: ntf.deadline,
           priority: ntf.priority,
           repeatIt: ntf.repeat,
+          disabled: ntf.deadline.isBefore(DateTime.now()),
           onPressed: () => Navigator.of(context).push(
             customRoute(
               NotificationPage(id: ntf.uid),
@@ -264,6 +265,7 @@ class _NotifyNotificationItem extends StatelessWidget {
     required this.repeatIt,
     required this.datetime,
     required this.onPressed,
+    this.disabled = false,
     final Key? key,
   }) : super(key: key);
 
@@ -273,10 +275,11 @@ class _NotifyNotificationItem extends StatelessWidget {
   final int repeatIt;
   final DateTime datetime;
   final VoidCallback onPressed;
+  final bool disabled;
 
   @override
   Widget build(final BuildContext context) => InkWell(
-        onTap: onPressed,
+        onTap: disabled ? null : onPressed,
         child: SizedBox(
           height: 50,
           width: double.infinity,
@@ -285,16 +288,23 @@ class _NotifyNotificationItem extends StatelessWidget {
             children: <Widget>[
               Container(
                 width: 4,
-                color: priority
-                    ? NotifyThemeData.primaryVariant
-                    : NotifyThemeData.primary,
+                color: disabled
+                    ? Theme.of(context).hintColor
+                    : priority
+                        ? NotifyThemeData.primaryVariant
+                        : NotifyThemeData.primary,
               ),
               const SizedBox(width: 15),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(title, style: Theme.of(context).textTheme.subtitle1),
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: disabled ? Theme.of(context).hintColor : null,
+                        ),
+                  ),
                   if (subtitle.isNotEmpty) const SizedBox(width: 10),
                   if (subtitle.isNotEmpty)
                     Text(
@@ -307,7 +317,15 @@ class _NotifyNotificationItem extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              Text(DateFormat(DateFormat.HOUR24_MINUTE).format(datetime)),
+              Text(
+                DateFormat(DateFormat.HOUR24_MINUTE).format(datetime),
+                style: !disabled
+                    ? null
+                    : TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        color: disabled ? Theme.of(context).hintColor : null,
+                      ),
+              ),
               const SizedBox(width: 10),
             ],
           ),
@@ -323,7 +341,8 @@ class _NotifyNotificationItem extends StatelessWidget {
       ..add(DiagnosticsProperty<DateTime>('datetime', datetime))
       ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed))
       ..add(StringProperty('subtitle', subtitle))
-      ..add(IntProperty('repeatIt', repeatIt));
+      ..add(IntProperty('repeatIt', repeatIt))
+      ..add(DiagnosticsProperty<bool>('disabled', disabled));
   }
 }
 
