@@ -553,51 +553,30 @@ class FirebaseService {
         )
         .toList();
 
-    final List<List<String>> slicedArray = <List<String>>[];
-
-    const int step = 9;
-    int i = 0;
-    while (true) {
-      try {
-        slicedArray.add(myNtfIds.sublist(i, step));
-        i++;
-        // ignore: avoid_catching_errors
-      } on RangeError catch (_) {
-        slicedArray.add(myNtfIds.sublist(i, myNtfIds.length));
-        break;
-      }
-    }
-
     final List<NotifyNotification> ntfs = <NotifyNotification>[];
 
-    for (final List<String> ids in slicedArray) {
-      if (ids.isNotEmpty) {
-        ntfs.addAll(
-          (await FirebaseFirestore.instance
-                  .collection('notifications')
-                  .where(FieldPath.documentId, whereIn: ids)
-                  .withConverter(
-                    fromFirestore: (
-                      final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                      final SnapshotOptions? options,
-                    ) =>
-                        NotifyNotification.fromFirebaseDocumentSnapshot(
-                      snapshot,
-                    ),
-                    toFirestore: (
-                      final NotifyNotification value,
-                      final SetOptions? options,
-                    ) =>
-                        value.toJson(),
-                  )
-                  .get())
-              .docs
-              .map(
-                (final QueryDocumentSnapshot<NotifyNotification> e) => e.data(),
-              )
-              .toList(),
-        );
-      }
+    for (final String ntfId in myNtfIds) {
+      ntfs.add(
+        (await FirebaseFirestore.instance
+                .collection('notifications')
+                .doc(ntfId)
+                .withConverter(
+                  fromFirestore: (
+                    final DocumentSnapshot<Map<String, dynamic>> snapshot,
+                    final SnapshotOptions? options,
+                  ) =>
+                      NotifyNotification.fromFirebaseDocumentSnapshot(
+                    snapshot,
+                  ),
+                  toFirestore: (
+                    final NotifyNotification value,
+                    final SetOptions? options,
+                  ) =>
+                      value.toJson(),
+                )
+                .get())
+            .data()!,
+      );
     }
     ntfs.sort(
       (
@@ -624,5 +603,26 @@ class FirebaseService {
       );
     }
     return activeDates.toList();
+  }
+
+  Future<void> deleteNotification(final NotifyNotification ntf) async {
+    await NotificationService().removeNotification(ntf);
+    await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(ntf.uid)
+        .delete();
+    final List<String> relationsIds = (await FirebaseFirestore.instance
+            .collection('relations_ntf_user')
+            .where('ntf_uid')
+            .get())
+        .docs
+        .map((final QueryDocumentSnapshot<Map<String, dynamic>> e) => e.id)
+        .toList();
+    for (final String id in relationsIds) {
+      await FirebaseFirestore.instance
+          .collection('relations_ntf_user')
+          .doc(id)
+          .delete();
+    }
   }
 }
