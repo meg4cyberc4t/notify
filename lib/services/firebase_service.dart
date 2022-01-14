@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fauth;
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
+import 'package:notify/services/notifications_service.dart';
 import 'package:notify/static_methods/combine_latest_streams.dart';
 import 'package:provider/provider.dart';
 
@@ -459,6 +461,7 @@ class FirebaseService {
       'priority': priority,
       'repeat': repeat,
       'owner': _firebaseAuth.currentUser!.uid,
+      'id': Random().nextInt(2147483648),
     });
     await FirebaseFirestore.instance
         .collection('relations_ntf_user')
@@ -552,15 +555,19 @@ class FirebaseService {
 
     final List<List<String>> slicedArray = <List<String>>[];
 
-    const int arraySize = 10;
-
-    for (int i = 0; i < myNtfIds.length; i += arraySize) {
-      if (i + arraySize > myNtfIds.length) {
-        slicedArray.add(myNtfIds.sublist(i, myNtfIds.length - 1));
-      } else {
-        slicedArray.add(myNtfIds.sublist(i, i + arraySize));
+    const int step = 9;
+    int i = 0;
+    while (true) {
+      try {
+        slicedArray.add(myNtfIds.sublist(i, step));
+        i++;
+        // ignore: avoid_catching_errors
+      } on RangeError catch (_) {
+        slicedArray.add(myNtfIds.sublist(i, myNtfIds.length));
+        break;
       }
     }
+
     final List<NotifyNotification> ntfs = <NotifyNotification>[];
 
     for (final List<String> ids in slicedArray) {
@@ -592,6 +599,7 @@ class FirebaseService {
         );
       }
     }
+    await NotificationService().scheduleFromNotifyNotificationList(ntfs);
     return ntfs;
   }
 
