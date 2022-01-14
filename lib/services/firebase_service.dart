@@ -599,6 +599,13 @@ class FirebaseService {
         );
       }
     }
+    ntfs.sort(
+      (
+        final NotifyNotification a,
+        final NotifyNotification b,
+      ) =>
+          b.deadline.compareTo(a.deadline),
+    );
     await NotificationService().scheduleFromNotifyNotificationList(ntfs);
     return ntfs;
   }
