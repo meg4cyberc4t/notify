@@ -12,6 +12,7 @@ class NotifyNotification implements NotifyItem {
     required this.priority,
     required this.repeat,
     required this.owner,
+    required this.id,
   });
 
   NotifyNotification.fromFirebaseDocumentSnapshot(
@@ -22,7 +23,8 @@ class NotifyNotification implements NotifyItem {
         deadline = (data['deadline'] as Timestamp).toDate(),
         priority = data['priority'],
         repeat = data['repeat'],
-        owner = data['owner'];
+        owner = data['owner'],
+        id = data['id'];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'title': title,
@@ -31,6 +33,7 @@ class NotifyNotification implements NotifyItem {
         'deadline': deadline,
         'owner': owner,
         'priority': priority,
+        'id': id,
       };
 
   final String uid;
@@ -40,4 +43,5 @@ class NotifyNotification implements NotifyItem {
   final int repeat;
   final String description;
   final DateTime deadline;
+  final int id;
 }
