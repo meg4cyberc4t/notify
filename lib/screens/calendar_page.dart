@@ -44,7 +44,8 @@ class _CalendarPageState extends State<CalendarPage>
                   DatePicker(
                 DateTime.now(),
                 controller: _controller,
-                initialSelectedDate: activeDates[0],
+                initialSelectedDate:
+                    activeDates.isNotEmpty ? activeDates[0] : DateTime.now(),
                 monthTextStyle: Theme.of(context).textTheme.subtitle2!,
                 dayTextStyle: Theme.of(context).textTheme.subtitle2!,
                 dateTextStyle: Theme.of(context).textTheme.subtitle1!,
