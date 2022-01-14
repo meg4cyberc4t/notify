@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage>
             Navigator.of(context).pushNamed('/CreateNotificationPage'),
       ),
       appBar: AppBar(
-        title: const Text('Today tasks'),
+        title: const Text('Tasks'),
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -38,8 +38,7 @@ class _HomePageState extends State<HomePage>
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 sliver:
                     CustomFutureBuilder<List<NotifyNotification>>.notifySliver(
-                  future: FirebaseService.of(context)
-                      .getNotificationsAboutDate(DateTime.now()),
+                  future: FirebaseService.of(context).getMyNotifications(),
                   onData: (
                     final BuildContext context,
                     final List<NotifyNotification> data,
