@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:notify/components/bottomsheets/show_logout_alert_dialog.dart';
 import 'package:notify/components/bottomsheets/show_notify_items_bottom_sheet.dart';
 import 'package:notify/components/builders/custom_future_builder.dart';
 import 'package:notify/components/builders/custom_stream_builder.dart';
@@ -275,7 +276,7 @@ class _MyProfilePageState extends State<MyProfilePage>
                   actions: <Widget>[
                     IconButton(
                       icon: const Icon(Icons.logout),
-                      onPressed: () => FirebaseService.of(context).signOut(),
+                      onPressed: () async => showLogoutAlertDialog(context),
                     ),
                   ],
                   leading: IconButton(
