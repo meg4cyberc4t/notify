@@ -67,34 +67,37 @@ class FirebaseService {
       'status': 'Hello! I have been using notify since '
           '${DateFormat.MMMM().format(dtn)} '
           '${dtn.day}, ${dtn.year}!',
-      'notifications': <NotifyNotification>[],
+      'notification_ids': <String>[],
     });
   }
 
   /// Disconnects the user from the [_firebaseAuth].
   Future<void> signOut() => _firebaseAuth.signOut();
 
-  /// Getting user information
+  /// Getting the user's model by its uid.
   Future<NotifyUser> getInfoAboutUser(
     final String uid,
-  ) async =>
-      (await FirebaseFirestore.instance
-              .collection('users')
-              .doc(uid)
-              .withConverter(
-                fromFirestore: (
-                  final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                  final SnapshotOptions? options,
-                ) =>
-                    NotifyUser.fromJson(snapshot.data()!, snapshot.id),
-                toFirestore:
-                    (final NotifyUser value, final SetOptions? options) =>
-                        value.toJson(),
-              )
-              .get())
-          .data()!;
+  ) async {
+    final DocumentSnapshot<NotifyUser> doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .withConverter(
+          fromFirestore: (
+            final DocumentSnapshot<Map<String, dynamic>> snapshot,
+            final SnapshotOptions? _,
+          ) =>
+              NotifyUser.fromFirebaseDocumentSnapshot(snapshot),
+          toFirestore: (
+            final NotifyUser value,
+            final SetOptions? _,
+          ) =>
+              value.toJson(),
+        )
+        .get();
+    return doc.data()!;
+  }
 
-  /// Getting user information
+  /// Streaming getting of the user's model by its id.
   Stream<NotifyUser> getInfoAboutUserAsStream(
     final String uid,
   ) =>
@@ -104,10 +107,13 @@ class FirebaseService {
           .withConverter(
             fromFirestore: (
               final DocumentSnapshot<Map<String, dynamic>> snapshot,
-              final SnapshotOptions? options,
+              final SnapshotOptions? _,
             ) =>
-                NotifyUser.fromJson(snapshot.data()!, snapshot.id),
-            toFirestore: (final NotifyUser value, final SetOptions? options) =>
+                NotifyUser.fromFirebaseDocumentSnapshot(snapshot),
+            toFirestore: (
+              final NotifyUser value,
+              final SetOptions? _,
+            ) =>
                 value.toJson(),
           )
           .snapshots()
@@ -124,31 +130,15 @@ class FirebaseService {
           .doc(_firebaseAuth.currentUser!.uid)
           .update(newData);
 
-  /// Getting a list of users by having a list of their uids
+  /// Getting a list of users by list of their uids
   Future<List<NotifyUser>> getUsersListFromUsersUidList(
     final List<String> uids,
   ) async {
-    if (uids.isEmpty) {
-      return <NotifyUser>[];
+    final List<NotifyUser> result = <NotifyUser>[];
+    for (final String uid in uids) {
+      result.add(await getInfoAboutUser(uid));
     }
-    final QuerySnapshot<NotifyUser> a = await FirebaseFirestore.instance
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: uids)
-        .withConverter(
-          fromFirestore: (
-            final DocumentSnapshot<Map<String, dynamic>> snapshot,
-            final SnapshotOptions? options,
-          ) =>
-              NotifyUser.fromJson(snapshot.data()!, snapshot.id),
-          toFirestore: (final NotifyUser value, final SetOptions? options) =>
-              value.toJson(),
-        )
-        .get();
-    return Future<List<NotifyUser>>.value(
-      a.docs
-          .map((final QueryDocumentSnapshot<NotifyUser> e) => e.data())
-          .toList(),
-    );
+    return result;
   }
 
   /// Calculates the number of subscriptions the user has

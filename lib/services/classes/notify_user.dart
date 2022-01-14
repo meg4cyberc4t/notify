@@ -11,6 +11,7 @@ class NotifyUser implements NotifyItem {
     required this.lastName,
     required this.status,
     required this.color,
+    required this.notificationIds,
   });
 
   NotifyUser.fromFirebaseDocumentSnapshot(
@@ -24,20 +25,8 @@ class NotifyUser implements NotifyItem {
           data['color_g'],
           data['color_b'],
           1,
-        );
-
-  NotifyUser.fromJson(
-    final Map<String, dynamic> json,
-    this.uid,
-  )   : firstName = json['first_name'],
-        lastName = json['last_name'],
-        status = json['status'],
-        color = Color.fromRGBO(
-          json['color_r'],
-          json['color_g'],
-          json['color_b'],
-          1,
-        );
+        ),
+        notificationIds = data['notification_ids'];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'first_name': firstName,
@@ -46,6 +35,7 @@ class NotifyUser implements NotifyItem {
         'color_r': colorR,
         'color_g': colorR,
         'color_b': colorR,
+        'notification_ids': notificationIds,
       };
 
   final String uid;
@@ -53,6 +43,7 @@ class NotifyUser implements NotifyItem {
   final String lastName;
   final String status;
   final Color color;
+  final List<String> notificationIds;
   int get colorR => color.red;
   int get colorG => color.green;
   int get colorB => color.blue;
