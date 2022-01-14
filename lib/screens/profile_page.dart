@@ -53,9 +53,9 @@ class _ProfilePageState extends State<ProfilePage>
     final String profileUID = widget.uid!;
 
     return Scaffold(
-      body: CustomStreamBuilder<bool>.notify(
-        stream: FirebaseService.of(context)
-            .checkFollowedAsStream(context.watch<User>().uid, profileUID),
+      body: CustomFutureBuilder<bool>.notify(
+        future: FirebaseService.of(context)
+            .checkFollowed(context.watch<User>().uid, profileUID),
         onData: (
           final BuildContext context,
           final bool isFollowed,

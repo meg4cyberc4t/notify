@@ -10,7 +10,6 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/notifications_service.dart';
-import 'package:notify/static_methods/combine_latest_streams.dart';
 import 'package:provider/provider.dart';
 
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
@@ -141,7 +140,8 @@ class FirebaseService {
     return result;
   }
 
-  /// Calculates the number of subscriptions the user has
+  /// The function allows you to find out whether the user (with uid = [from])
+  /// is subscribed to the another user (with uid = [to])
   Future<bool> checkFollowed(final String from, final String to) async {
     final bool check1 = (await FirebaseFirestore.instance
             .collection('relations')
@@ -151,7 +151,9 @@ class FirebaseService {
             .get())
         .docs
         .isNotEmpty;
-
+    if (check1) {
+      return true;
+    }
     final bool check2 = (await FirebaseFirestore.instance
             .collection('relations')
             .where('user1', isEqualTo: to)
@@ -160,35 +162,10 @@ class FirebaseService {
             .get())
         .docs
         .isNotEmpty;
-
-    return check1 || check2;
-  }
-
-  /// Calculates the number of subscriptions the user has
-  Stream<bool> checkFollowedAsStream(final String from, final String to) {
-    final Stream<bool> stream1 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: from)
-        .where('user2', isEqualTo: to)
-        .where('user1_accept', isEqualTo: true)
-        .snapshots()
-        .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) =>
-              event.docs.isNotEmpty,
-        );
-    final Stream<bool> stream2 = FirebaseFirestore.instance
-        .collection('relations')
-        .where('user1', isEqualTo: to)
-        .where('user2', isEqualTo: from)
-        .where('user2_accept', isEqualTo: true)
-        .snapshots()
-        .map(
-          (final QuerySnapshot<Map<String, dynamic>> event) =>
-              event.docs.isNotEmpty,
-        );
-    return combineLatestStreams<bool>(<Stream<bool>>[stream1, stream2]).map(
-      (final List<bool> event) => event[0] || event[1],
-    );
+    if (check2) {
+      return true;
+    }
+    return false;
   }
 
   /// Getting all the uids that are subscribed to the user
