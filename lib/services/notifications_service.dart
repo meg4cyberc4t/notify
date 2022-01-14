@@ -105,13 +105,18 @@ class NotificationService {
         ntf.deadline.microsecond,
       ),
       platformChannelSpecifics,
-      payload: 'notification-${ntf.uid}',
+      payload: ntf.payload,
       androidAllowWhileIdle: true,
       matchDateTimeComponents:
           (ntf.repeat == 0) ? null : DateTimeComponents.values[ntf.repeat - 1],
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
+  }
+
+  Future<void> removeNotification(final NotifyNotification ntf) {
+    debugPrint('Remove schedule: ${ntf.uid} at ${ntf.deadline}');
+    return plug.cancel(ntf.id);
   }
 
   Future<void> scheduleFromNotifyNotificationList(
