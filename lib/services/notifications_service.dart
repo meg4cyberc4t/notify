@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:notify/services/classes/notify_notification.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -16,8 +17,8 @@ class NotificationService {
   /// Factory constructor for interacting with only one instance of
   /// [NotificationService] throughout the application
   factory NotificationService() => _instance;
-  NotificationService._();
-  static final NotificationService _instance = NotificationService._();
+  const NotificationService._();
+  static const NotificationService _instance = NotificationService._();
 
   /// File name for the logo in notifications
   static const String notificationsIcon = "logo";
@@ -87,47 +88,41 @@ class NotificationService {
     }
   }
 
-  int _id = 0;
+  Future<void> scheduleFromNotifyNotification(final NotifyNotification ntf) {
+    debugPrint('Schedule: ${ntf.uid} at ${ntf.deadline}');
+    return plug.zonedSchedule(
+      ntf.id,
+      ntf.title,
+      ntf.description,
+      tz.TZDateTime.local(
+        ntf.deadline.year,
+        ntf.deadline.month,
+        ntf.deadline.day,
+        ntf.deadline.hour,
+        ntf.deadline.minute,
+        ntf.deadline.second,
+        ntf.deadline.millisecond,
+        ntf.deadline.microsecond,
+      ),
+      platformChannelSpecifics,
+      payload: 'notification-${ntf.uid}',
+      androidAllowWhileIdle: true,
+      matchDateTimeComponents:
+          (ntf.repeat == 0) ? null : DateTimeComponents.values[ntf.repeat - 1],
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
 
-  /// The function that will launch notifications right now
-  Future<void> show({
-    final String? title,
-    final String? body,
-    final String? payload,
-  }) async =>
-      plug.show(
-        _id++,
-        title,
-        body,
-        platformChannelSpecifics,
-        payload: payload,
-      );
-
-  /// A function that will launch notifications right now at a certain time
-  Future<void> schedule({
-    required final DateTime dateTime,
-    final String? title,
-    final String? body,
-    final String? payload,
-  }) async =>
-      plug.zonedSchedule(
-        _id++,
-        title,
-        body,
-        tz.TZDateTime.local(
-          dateTime.year,
-          dateTime.month,
-          dateTime.day,
-          dateTime.hour,
-          dateTime.minute,
-          dateTime.second,
-          dateTime.millisecond,
-          dateTime.microsecond,
-        ),
-        platformChannelSpecifics,
-        payload: payload,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+  Future<void> scheduleFromNotifyNotificationList(
+    final List<NotifyNotification> list,
+  ) async =>
+      // ignore: avoid_function_literals_in_foreach_calls
+      list.forEach(
+        (final NotifyNotification element) async {
+          if (element.deadline.isAfter(DateTime.now())) {
+            await scheduleFromNotifyNotification(element);
+          }
+        },
       );
 }
