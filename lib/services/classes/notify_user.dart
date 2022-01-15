@@ -26,7 +26,8 @@ class NotifyUser implements NotifyItem {
           data['color_b'],
           1,
         ),
-        notificationIds = data['notification_ids'];
+        notificationIds =
+            (data['notification_ids'] as List<dynamic>).cast<String>();
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'first_name': firstName,

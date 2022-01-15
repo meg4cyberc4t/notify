@@ -88,7 +88,9 @@ class NotificationService {
     }
   }
 
-  Future<void> scheduleFromNotifyNotification(final NotifyNotification ntf) {
+  /// Sets a deferred task in the phone's notification system.
+  /// The notification will appear in the current time zone.
+  Future<void> schedule(final NotifyNotification ntf) {
     debugPrint('Schedule: ${ntf.uid} at ${ntf.deadline}');
     return plug.zonedSchedule(
       ntf.id,
@@ -114,20 +116,10 @@ class NotificationService {
     );
   }
 
-  Future<void> removeNotification(final NotifyNotification ntf) {
-    debugPrint('Remove schedule: ${ntf.uid} at ${ntf.deadline}');
-    return plug.cancel(ntf.id);
+  /// Clears all reminder entries in the system.
+  /// It is used to overwrite all reminders at the moment of loading.
+  Future<void> clearAllNotification() {
+    debugPrint('Remove all schedule');
+    return plug.cancelAll();
   }
-
-  Future<void> scheduleFromNotifyNotificationList(
-    final List<NotifyNotification> list,
-  ) async =>
-      // ignore: avoid_function_literals_in_foreach_calls
-      list.forEach(
-        (final NotifyNotification element) async {
-          if (element.deadline.isAfter(DateTime.now())) {
-            await scheduleFromNotifyNotification(element);
-          }
-        },
-      );
 }
