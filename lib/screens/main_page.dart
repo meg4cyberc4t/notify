@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,8 @@ import 'package:notify/screens/calendar_page.dart';
 import 'package:notify/screens/home_page.dart';
 import 'package:notify/screens/profile_page.dart';
 import 'package:notify/screens/search_page.dart';
+import 'package:notify/services/classes/notify_user.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notify_parameters.dart';
 import 'package:provider/provider.dart';
 
@@ -65,11 +68,17 @@ class _MainPageState extends State<MainPage> {
       firstBoot = false;
     }
     return Scaffold(
-      body: PageView(
-        controller: _controller,
-        children: tabs,
-        onPageChanged: (final int value) =>
-            setState(() => selectedIndex = value),
+      body: StreamProvider<NotifyUser?>(
+        initialData: null,
+        create: (final BuildContext _) => FirebaseService.selectUser()
+            .snapshots()
+            .map((final DocumentSnapshot<NotifyUser> event) => event.data()!),
+        child: PageView(
+          controller: _controller,
+          children: tabs,
+          onPageChanged: (final int value) =>
+              setState(() => selectedIndex = value),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,

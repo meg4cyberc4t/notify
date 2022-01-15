@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/services/classes/notify_item.dart';
+import 'package:provider/provider.dart';
 
 class NotifyUser implements NotifyItem {
   const NotifyUser({
@@ -28,6 +29,9 @@ class NotifyUser implements NotifyItem {
         ),
         notificationIds =
             (data['notification_ids'] as List<dynamic>).cast<String>();
+
+  static NotifyUser of(final BuildContext context) =>
+      Provider.of<NotifyUser?>(context)!;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'first_name': firstName,

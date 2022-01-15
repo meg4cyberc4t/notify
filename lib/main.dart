@@ -17,7 +17,6 @@ import 'package:notify/screens/profile_page_edit.dart';
 import 'package:notify/services/firebase_service.dart';
 import 'package:notify/services/notifications_service.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,16 +34,9 @@ class MyApp extends StatelessWidget {
   const MyApp({final Key? key}) : super(key: key);
 
   @override
-  Widget build(final BuildContext context) => MultiProvider(
-        providers: <SingleChildWidget>[
-          Provider<FirebaseService>(
-            create: (final _) => FirebaseService(),
-          ),
-          StreamProvider<User?>(
-            initialData: null,
-            create: (final _) => FirebaseService.auth.authStateChanges(),
-          )
-        ],
+  Widget build(final BuildContext context) => StreamProvider<User?>(
+        initialData: FirebaseService.auth.currentUser,
+        create: (final _) => FirebaseService.auth.authStateChanges(),
         child: StreamProvider<User?>.value(
           value: FirebaseAuth.instance.authStateChanges(),
           initialData: context.watch<User?>(),

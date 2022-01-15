@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
-import 'package:notify/services/notifications_service.dart';
 
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
 /// [FirebaseFirestore] services. Allows you to put the logic of operations into
@@ -411,32 +410,6 @@ class FirebaseService {
             ) =>
                 value.toJson(),
           );
-
-  /// A method that will send absolutely all the notifications that the user has
-  static Stream<List<NotifyNotification>> getMyNotifications() => selectUser()
-          .snapshots()
-          .asyncMap((final DocumentSnapshot<NotifyUser> doc) async {
-        final NotifyUser user = doc.data()!;
-        await NotificationService().clearAllNotification();
-        final List<NotifyNotification> ntfs = <NotifyNotification>[];
-        for (final String id in user.notificationIds) {
-          final DocumentSnapshot<NotifyNotification> doc =
-              await selectNotification(id).get();
-          final NotifyNotification ntf = doc.data()!;
-          ntfs.add(ntf);
-          if (ntf.deadline.isAfter(DateTime.now())) {
-            await NotificationService().schedule(ntf);
-          }
-        }
-        ntfs.sort(
-          (
-            final NotifyNotification a,
-            final NotifyNotification b,
-          ) =>
-              b.deadline.compareTo(a.deadline),
-        );
-        return ntfs;
-      });
 
   /// Deletes the notification.
   /// If the current user is the owner, then the notification will be deleted

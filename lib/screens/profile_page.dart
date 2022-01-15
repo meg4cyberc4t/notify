@@ -243,32 +243,18 @@ class _MyProfilePageState extends State<MyProfilePage>
   @override
   bool get wantKeepAlive => true;
 
-  late final String uid;
-
-  @override
-  void initState() {
-    uid = context.read<User>().uid;
-    super.initState();
-  }
-
   @override
   Widget build(final BuildContext context) {
     super.build(context);
+    final NotifyUser user = NotifyUser.of(context);
     return Scaffold(
-      body: CustomStreamBuilder<NotifyUser>.notify(
-        stream: FirebaseService.selectUser(uid)
-            .snapshots()
-            .map((final DocumentSnapshot<NotifyUser> event) => event.data()!),
-        onData: (
-          final BuildContext context,
-          final NotifyUser user,
-        ) {
+      body: Builder(
+        builder: (final BuildContext context) {
           final Color passiveColor =
               ThemeData.estimateBrightnessForColor(user.color) ==
                       Brightness.light
                   ? Colors.black
                   : Colors.white;
-
           return RefreshIndicator(
             onRefresh: () async => Future<void>.delayed(
               const Duration(seconds: 1),
@@ -367,19 +353,22 @@ class _MyProfilePageState extends State<MyProfilePage>
                       children: <Widget>[
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.getColleguesFromUser(uid),
+                          future:
+                              FirebaseService.getColleguesFromUser(user.uid),
                           title: 'Collegues',
                         ),
                         _localDivider,
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.getFollowersFromUser(uid),
+                          future:
+                              FirebaseService.getFollowersFromUser(user.uid),
                           title: 'Followers',
                         ),
                         _localDivider,
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.getFollowingFromUser(uid),
+                          future:
+                              FirebaseService.getFollowingFromUser(user.uid),
                           title: 'Following',
                         ),
                       ],
@@ -393,11 +382,5 @@ class _MyProfilePageState extends State<MyProfilePage>
         },
       ),
     );
-  }
-
-  @override
-  void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(StringProperty('uid', uid));
   }
 }

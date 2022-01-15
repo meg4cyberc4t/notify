@@ -2,10 +2,10 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart'
     show DatePicker, DatePickerController;
 import 'package:flutter/material.dart';
-import 'package:notify/components/builders/custom_stream_builder.dart';
+import 'package:notify/components/builders/custom_future_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_notification.dart';
-import 'package:notify/services/firebase_service.dart';
+import 'package:notify/static_methods/get_my_notifications.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({final Key? key}) : super(key: key);
@@ -32,8 +32,8 @@ class _CalendarPageState extends State<CalendarPage>
       ),
       body: RefreshIndicator(
         onRefresh: () async => setState(() {}),
-        child: CustomStreamBuilder<List<NotifyNotification>>.notify(
-          stream: FirebaseService.getMyNotifications(),
+        child: CustomFutureBuilder<List<NotifyNotification>>.notify(
+          future: getMyNotifications(context),
           onData: (
             final BuildContext context,
             final List<NotifyNotification> allNotifications,

@@ -5,11 +5,11 @@ import 'package:notify/services/firebase_service.dart';
 
 ///  This is a function of calling [NotifyAlertDialog] with confirmation
 ///  for the user whether he wants to log out.
-Future<T?> showDeleteItemAlertDialog<T>(
+Future<bool?> showDeleteItemAlertDialog<bool>(
   final BuildContext context,
   final NotifyNotification ntf,
 ) =>
-    showDialog<T?>(
+    showDialog<bool?>(
       context: context,
       builder: (final BuildContext context) => NotifyAlertDialog(
         title: 'Exactly delete "${ntf.title}"?',
