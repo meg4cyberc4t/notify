@@ -419,165 +419,99 @@ class FirebaseService {
       'id': Random().nextInt(2147483648),
     });
     await FirebaseFirestore.instance
-        .collection('relations_ntf_user')
-        .add(<String, dynamic>{
-      'user_uid': _firebaseAuth.currentUser!.uid,
-      'ntf_uid': doc.id
+        .collection('users')
+        .doc(_firebaseAuth.currentUser!.uid)
+        .update(<String, dynamic>{
+      'notification_ids': FieldValue.arrayUnion(<String>[doc.id]),
     });
   }
 
   /// The function of receiving notification by id
-  Future<NotifyNotification> getNotificationFromId(final String uid) async =>
-      (await FirebaseFirestore.instance
-              .collection('notifications')
-              .doc(uid)
-              .withConverter(
-                fromFirestore: (
-                  final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                  final SnapshotOptions? options,
-                ) =>
-                    NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
-                toFirestore: (
-                  final NotifyNotification value,
-                  final SetOptions? options,
-                ) =>
-                    value.toJson(),
-              )
-              .get())
-          .data()!;
-
-  /// The stream of receiving notification by id
-  Future<void> editNotificationFromId(
-    final String id,
-    final Map<String, dynamic> data,
-  ) async =>
-      FirebaseFirestore.instance
-          .collection('notifications')
-          .doc(id)
-          .update(data);
-
-  /// A function for getting all the reminders that the user can get
-  Future<List<NotifyNotification>> getNotificationsAboutDate(
-    final DateTime datetime,
-  ) async {
-    final List<NotifyNotification> ntfs = await getMyNotifications();
-    final DateTime _start = DateTime(
-      datetime.year,
-      datetime.month,
-      datetime.day,
-    );
-    final DateTime _end = DateTime(
-      datetime.year,
-      datetime.month,
-      datetime.day,
-      23,
-      59,
-      59,
-    );
-    final List<NotifyNotification> result = <NotifyNotification>[];
-    for (final NotifyNotification element in ntfs) {
-      if (element.deadline.isAfter(_start) && element.deadline.isBefore(_end)) {
-        result.add(element);
-      }
-    }
-    return result;
-  }
-
-  /// A method that will send absolutely all the notifications that the user has
-  Future<List<NotifyNotification>> getMyNotifications() async {
-    final List<String> myNtfIds = (await FirebaseFirestore.instance
-            .collection('relations_ntf_user')
-            .where('user_uid', isEqualTo: _firebaseAuth.currentUser!.uid)
+  Future<NotifyNotification> getNotificationFromId(final String uid) async {
+    final DocumentSnapshot<NotifyNotification> doc =
+        await FirebaseFirestore.instance
+            .collection('notifications')
+            .doc(uid)
             .withConverter(
               fromFirestore: (
                 final DocumentSnapshot<Map<String, dynamic>> snapshot,
                 final SnapshotOptions? options,
               ) =>
-                  snapshot.data()!,
+                  NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
               toFirestore: (
-                final Object? value,
+                final NotifyNotification value,
                 final SetOptions? options,
               ) =>
-                  value! as Map<String, dynamic>,
+                  value.toJson(),
             )
-            .get())
-        .docs
-        .map(
-          (final QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-              e.data()['ntf_uid'] as String,
-        )
-        .toList();
-
-    final List<NotifyNotification> ntfs = <NotifyNotification>[];
-
-    for (final String ntfId in myNtfIds) {
-      ntfs.add(
-        (await FirebaseFirestore.instance
-                .collection('notifications')
-                .doc(ntfId)
-                .withConverter(
-                  fromFirestore: (
-                    final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                    final SnapshotOptions? options,
-                  ) =>
-                      NotifyNotification.fromFirebaseDocumentSnapshot(
-                    snapshot,
-                  ),
-                  toFirestore: (
-                    final NotifyNotification value,
-                    final SetOptions? options,
-                  ) =>
-                      value.toJson(),
-                )
-                .get())
-            .data()!,
-      );
-    }
-    ntfs.sort(
-      (
-        final NotifyNotification a,
-        final NotifyNotification b,
-      ) =>
-          b.deadline.compareTo(a.deadline),
-    );
-    await NotificationService().scheduleFromNotifyNotificationList(ntfs);
-    return ntfs;
+            .get();
+    return doc.data()!;
   }
 
-  /// A function for getting all the reminders that the user can get
-  Future<List<DateTime>> getActiveDates() async {
-    final List<NotifyNotification> myNotifications = await getMyNotifications();
-    final Set<DateTime> activeDates = <DateTime>{};
-    for (final NotifyNotification element in myNotifications) {
-      activeDates.add(
-        DateTime(
-          element.deadline.year,
-          element.deadline.month,
-          element.deadline.day,
-        ),
-      );
-    }
-    return activeDates.toList();
-  }
+  /// Function allows to edit notifications
+  Future<void> editNotificationFromId(
+    final String id,
+    final Map<String, dynamic> newData,
+  ) async =>
+      FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(id)
+          .update(newData);
 
+  /// A method that will send absolutely all the notifications that the user has
+  Stream<List<NotifyNotification>> getMyNotifications() =>
+      getInfoAboutUserAsStream(_firebaseAuth.currentUser!.uid)
+          .asyncMap((final NotifyUser user) async {
+        await NotificationService().clearAllNotification();
+        final List<NotifyNotification> ntfs = <NotifyNotification>[];
+        for (final String id in user.notificationIds) {
+          final NotifyNotification ntf = await getNotificationFromId(id);
+          ntfs.add(ntf);
+          if (ntf.deadline.isAfter(DateTime.now())) {
+            await NotificationService().schedule(ntf);
+          }
+        }
+        ntfs.sort(
+          (
+            final NotifyNotification a,
+            final NotifyNotification b,
+          ) =>
+              b.deadline.compareTo(a.deadline),
+        );
+        return ntfs;
+      });
+
+  /// Deletes the notification.
+  /// If the current user is the owner, then the notification will be deleted
+  /// from all users, otherwise only the current one.
   Future<void> deleteNotification(final NotifyNotification ntf) async {
-    await NotificationService().removeNotification(ntf);
     await FirebaseFirestore.instance
         .collection('notifications')
         .doc(ntf.uid)
         .delete();
-    final List<String> relationsIds = (await FirebaseFirestore.instance
-            .collection('relations_ntf_user')
-            .where('ntf_uid')
-            .get())
-        .docs
-        .map((final QueryDocumentSnapshot<Map<String, dynamic>> e) => e.id)
-        .toList();
-    for (final String id in relationsIds) {
+    if (ntf.owner == _firebaseAuth.currentUser!.uid) {
+      final List<String> userIds = (await FirebaseFirestore.instance
+              .collection('users')
+              .where('notification_ids', arrayContains: ntf.uid)
+              .get())
+          .docs
+          .map((final QueryDocumentSnapshot<dynamic> e) => e.id)
+          .toList();
+      for (final String userId in userIds) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update(<String, dynamic>{
+          'notification_ids': FieldValue.arrayRemove(<String>[ntf.uid])
+        });
+      }
+    } else {
       await FirebaseFirestore.instance
-          .collection('relations_ntf_user')
-          .doc(id)
-          .delete();
+          .collection('users')
+          .doc(_firebaseAuth.currentUser!.uid)
+          .update(<String, dynamic>{
+        'notification_ids': FieldValue.arrayRemove(<String>[ntf.uid])
+      });
     }
   }
 }

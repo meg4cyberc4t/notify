@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
-import 'package:notify/components/builders/custom_future_builder.dart';
+import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/firebase_service.dart';
@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage>
               SliverPadding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 sliver:
-                    CustomFutureBuilder<List<NotifyNotification>>.notifySliver(
-                  future: FirebaseService.of(context).getMyNotifications(),
+                    CustomStreamBuilder<List<NotifyNotification>>.notifySliver(
+                  stream: FirebaseService.of(context).getMyNotifications(),
                   onData: (
                     final BuildContext context,
                     final List<NotifyNotification> data,
