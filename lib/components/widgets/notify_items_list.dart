@@ -251,10 +251,7 @@ class NotifyUserListTile extends StatelessWidget {
 /// The [ListTile] unit that is used in the application to display notifications
 class _NotifyNotificationItem extends StatelessWidget {
   /// The main constructor of the button.
-  /// [title] - One of the styles NotifyDirectButtonStyle
-  /// [datetime] -DateTime of execution
   /// [onPressed] - Function when pressed
-  /// [priority] - Is the notification prioritized
   const _NotifyNotificationItem({
     required this.ntf,
     required this.onPressed,
@@ -345,7 +342,8 @@ class _NotifyNotificationItem extends StatelessWidget {
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-        .add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed));
+      ..add(ObjectFlagProperty<VoidCallback>.has('onPressed', onPressed))
+      ..add(DiagnosticsProperty<NotifyNotification>('ntf', ntf));
   }
 }
 
