@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage>
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 sliver:
                     CustomStreamBuilder<List<NotifyNotification>>.notifySliver(
-                  stream: FirebaseService.of(context).getMyNotifications(),
+                  stream: FirebaseService.getMyNotifications(),
                   onData: (
                     final BuildContext context,
                     final List<NotifyNotification> data,

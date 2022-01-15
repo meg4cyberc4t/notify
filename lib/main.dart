@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           ),
           StreamProvider<User?>(
             initialData: null,
-            create: (final _) => FirebaseService.of(context).currentUser,
+            create: (final _) => FirebaseService.auth.authStateChanges(),
           )
         ],
         child: StreamProvider<User?>.value(

@@ -7,7 +7,6 @@ import 'package:notify/components/widgets/notify_items_list.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({final Key? key}) : super(key: key);
@@ -48,9 +47,7 @@ class _SearchPageState extends State<SearchPage>
           ),
           CustomFutureBuilder<List<String>>.notifySliver(
             key: futureBuilderForSearch,
-            future: context
-                .read<FirebaseService>()
-                .searchFromUsers(controller.text.trim()),
+            future: FirebaseService.searchFromUsers(controller.text.trim()),
             onData: (
               final BuildContext context,
               final List<String> state,
@@ -70,8 +67,7 @@ class _SearchPageState extends State<SearchPage>
                 );
               }
               return CustomFutureBuilder<List<NotifyUser>>.notifySliver(
-                future: FirebaseService.of(context)
-                    .getUsersListFromUsersUidList(state),
+                future: FirebaseService.getUsersListFromUsersUidList(state),
                 onData: (
                   final BuildContext context,
                   final List<NotifyUser> list,

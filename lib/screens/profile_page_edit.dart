@@ -1,13 +1,12 @@
 // ignore_for_file: public_member_api_docs, prefer_single_quotes
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/components/builders/custom_future_builder.dart';
 import 'package:notify/components/widgets/notify_direct_button.dart';
 import 'package:notify/components/widgets/notify_text_field.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/firebase_service.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePageEdit extends StatefulWidget {
   const ProfilePageEdit({final Key? key}) : super(key: key);
@@ -33,8 +32,9 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
   Widget build(final BuildContext context) => Scaffold(
         body: SingleChildScrollView(
           child: CustomFutureBuilder<NotifyUser>.notify(
-            future: FirebaseService.of(context)
-                .getInfoAboutUser(context.watch<User>().uid),
+            future: FirebaseService.selectUser().get().then(
+                  (final DocumentSnapshot<NotifyUser> value) => value.data()!,
+                ),
             onData: (
               final BuildContext context,
               final NotifyUser user,
@@ -90,8 +90,8 @@ class _ProfilePageEditState extends State<ProfilePageEdit> {
                               child: NotifyDirectButton(
                                 title: 'Save',
                                 onPressed: () {
-                                  FirebaseService.of(context)
-                                      .updateInfoAboutUser(<String, String>{
+                                  FirebaseService.selectUser()
+                                      .update(<String, String>{
                                     'first_name': _controllerFirstname.text,
                                     'last_name': _controllerLastname.text,
                                     'status': _controllerStatus.text

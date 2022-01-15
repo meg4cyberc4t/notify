@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -48,14 +49,15 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(final BuildContext context) =>
-      CustomFutureBuilder<NotifyNotification>.notify(
-        future: FirebaseService.of(context).getNotificationFromId(widget.id),
+      CustomFutureBuilder<DocumentSnapshot<NotifyNotification>>.notify(
+        future: FirebaseService.selectNotification(widget.id).get(),
         onData: (
           final BuildContext context,
-          final NotifyNotification ntf,
+          final DocumentSnapshot<NotifyNotification> doc,
         ) =>
             Builder(
           builder: (final BuildContext context) {
+            final NotifyNotification ntf = doc.data()!;
             final bool disabled = ntf.deadline.isBefore(DateTime.now());
             return Scaffold(
               resizeToAvoidBottomInset: true,
@@ -84,9 +86,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                   mounted &&
                                   newValue != ntf.title &&
                                   newValue.isNotEmpty) {
-                                await FirebaseService.of(context)
-                                    .editNotificationFromId(
-                                        widget.id, <String, dynamic>{
+                                await FirebaseService.selectNotification(
+                                  widget.id,
+                                ).update(<String, dynamic>{
                                   'title': newValue,
                                 });
                                 setState(() {});
@@ -132,9 +134,9 @@ class _NotificationPageState extends State<NotificationPage> {
                               if (newValue != null &&
                                   mounted &&
                                   newValue != ntf.description) {
-                                await FirebaseService.of(context)
-                                    .editNotificationFromId(
-                                        widget.id, <String, dynamic>{
+                                await FirebaseService.selectNotification(
+                                  widget.id,
+                                ).update(<String, dynamic>{
                                   'description': newValue,
                                 });
                                 setState(() {});
@@ -179,9 +181,9 @@ class _NotificationPageState extends State<NotificationPage> {
                               if (newValue != null &&
                                   mounted &&
                                   newValue != ntf.deadline) {
-                                await FirebaseService.of(context)
-                                    .editNotificationFromId(
-                                        widget.id, <String, dynamic>{
+                                await FirebaseService.selectNotification(
+                                  widget.id,
+                                ).update(<String, dynamic>{
                                   'deadline': newValue,
                                 });
                                 setState(() {});
@@ -219,9 +221,9 @@ class _NotificationPageState extends State<NotificationPage> {
                       onTap: disabled
                           ? null
                           : () async {
-                              await FirebaseService.of(context)
-                                  .editNotificationFromId(
+                              await FirebaseService.selectNotification(
                                 widget.id,
+                              ).update(
                                 <String, dynamic>{
                                   'priority': !ntf.priority,
                                 },
@@ -249,9 +251,8 @@ class _NotificationPageState extends State<NotificationPage> {
                                 value: ntf.priority,
                                 inactiveThumbColor: Theme.of(context).hintColor,
                                 onChanged: (final _) {
-                                  FirebaseService.of(context)
-                                      .editNotificationFromId(
-                                    widget.id,
+                                  FirebaseService.selectNotification(widget.id)
+                                      .update(
                                     <String, dynamic>{
                                       'priority': !ntf.priority,
                                     },
@@ -278,9 +279,9 @@ class _NotificationPageState extends State<NotificationPage> {
                                   newValue != ntf.repeat &&
                                   newValue >= 0 &&
                                   newValue <= 4) {
-                                await FirebaseService.of(context)
-                                    .editNotificationFromId(
+                                await FirebaseService.selectNotification(
                                   widget.id,
+                                ).update(
                                   <String, dynamic>{
                                     'repeat': newValue,
                                   },
@@ -325,8 +326,10 @@ class _NotificationPageState extends State<NotificationPage> {
                     ),
                     const SizedBox(height: 10),
                     CustomFutureBuilder<NotifyUser>.notify(
-                      future: FirebaseService.of(context)
-                          .getInfoAboutUser(ntf.owner),
+                      future: FirebaseService.selectUser(ntf.owner).get().then(
+                            (final DocumentSnapshot<NotifyUser> value) =>
+                                value.data()!,
+                          ),
                       onData: (
                         final BuildContext context,
                         final NotifyUser user,

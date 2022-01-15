@@ -10,30 +10,29 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
 import 'package:notify/services/notifications_service.dart';
-import 'package:provider/provider.dart';
 
 /// The Service Adapter is a layer between the [fauth.FirebaseAuth] and
 /// [FirebaseFirestore] services. Allows you to put the logic of operations into
 /// separate functions.
 class FirebaseService {
-  final fauth.FirebaseAuth _firebaseAuth = fauth.FirebaseAuth.instance;
-
-  /// Allows you to access the [FirebaseService] through the [context]
-  /// Example: FirebaseService.of(context)
-  static FirebaseService of(final BuildContext context) =>
-      context.read<FirebaseService>();
+  factory FirebaseService() => instance;
+  const FirebaseService._();
+  static const FirebaseService instance = FirebaseService._();
+  static fauth.FirebaseAuth auth = fauth.FirebaseAuth.instance;
+  static FirebaseFirestore store = FirebaseFirestore.instance;
+  static String get currentUserId => auth.currentUser!.uid;
 
   /// Monitors the authorization status of the current [fauth.User]
-  Stream<fauth.User?> get currentUser => _firebaseAuth.authStateChanges();
+  Stream<fauth.User?> get currentUser => auth.authStateChanges();
 
   /// Authorizes the user by [email] and [password].
   /// If something goes wrong, function to throw
   /// an [fauth.FirebaseAuthException].
-  Future<void> signIn({
+  static Future<void> signIn({
     required final String email,
     required final String password,
   }) async =>
-      _firebaseAuth.signInWithEmailAndPassword(
+      auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -41,7 +40,7 @@ class FirebaseService {
   /// Allows you to authorize the user.
   /// If something goes wrong, function to throw
   /// an [fauth.FirebaseAuthException].
-  Future<void> signUp({
+  static Future<void> signUp({
     required final String email,
     required final String password,
     required final String firstName,
@@ -49,7 +48,7 @@ class FirebaseService {
     required final Color color,
   }) async {
     final fauth.UserCredential ucred =
-        await _firebaseAuth.createUserWithEmailAndPassword(
+        await auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -70,39 +69,14 @@ class FirebaseService {
     });
   }
 
-  /// Disconnects the user from the [_firebaseAuth].
-  Future<void> signOut() => _firebaseAuth.signOut();
+  /// Disconnects the user from the [auth].
+  static Future<void> signOut() => auth.signOut();
 
   /// Getting the user's model by its uid.
-  Future<NotifyUser> getInfoAboutUser(
-    final String uid,
-  ) async {
-    final DocumentSnapshot<NotifyUser> doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .withConverter(
-          fromFirestore: (
-            final DocumentSnapshot<Map<String, dynamic>> snapshot,
-            final SnapshotOptions? _,
-          ) =>
-              NotifyUser.fromFirebaseDocumentSnapshot(snapshot),
-          toFirestore: (
-            final NotifyUser value,
-            final SetOptions? _,
-          ) =>
-              value.toJson(),
-        )
-        .get();
-    return doc.data()!;
-  }
-
-  /// Streaming getting of the user's model by its id.
-  Stream<NotifyUser> getInfoAboutUserAsStream(
-    final String uid,
-  ) =>
+  static DocumentReference<NotifyUser> selectUser([final String? uid]) =>
       FirebaseFirestore.instance
           .collection('users')
-          .doc(uid)
+          .doc(uid ?? currentUserId)
           .withConverter(
             fromFirestore: (
               final DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -114,35 +88,27 @@ class FirebaseService {
               final SetOptions? _,
             ) =>
                 value.toJson(),
-          )
-          .snapshots()
-          .map(
-            (final DocumentSnapshot<NotifyUser> event) => event.data()!,
           );
 
-  /// Updating user information
-  Future<void> updateInfoAboutUser(
-    final Map<String, Object?> newData,
-  ) =>
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(_firebaseAuth.currentUser!.uid)
-          .update(newData);
-
   /// Getting a list of users by list of their uids
-  Future<List<NotifyUser>> getUsersListFromUsersUidList(
+  static Future<List<NotifyUser>> getUsersListFromUsersUidList(
     final List<String> uids,
   ) async {
     final List<NotifyUser> result = <NotifyUser>[];
     for (final String uid in uids) {
-      result.add(await getInfoAboutUser(uid));
+      result.add(
+        await selectUser(uid)
+            .get()
+            .then((final DocumentSnapshot<NotifyUser> value) => value.data()!),
+      );
     }
     return result;
   }
 
-  /// The function allows you to find out whether the user (with uid = [from])
+  /// The function allows you to find out whether the user
   /// is subscribed to the another user (with uid = [to])
-  Future<bool> checkFollowed(final String from, final String to) async {
+  static Future<bool> checkFollowed(final String to) async {
+    final String from = currentUserId;
     final bool check1 = (await FirebaseFirestore.instance
             .collection('relations')
             .where('user1', isEqualTo: from)
@@ -169,7 +135,7 @@ class FirebaseService {
   }
 
   /// Getting all the uids that are subscribed to the user
-  Future<List<NotifyUser>> getFollowersFromUser(final String uid) async {
+  static Future<List<NotifyUser>> getFollowersFromUser(final String uid) async {
     final List<String> query1 = (await FirebaseFirestore.instance
             .collection('relations')
             .where('user1', isEqualTo: uid)
@@ -199,7 +165,7 @@ class FirebaseService {
   }
 
   /// Getting all the uids that the user is subscribed to
-  Future<List<NotifyUser>> getFollowingFromUser(final String uid) async {
+  static Future<List<NotifyUser>> getFollowingFromUser(final String uid) async {
     final List<String> query1 = (await FirebaseFirestore.instance
             .collection('relations')
             .where('user1', isEqualTo: uid)
@@ -230,7 +196,7 @@ class FirebaseService {
   }
 
   /// Getting all colleagues uids with user
-  Future<List<NotifyUser>> getColleguesFromUser(final String uid) async {
+  static Future<List<NotifyUser>> getColleguesFromUser(final String uid) async {
     final List<String> query1 = (await FirebaseFirestore.instance
             .collection('relations')
             .where('user1', isEqualTo: uid)
@@ -260,8 +226,8 @@ class FirebaseService {
   }
 
   /// Changing the status of a "subscription" with a user
-  Future<void> followSwitch(final String to) async {
-    final String from = _firebaseAuth.currentUser!.uid;
+  static Future<void> followSwitch(final String to) async {
+    final String from = auth.currentUser!.uid;
     QuerySnapshot<Map<String, dynamic>> out = await FirebaseFirestore.instance
         .collection('relations')
         .where('user1', isEqualTo: from)
@@ -319,7 +285,7 @@ class FirebaseService {
   }
 
   /// Search for a user from all by [pattern]
-  Future<List<String>> searchFromUsers(final String pattern) async {
+  static Future<List<String>> searchFromUsers(final String pattern) async {
     final Set<String> mainSet = <String>{};
     final Iterable<String> elements1 = (await FirebaseFirestore.instance
             .collection('users')
@@ -400,7 +366,7 @@ class FirebaseService {
   /// 2 - Everyweek
   /// 3 - Everymonth
   /// 4 - Everyyear
-  Future<void> createNotification({
+  static Future<void> createNotification({
     required final String title,
     required final DateTime deadline,
     required final bool priority,
@@ -415,57 +381,48 @@ class FirebaseService {
       'deadline': deadline,
       'priority': priority,
       'repeat': repeat,
-      'owner': _firebaseAuth.currentUser!.uid,
+      'owner': currentUserId,
       'id': Random().nextInt(2147483648),
     });
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(_firebaseAuth.currentUser!.uid)
+        .doc(currentUserId)
         .update(<String, dynamic>{
       'notification_ids': FieldValue.arrayUnion(<String>[doc.id]),
     });
   }
 
   /// The function of receiving notification by id
-  Future<NotifyNotification> getNotificationFromId(final String uid) async {
-    final DocumentSnapshot<NotifyNotification> doc =
-        await FirebaseFirestore.instance
-            .collection('notifications')
-            .doc(uid)
-            .withConverter(
-              fromFirestore: (
-                final DocumentSnapshot<Map<String, dynamic>> snapshot,
-                final SnapshotOptions? options,
-              ) =>
-                  NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
-              toFirestore: (
-                final NotifyNotification value,
-                final SetOptions? options,
-              ) =>
-                  value.toJson(),
-            )
-            .get();
-    return doc.data()!;
-  }
-
-  /// Function allows to edit notifications
-  Future<void> editNotificationFromId(
-    final String id,
-    final Map<String, dynamic> newData,
-  ) async =>
+  static DocumentReference<NotifyNotification> selectNotification(
+    final String uid,
+  ) =>
       FirebaseFirestore.instance
           .collection('notifications')
-          .doc(id)
-          .update(newData);
+          .doc(uid)
+          .withConverter(
+            fromFirestore: (
+              final DocumentSnapshot<Map<String, dynamic>> snapshot,
+              final SnapshotOptions? options,
+            ) =>
+                NotifyNotification.fromFirebaseDocumentSnapshot(snapshot),
+            toFirestore: (
+              final NotifyNotification value,
+              final SetOptions? options,
+            ) =>
+                value.toJson(),
+          );
 
   /// A method that will send absolutely all the notifications that the user has
-  Stream<List<NotifyNotification>> getMyNotifications() =>
-      getInfoAboutUserAsStream(_firebaseAuth.currentUser!.uid)
-          .asyncMap((final NotifyUser user) async {
+  static Stream<List<NotifyNotification>> getMyNotifications() => selectUser()
+          .snapshots()
+          .asyncMap((final DocumentSnapshot<NotifyUser> doc) async {
+        final NotifyUser user = doc.data()!;
         await NotificationService().clearAllNotification();
         final List<NotifyNotification> ntfs = <NotifyNotification>[];
         for (final String id in user.notificationIds) {
-          final NotifyNotification ntf = await getNotificationFromId(id);
+          final DocumentSnapshot<NotifyNotification> doc =
+              await selectNotification(id).get();
+          final NotifyNotification ntf = doc.data()!;
           ntfs.add(ntf);
           if (ntf.deadline.isAfter(DateTime.now())) {
             await NotificationService().schedule(ntf);
@@ -484,12 +441,12 @@ class FirebaseService {
   /// Deletes the notification.
   /// If the current user is the owner, then the notification will be deleted
   /// from all users, otherwise only the current one.
-  Future<void> deleteNotification(final NotifyNotification ntf) async {
+  static Future<void> deleteNotification(final NotifyNotification ntf) async {
     await FirebaseFirestore.instance
         .collection('notifications')
         .doc(ntf.uid)
         .delete();
-    if (ntf.owner == _firebaseAuth.currentUser!.uid) {
+    if (ntf.owner == currentUserId) {
       final List<String> userIds = (await FirebaseFirestore.instance
               .collection('users')
               .where('notification_ids', arrayContains: ntf.uid)
@@ -508,7 +465,7 @@ class FirebaseService {
     } else {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_firebaseAuth.currentUser!.uid)
+          .doc(currentUserId)
           .update(<String, dynamic>{
         'notification_ids': FieldValue.arrayRemove(<String>[ntf.uid])
       });

@@ -16,7 +16,7 @@ Future<void> showLogoutAlertDialog(final BuildContext context) => showDialog(
           NotifyAlertDialogButtonItem(
             title: 'Next',
             onPressed: () {
-              FirebaseService.of(context).signOut();
+              FirebaseService.signOut();
               Navigator.pop(context);
             },
           )

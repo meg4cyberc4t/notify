@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,15 +55,15 @@ class _ProfilePageState extends State<ProfilePage>
 
     return Scaffold(
       body: CustomFutureBuilder<bool>.notify(
-        future: FirebaseService.of(context)
-            .checkFollowed(context.watch<User>().uid, profileUID),
+        future: FirebaseService.checkFollowed(profileUID),
         onData: (
           final BuildContext context,
           final bool isFollowed,
         ) =>
             CustomStreamBuilder<NotifyUser>.notify(
-          stream:
-              FirebaseService.of(context).getInfoAboutUserAsStream(profileUID),
+          stream: FirebaseService.selectUser(profileUID).snapshots().map(
+                (final DocumentSnapshot<NotifyUser> event) => event.data()!,
+              ),
           onData: (
             final BuildContext context,
             final NotifyUser user,
@@ -90,8 +91,7 @@ class _ProfilePageState extends State<ProfilePage>
                               : CupertinoIcons.add,
                         ),
                         onPressed: () async {
-                          await FirebaseService.of(context)
-                              .followSwitch(profileUID);
+                          await FirebaseService.followSwitch(profileUID);
                           setState(() {});
                         },
                       ),
@@ -137,8 +137,8 @@ class _ProfilePageState extends State<ProfilePage>
                         style: isFollowed
                             ? NotifyDirectButtonStyle.outlined
                             : NotifyDirectButtonStyle.primary,
-                        onPressed: () async => FirebaseService.of(context)
-                            .followSwitch(profileUID),
+                        onPressed: () async =>
+                            FirebaseService.followSwitch(profileUID),
                       ),
                     ),
                   ),
@@ -154,22 +154,25 @@ class _ProfilePageState extends State<ProfilePage>
                         children: <Widget>[
                           _preWidgetCountUsers(
                             context,
-                            future: FirebaseService.of(context)
-                                .getColleguesFromUser(profileUID),
+                            future: FirebaseService.getColleguesFromUser(
+                              profileUID,
+                            ),
                             title: 'Collegues',
                           ),
                           _localDivider,
                           _preWidgetCountUsers(
                             context,
-                            future: FirebaseService.of(context)
-                                .getFollowersFromUser(profileUID),
+                            future: FirebaseService.getFollowersFromUser(
+                              profileUID,
+                            ),
                             title: 'Followers',
                           ),
                           _localDivider,
                           _preWidgetCountUsers(
                             context,
-                            future: FirebaseService.of(context)
-                                .getFollowingFromUser(profileUID),
+                            future: FirebaseService.getFollowingFromUser(
+                              profileUID,
+                            ),
                             title: 'Following',
                           ),
                         ],
@@ -253,7 +256,9 @@ class _MyProfilePageState extends State<MyProfilePage>
     super.build(context);
     return Scaffold(
       body: CustomStreamBuilder<NotifyUser>.notify(
-        stream: FirebaseService.of(context).getInfoAboutUserAsStream(uid),
+        stream: FirebaseService.selectUser(uid)
+            .snapshots()
+            .map((final DocumentSnapshot<NotifyUser> event) => event.data()!),
         onData: (
           final BuildContext context,
           final NotifyUser user,
@@ -294,8 +299,8 @@ class _MyProfilePageState extends State<MyProfilePage>
                       if (inputColor != null &&
                           mounted &&
                           inputColor != user.color) {
-                        await FirebaseService.of(context)
-                            .updateInfoAboutUser(<String, dynamic>{
+                        await FirebaseService.selectUser()
+                            .update(<String, dynamic>{
                           'color_r': inputColor.red,
                           'color_g': inputColor.green,
                           'color_b': inputColor.blue,
@@ -362,22 +367,19 @@ class _MyProfilePageState extends State<MyProfilePage>
                       children: <Widget>[
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.of(context)
-                              .getColleguesFromUser(uid),
+                          future: FirebaseService.getColleguesFromUser(uid),
                           title: 'Collegues',
                         ),
                         _localDivider,
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.of(context)
-                              .getFollowersFromUser(uid),
+                          future: FirebaseService.getFollowersFromUser(uid),
                           title: 'Followers',
                         ),
                         _localDivider,
                         _preWidgetCountUsers(
                           context,
-                          future: FirebaseService.of(context)
-                              .getFollowingFromUser(uid),
+                          future: FirebaseService.getFollowingFromUser(uid),
                           title: 'Following',
                         ),
                       ],

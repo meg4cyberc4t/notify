@@ -33,7 +33,7 @@ class _CalendarPageState extends State<CalendarPage>
       body: RefreshIndicator(
         onRefresh: () async => setState(() {}),
         child: CustomStreamBuilder<List<NotifyNotification>>.notify(
-          stream: FirebaseService.of(context).getMyNotifications(),
+          stream: FirebaseService.getMyNotifications(),
           onData: (
             final BuildContext context,
             final List<NotifyNotification> allNotifications,

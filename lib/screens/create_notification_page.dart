@@ -157,12 +157,12 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                   );
                   if (newValue != null) {
                     _deadline.value = DateTime(
-                          newValue.year,
-                          newValue.month,
-                          newValue.day,
-                          _deadline.value.hour,
-                          _deadline.value.minute,
-                        );
+                      newValue.year,
+                      newValue.month,
+                      newValue.day,
+                      _deadline.value.hour,
+                      _deadline.value.minute,
+                    );
                   }
                 },
                 child: Padding(
@@ -299,7 +299,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                         if (title.isEmpty) {
                           return;
                         }
-                        FirebaseService.of(context).createNotification(
+                        FirebaseService.createNotification(
                           title: title,
                           description: desc,
                           deadline: _deadline.value,

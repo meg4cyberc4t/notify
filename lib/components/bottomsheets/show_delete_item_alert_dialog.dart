@@ -21,7 +21,7 @@ Future<T?> showDeleteItemAlertDialog<T>(
           NotifyAlertDialogButtonItem(
             title: 'Next',
             onPressed: () {
-              FirebaseService.of(context).deleteNotification(ntf);
+              FirebaseService.deleteNotification(ntf);
               Navigator.of(context).pop(true);
             },
           )

@@ -169,7 +169,7 @@ class _AuthPageSignUpState extends State<AuthPageSignUp> {
                                 notifySnackBar('Downloading...', context),
                               );
                               try {
-                                await FirebaseService.of(context).signUp(
+                                await FirebaseService.signUp(
                                   email: _controllerEmail.text.trim(),
                                   password: _controllerPassword.text.trim(),
                                   firstName: _controllerFirstname.text.trim(),

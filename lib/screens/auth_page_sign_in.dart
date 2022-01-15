@@ -60,7 +60,7 @@ class _AuthPageSignInState extends State<AuthPageSignIn> {
                     title: 'Continue',
                     onPressed: () async {
                       try {
-                        await FirebaseService.of(context).signIn(
+                        await FirebaseService.signIn(
                           email: _controllerEmail.text.trim(),
                           password: _controllerPassword.text.trim(),
                         );
