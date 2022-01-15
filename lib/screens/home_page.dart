@@ -48,37 +48,6 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
               ),
-              // SliverStickyHeader(
-              //   header: AppBar(
-              //     title: const Text('Folders'),
-              //   ),
-              //   sliver: const SliverPadding(
-              //     padding: EdgeInsets.symmetric(vertical: 10),
-              //     sliver: SliverNotifyItemsList(
-              //       divider: false,
-              //       list: <NotifyItem>[
-              //         NotifyFolder(
-              //           uid: '0',
-              //           title: 'Неприметным ковром',
-              //           description: 'стелется в тени цветов',
-              //           notifications: <NotifyNotification>[],
-              //         ),
-              //         NotifyFolder(
-              //           uid: '0',
-              //           title: 'репней и пестиков,',
-              //           description: 'шипов',
-              //           notifications: <NotifyNotification>[],
-              //         ),
-              //         NotifyFolder(
-              //           uid: '0',
-              //           title: 'Мы все исчезнем,',
-              //           description: 'но не мох',
-              //           notifications: <NotifyNotification>[],
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
