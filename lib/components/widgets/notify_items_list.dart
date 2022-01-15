@@ -13,6 +13,7 @@ import 'package:notify/services/classes/notify_folder.dart';
 import 'package:notify/services/classes/notify_item.dart';
 import 'package:notify/services/classes/notify_notification.dart';
 import 'package:notify/services/classes/notify_user.dart';
+import 'package:notify/services/firebase_service.dart';
 import 'package:notify/static_methods/custom_route.dart';
 
 Widget _itemBuilder(
@@ -267,14 +268,20 @@ class _NotifyNotificationItem extends StatelessWidget {
         endActionPane: ActionPane(
           motion: const StretchMotion(),
           dismissible: DismissiblePane(
-            onDismissed: () async {
-              await showDeleteItemAlertDialog(context, ntf);
-            },
+            closeOnCancel: true,
+            confirmDismiss: () async =>
+                await showDeleteItemAlertDialog<bool?>(context, ntf) ?? false,
+            onDismissed: () async => FirebaseService.deleteNotification(ntf),
           ),
           children: <SlidableAction>[
             SlidableAction(
-              onPressed: (final BuildContext context) =>
-                  showDeleteItemAlertDialog(context, ntf),
+              onPressed: (final BuildContext context) async {
+                final bool newValue =
+                    await showDeleteItemAlertDialog(context, ntf) ?? false;
+                if (newValue) {
+                  await FirebaseService.deleteNotification(ntf);
+                }
+              },
               backgroundColor: Colors.red,
               foregroundColor: Theme.of(context).backgroundColor,
               icon: Icons.delete,
