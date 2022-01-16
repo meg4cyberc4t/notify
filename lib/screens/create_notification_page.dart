@@ -127,7 +127,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                       onDateTimeChanged: (final DateTime value) {
                         Vibrate.canVibrate.then((final bool value) {
                           if (value) {
-                            Vibrate.feedback(FeedbackType.light);
+                            Vibrate.feedback(FeedbackType.selection);
                           }
                         });
 
@@ -223,7 +223,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                               onChanged: (final _) {
                                 Vibrate.canVibrate.then((final bool value) {
                                   if (value) {
-                                    Vibrate.feedback(FeedbackType.light);
+                                    Vibrate.feedback(FeedbackType.selection);
                                   }
                                 });
                                 imporant.value = !imporant.value;
@@ -251,7 +251,7 @@ class _CreateNotificationPageState extends State<CreateNotificationPage> {
                                 unawaited(
                                   Vibrate.canVibrate.then((final bool value) {
                                     if (value) {
-                                      Vibrate.feedback(FeedbackType.light);
+                                      Vibrate.feedback(FeedbackType.selection);
                                     }
                                   }),
                                 );

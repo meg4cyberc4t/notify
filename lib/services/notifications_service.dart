@@ -61,16 +61,32 @@ class NotificationService {
   }
 
   /// Parameters of a single notification channel.
-  static const NotificationDetails platformChannelSpecifics =
+  static const NotificationDetails regularNotificationsChannelSpecifics =
       NotificationDetails(
     android: AndroidNotificationDetails(
-      'notify_notifications',
-      'notify_notifications',
+      'Regular Notifications',
+      'Regular Notifications',
+      playSound: false,
+      enableVibration: false,
+      ticker: 'ticker',
+      setAsGroupSummary: true,
+      groupKey: 'important',
+    ),
+    iOS: IOSNotificationDetails(threadIdentifier: 'Regular Notifications'),
+  );
+
+  /// Parameters of a important notification channel.
+  static const NotificationDetails importantNotificationsChannelSpecifics =
+      NotificationDetails(
+    android: AndroidNotificationDetails(
+      'Imporant Notifications',
+      'Imporant Notifications',
       importance: Importance.max,
-      priority: Priority.high,
+      priority: Priority.max,
+      enableLights: true,
       ticker: 'ticker',
     ),
-    iOS: IOSNotificationDetails(threadIdentifier: 'notify_notifications'),
+    iOS: IOSNotificationDetails(threadIdentifier: 'Imporant Notifications'),
   );
 
   static void _onDidReceiveLocalNotification(
@@ -95,7 +111,7 @@ class NotificationService {
     return plug.zonedSchedule(
       ntf.id,
       ntf.title,
-      ntf.description,
+      ntf.description.isNotEmpty ? ntf.description : null,
       tz.TZDateTime.local(
         ntf.deadline.year,
         ntf.deadline.month,
@@ -106,7 +122,9 @@ class NotificationService {
         ntf.deadline.millisecond,
         ntf.deadline.microsecond,
       ),
-      platformChannelSpecifics,
+      ntf.priority
+          ? importantNotificationsChannelSpecifics
+          : regularNotificationsChannelSpecifics,
       payload: ntf.payload,
       androidAllowWhileIdle: true,
       matchDateTimeComponents:

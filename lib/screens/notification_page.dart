@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/components/bottomsheets/show_edit_date_bottom_sheet.dart';
 import 'package:notify/components/bottomsheets/show_edit_field_bottom_sheet.dart';
@@ -22,6 +23,7 @@ class NotificationPage extends StatefulWidget {
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
+
   @override
   void debugFillProperties(final DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -228,6 +230,11 @@ class _NotificationPageState extends State<NotificationPage> {
                                   'priority': !ntf.priority,
                                 },
                               );
+                              await Vibrate.canVibrate.then((final bool value) {
+                                if (value) {
+                                  Vibrate.feedback(FeedbackType.selection);
+                                }
+                              });
                               setState(() {});
                             },
                       child: SizedBox(
@@ -250,13 +257,20 @@ class _NotificationPageState extends State<NotificationPage> {
                               Switch(
                                 value: ntf.priority,
                                 inactiveThumbColor: Theme.of(context).hintColor,
-                                onChanged: (final _) {
-                                  FirebaseService.selectNotification(widget.id)
-                                      .update(
+                                onChanged: (final _) async {
+                                  await FirebaseService.selectNotification(
+                                    widget.id,
+                                  ).update(
                                     <String, dynamic>{
                                       'priority': !ntf.priority,
                                     },
                                   );
+                                  await Vibrate.canVibrate
+                                      .then((final bool value) {
+                                    if (value) {
+                                      Vibrate.feedback(FeedbackType.selection);
+                                    }
+                                  });
                                   setState(() {});
                                 },
                               )

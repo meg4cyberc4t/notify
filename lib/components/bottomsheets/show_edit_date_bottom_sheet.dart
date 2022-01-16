@@ -58,7 +58,7 @@ Future<T?> showEditDateBottomSheet<T>(
                       onDateTimeChanged: (final DateTime value) {
                         Vibrate.canVibrate.then((final bool value) {
                           if (value) {
-                            Vibrate.feedback(FeedbackType.light);
+                            Vibrate.feedback(FeedbackType.selection);
                           }
                         });
                         _dl.value = DateTime(
