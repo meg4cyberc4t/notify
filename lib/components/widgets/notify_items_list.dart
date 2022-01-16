@@ -187,12 +187,14 @@ class NotifyUserListTile extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) => InkWell(
-        onTap: () => Navigator.push(
-          context,
-          customRoute(
-            ProfilePage(uid: user.uid),
-          ),
-        ),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            customRoute(
+              ProfilePage(user: user),
+            ),
+          );
+        },
         child: Padding(
           padding: isExpanded ? const EdgeInsets.all(10) : EdgeInsets.zero,
           child: SizedBox(

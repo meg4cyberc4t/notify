@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:notify/components/builders/custom_stream_builder.dart';
 import 'package:notify/components/widgets/notify_snack_bar.dart';
 import 'package:notify/screens/auth_page.dart';
 import 'package:notify/screens/calendar_page.dart';
@@ -28,13 +29,6 @@ class _MainPageState extends State<MainPage> {
   final PageController _controller = PageController();
   int selectedIndex = 0;
   bool firstBoot = true;
-
-  final List<Widget> tabs = const <Widget>[
-    HomePage(key: Key('HomePage')),
-    CalendarPage(key: Key('CalendarPage')),
-    SearchPage(key: Key('ScreenPage')),
-    ProfilePage(key: Key('ProfilePage')),
-  ];
 
   @override
   Widget build(final BuildContext context) {
@@ -68,16 +62,37 @@ class _MainPageState extends State<MainPage> {
       firstBoot = false;
     }
     return Scaffold(
-      body: StreamProvider<NotifyUser?>(
-        initialData: null,
+      body: StreamProvider<NotifyUser>(
+        initialData: NotifyUser(
+          uid: '',
+          firstName: '',
+          lastName: '',
+          status: '',
+          color: Colors.black,
+          notificationIds: <String>[],
+        ),
         create: (final BuildContext _) => FirebaseService.selectUser()
             .snapshots()
             .map((final DocumentSnapshot<NotifyUser> event) => event.data()!),
-        child: PageView(
-          controller: _controller,
-          children: tabs,
-          onPageChanged: (final int value) =>
-              setState(() => selectedIndex = value),
+        child: CustomStreamBuilder<NotifyUser>.notify(
+          stream: FirebaseService.selectUser()
+              .snapshots()
+              .map((final DocumentSnapshot<NotifyUser> event) => event.data()!),
+          onData: (final BuildContext context, final NotifyUser user) =>
+              PageView(
+            controller: _controller,
+            children: <Widget>[
+              const HomePage(key: Key('HomePage')),
+              const CalendarPage(key: Key('CalendarPage')),
+              const SearchPage(key: Key('ScreenPage')),
+              ProfilePage(
+                key: const Key('ProfilePage'),
+                user: user,
+              ),
+            ],
+            onPageChanged: (final int value) =>
+                setState(() => selectedIndex = value),
+          ),
         ),
       ),
       bottomNavigationBar: NavigationBar(

@@ -6,14 +6,14 @@ import 'package:notify/services/classes/notify_item.dart';
 import 'package:provider/provider.dart';
 
 class NotifyUser implements NotifyItem {
-  const NotifyUser({
+  NotifyUser({
     required this.uid,
     required this.firstName,
     required this.lastName,
     required this.status,
     required this.color,
     required this.notificationIds,
-  });
+  }) : super();
 
   NotifyUser.fromFirebaseDocumentSnapshot(
     final DocumentSnapshot<Map<String, dynamic>> data,
@@ -31,7 +31,7 @@ class NotifyUser implements NotifyItem {
             (data['notification_ids'] as List<dynamic>).cast<String>();
 
   static NotifyUser of(final BuildContext context) =>
-      Provider.of<NotifyUser?>(context)!;
+      Provider.of<NotifyUser>(context);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'first_name': firstName,

@@ -10,8 +10,8 @@ Future<List<NotifyNotification>> getMyNotifications(
   final BuildContext context,
 ) async {
   final NotifyUser user = NotifyUser.of(context);
-  await NotificationService().clearAllNotification();
   final List<NotifyNotification> ntfs = <NotifyNotification>[];
+  await NotificationService().clearAllNotification();
   for (final String id in user.notificationIds) {
     final DocumentSnapshot<NotifyNotification> doc =
         await FirebaseService.selectNotification(id).get();
