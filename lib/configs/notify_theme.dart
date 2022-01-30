@@ -1,11 +1,13 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class NotifyThemeData {
-  static const primaryVariant = Color(0xFF8474A1);
-  static const primary = Color(0xFF6EC6CA);
+mixin NotifyThemeData {
+  static const Color primaryVariant = Color(0xFF8474A1);
+  static const Color primary = Color(0xFF6EC6CA);
 
-  static const surface = Color(0xFFEFEFEF);
+  static const Color surface = Color(0xFFEFEFEF);
 
   static const ColorScheme darkColorScheme = ColorScheme(
     primary: primary,
@@ -39,7 +41,11 @@ class NotifyThemeData {
     brightness: Brightness.light,
   );
 
-  static ThemeData getThemeData(ColorScheme colorScheme, TextTheme textTheme) {
+  static ThemeData getThemeData(
+    final ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    // ignore: parameter_assignments
     textTheme = textTheme.copyWith(
       bodyText1: textTheme.bodyText1!.copyWith(fontSize: 16),
       bodyText2: textTheme.bodyText2!.copyWith(fontSize: 14),
@@ -85,12 +91,21 @@ class NotifyThemeData {
         backgroundColor: colorScheme.surface,
         height: 50,
       ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.all<Color>(colorScheme.primary),
+        trackColor:
+            MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.5)),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        checkColor: MaterialStateProperty.all<Color>(colorScheme.onPrimary),
+        fillColor: MaterialStateProperty.all<Color>(colorScheme.primary),
+      ),
     );
   }
 
   static ThemeData get lightThemeData {
-    ColorScheme colorScheme = lightColorScheme;
-    TextTheme textTheme = GoogleFonts.manropeTextTheme().apply(
+    const ColorScheme colorScheme = lightColorScheme;
+    final TextTheme textTheme = GoogleFonts.manropeTextTheme().apply(
       bodyColor: colorScheme.onSurface,
       displayColor: colorScheme.onSurface.withOpacity(0.7),
     );
@@ -98,8 +113,8 @@ class NotifyThemeData {
   }
 
   static ThemeData get darkThemeData {
-    ColorScheme colorScheme = darkColorScheme;
-    TextTheme textTheme = GoogleFonts.manropeTextTheme().apply(
+    const ColorScheme colorScheme = darkColorScheme;
+    final TextTheme textTheme = GoogleFonts.manropeTextTheme().apply(
       bodyColor: colorScheme.onSurface,
       displayColor: colorScheme.onSurface.withOpacity(0.7),
     );
