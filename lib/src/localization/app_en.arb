@@ -1,0 +1,9 @@
+{
+  "appTitle": "notify",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "sampleItem": "SampleItem",
+  "sampleItems": "SampleItems",
+  "settings": "Settings"
+}
