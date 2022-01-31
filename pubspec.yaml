@@ -34,6 +34,7 @@ dependencies:
   date_picker_timeline: ^1.2.3
   connectivity_plus: ^2.2.0
   flutter_slidable: ^1.2.0
+  google_sign_in: ^5.2.3
 
 flutter:
   uses-material-design: true
@@ -58,3 +59,6 @@ flutter_native_splash:
   android: true
   ios: true
   # flutter pub run flutter_native_splash:create
+
+module:
+  androidX: true
