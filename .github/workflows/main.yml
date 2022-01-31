@@ -7,26 +7,22 @@ on:
     branches: 
     - stable
     - beta
-    
-name: Flutter build
+
+env:
+  FLUTTER_VERSION: "2.8.1"
+
+name: Flutter 
 jobs:
-  build:
-    name: install dependencies
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-
-    - name: install dependencies
-      uses: steebchen/flutter@v1.1.0
-      with:
-        args: pub get
-
-    - name: run tests
-      uses: steebchen/flutter@v1.1.0
-      with:
-        args: test
-
-    - name: build apk
-      uses: steebchen/flutter@v1.1.0
-      with:
-        args: build apk --release
+      - uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1
+        with:
+          version: $FLUTTER_VERSION
+      - name: Get Packages
+        run: flutter pub get
+      - name: Run Tests
+        run: flutter test --no-pub
