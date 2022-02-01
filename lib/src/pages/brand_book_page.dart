@@ -388,7 +388,8 @@ class _BrandBookPageState extends State<BrandBookPage> {
               ),
               Switch(
                 value: false,
-                inactiveThumbColor: Theme.of(context).colorScheme.surface,
+                inactiveThumbColor:
+                    Theme.of(context).hintColor.withOpacity(0.2),
                 onChanged: (value) {},
               ),
               DropdownButton<int>(
