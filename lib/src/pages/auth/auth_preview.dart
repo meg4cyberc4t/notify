@@ -52,7 +52,7 @@ class AuthPreview extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () => Navigator.of(context)
-                                .restorablePushNamed(SignUpView.routeName),
+                                .pushNamed(SignUpView.routeName),
                             child: const Text(
                               'Get started',
                             ),
