@@ -28,3 +28,4 @@ doc/api/
 .idea/libraries/Dart_SDK.xml
 .idea/libraries/Dart_SDK.xml
 .idea/workspace.xml
+android/app/google-services.json
