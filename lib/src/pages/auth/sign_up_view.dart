@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/src/pages/auth/sign_in_with_email.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -186,7 +186,34 @@ class _SignUpViewState extends State<SignUpView> {
                 children: [
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final FirebaseAuth _auth = FirebaseAuth.instance;
+                        final GoogleSignIn _googleSignIn = GoogleSignIn();
+                        GoogleSignInAccount? googleSignInAccount =
+                            await _googleSignIn.signIn();
+                        if (googleSignInAccount == null) {
+                          print('Выход');
+                          return;
+                        }
+                        GoogleSignInAuthentication googleSignInAuthentication =
+                            await googleSignInAccount.authentication;
+                        AuthCredential credential =
+                            GoogleAuthProvider.credential(
+                          accessToken: googleSignInAuthentication.accessToken,
+                          idToken: googleSignInAuthentication.idToken,
+                        );
+                        UserCredential authResult =
+                            await _auth.signInWithCredential(credential);
+                        var _user = authResult.user!;
+                        assert(_user.isAnonymous);
+                        User currentUser = _auth.currentUser!;
+                        assert(_user.uid == currentUser.uid);
+                        print("User Name: ${_user.displayName}");
+
+                        print(_user.emailVerified);
+                        print("User Email ${_user.email}");
+                        // TODO: Redirect on home page
+                      },
                       child: Image.asset(
                         'assets/images/google_logo.png',
                         height: 32,
@@ -204,8 +231,7 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () => Navigator.of(context)
-                          .pushNamed(SignInWithEmail.routeName),
+                      onPressed: () {},
                       child: const Icon(
                         Icons.email_outlined,
                         size: 28,
