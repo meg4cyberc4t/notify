@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:notify/src/widgets/user_avatar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ColorPickerView extends StatefulWidget {
   const ColorPickerView({
@@ -29,7 +30,7 @@ class _ColorPickerViewState extends State<ColorPickerView> {
   @override
   Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Choose your color'),
+          title: Text(AppLocalizations.of(context)!.colorPickerViewTitle),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -63,7 +64,8 @@ class _ColorPickerViewState extends State<ColorPickerView> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            child: const Text('Continue'),
+                            child: Text(
+                                AppLocalizations.of(context)!.continueButton),
                             onPressed: () =>
                                 Navigator.of(context).pop(selectedColor.value),
                           ),
@@ -74,7 +76,8 @@ class _ColorPickerViewState extends State<ColorPickerView> {
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                            child: const Text('Back'),
+                            child:
+                                Text(AppLocalizations.of(context)!.backButton),
                             onPressed: Navigator.of(context).pop,
                           ),
                         ),

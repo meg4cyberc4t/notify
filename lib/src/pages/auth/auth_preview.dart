@@ -1,12 +1,11 @@
-// ignore_for_file: prefer_single_quotes
-
 import 'package:flutter/material.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthPreview extends StatelessWidget {
   const AuthPreview({Key? key}) : super(key: key);
 
-  static const String routeName = "/auth_preview";
+  static const String routeName = '/auth_preview';
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,7 @@ class AuthPreview extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'ntf manager',
+                        AppLocalizations.of(context)!.authPreviewIntro,
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -41,7 +40,7 @@ class AuthPreview extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Let's create a space\nfor your notification",
+                        AppLocalizations.of(context)!.authPreviewDescription,
                         style: Theme.of(context).textTheme.headline4,
                         textAlign: TextAlign.start,
                       ),
@@ -53,8 +52,8 @@ class AuthPreview extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: () => Navigator.of(context)
                                 .pushNamed(SignUpView.routeName),
-                            child: const Text(
-                              'Get started',
+                            child: Text(
+                              AppLocalizations.of(context)!.getStarted,
                             ),
                           ),
                         ),

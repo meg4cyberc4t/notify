@@ -1,6 +1,9 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/src/pages/auth/sign_in_with_email.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  String title = 'Sign up';
+  String title = '';
   late Color colorValue;
 
   String get shortTitle {
@@ -45,7 +48,8 @@ class _SignUpViewState extends State<SignUpView> {
 
   void updateTitleIfUpdate() {
     setState(() {
-      title = longTitle.isNotEmpty ? longTitle : 'Sign up';
+      title =
+          (_firstnameController.text + ' ' + _lastnameController.text).trim();
     });
   }
 
@@ -64,6 +68,9 @@ class _SignUpViewState extends State<SignUpView> {
 
   @override
   Widget build(BuildContext context) {
+    if (title.trim().isEmpty) {
+      title = AppLocalizations.of(context)!.signUpTitle;
+    }
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -113,8 +120,8 @@ class _SignUpViewState extends State<SignUpView> {
               child: TextField(
                 controller: _firstnameController,
                 maxLength: 30,
-                decoration: const InputDecoration(
-                  labelText: 'First name',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.firstNameTitle,
                   counterText: '',
                 ),
               ),
@@ -126,8 +133,8 @@ class _SignUpViewState extends State<SignUpView> {
               child: TextField(
                 controller: _lastnameController,
                 maxLength: 30,
-                decoration: const InputDecoration(
-                  labelText: 'Last name',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.lastNameTitle,
                   counterText: '',
                 ),
               ),
@@ -138,9 +145,9 @@ class _SignUpViewState extends State<SignUpView> {
             sliver: SliverToBoxAdapter(
               child: TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'youremail@mail.com',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.emailTitle,
+                  hintText: AppLocalizations.of(context)!.emailHint,
                 ),
               ),
             ),
@@ -151,8 +158,8 @@ class _SignUpViewState extends State<SignUpView> {
               child: TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.passwordTitle,
                 ),
               ),
             ),
@@ -165,7 +172,7 @@ class _SignUpViewState extends State<SignUpView> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Continue'),
+                      child: Text(AppLocalizations.of(context)!.continueButton),
                     ),
                   ),
                 ],
@@ -197,7 +204,8 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(SignInWithEmail.routeName),
                       child: const Icon(
                         Icons.email_outlined,
                         size: 28,
