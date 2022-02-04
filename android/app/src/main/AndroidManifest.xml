@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.meg4cyberc4t.Notify.notify">
    <application
-        android:label="notify"
+        android:label="Notify"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
