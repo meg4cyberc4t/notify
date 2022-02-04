@@ -50,7 +50,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.meg4cyberc4t.Notify.notify"
+        applicationId "com.meg4cyberc4t.Notify"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
@@ -69,6 +69,11 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+
+            minifyEnabled true
+            useProguard true
+            
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
