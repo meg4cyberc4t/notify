@@ -2,8 +2,12 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:notify/src/notify_api_client/errors/exception_model.dart';
+import 'package:notify/src/notify_api_client/notify_api_client.dart';
+import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/homepage.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({Key? key}) : super(key: key);
@@ -171,7 +175,43 @@ class _SignUpViewState extends State<SignUpView> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        try {
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(e.message!),
+                            ),
+                          );
+                          return;
+                        }
+
+                        try {
+                          await ApiClient.user.post(
+                            firstname: _firstnameController.text.trim(),
+                            lastname: _lastnameController.text.trim(),
+                            color: colorValue,
+                          );
+                        } on NotifyApiClientException catch (e) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(e.localTitle(context))),
+                          );
+                          debugPrint(e.message);
+                          return;
+                        }
+                        await Navigator.of(context)
+                            .pushNamed(HomePage.routeName);
+                      },
                       child: Text(AppLocalizations.of(context)!.continueButton),
                     ),
                   ),
@@ -192,7 +232,6 @@ class _SignUpViewState extends State<SignUpView> {
                         GoogleSignInAccount? googleSignInAccount =
                             await _googleSignIn.signIn();
                         if (googleSignInAccount == null) {
-                          print('Выход');
                           return;
                         }
                         GoogleSignInAuthentication googleSignInAuthentication =
@@ -205,14 +244,35 @@ class _SignUpViewState extends State<SignUpView> {
                         UserCredential authResult =
                             await _auth.signInWithCredential(credential);
                         var _user = authResult.user!;
-                        assert(_user.isAnonymous);
-                        User currentUser = _auth.currentUser!;
-                        assert(_user.uid == currentUser.uid);
-                        print("User Name: ${_user.displayName}");
-
-                        print(_user.emailVerified);
-                        print("User Email ${_user.email}");
-                        // TODO: Redirect on home page
+                        var _dname = _user.displayName!.split(' ');
+                        String firstname;
+                        String lastname;
+                        if (_dname.length <= 1) {
+                          firstname = _user.displayName!;
+                          lastname = '';
+                        } else {
+                          firstname = _dname[0];
+                          lastname = _dname[1];
+                        }
+                        try {
+                          await ApiClient.user.post(
+                            firstname: firstname,
+                            lastname: lastname,
+                          );
+                        } on NotifyApiClientException catch (e) {
+                          if (e.statusCode != 409) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(e.localTitle(context))),
+                            );
+                            debugPrint(e.message);
+                            return;
+                          }
+                        }
+                        await Navigator.of(context)
+                            .pushReplacementNamed(HomePage.routeName);
                       },
                       child: Image.asset(
                         'assets/images/google_logo.png',
@@ -222,16 +282,8 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () {},
-                      child: Image.asset(
-                        'assets/images/microsoft_logo.png',
-                        height: 32,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {},
+                      onPressed: () async => await Navigator.of(context)
+                          .pushNamed(SignInView.routeName),
                       child: const Icon(
                         Icons.email_outlined,
                         size: 28,
