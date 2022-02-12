@@ -282,8 +282,11 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                   Expanded(
                     child: TextButton(
-                      onPressed: () async => await Navigator.of(context)
-                          .pushNamed(SignInView.routeName),
+                      onPressed: () async =>
+                          await Navigator.of(context).pushNamed(
+                        SignInView.routeName,
+                        arguments: {'appBarColor': colorValue},
+                      ),
                       child: const Icon(
                         Icons.email_outlined,
                         size: 28,

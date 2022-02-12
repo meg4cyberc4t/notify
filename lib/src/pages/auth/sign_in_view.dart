@@ -4,9 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/homepage.dart';
 
 class SignInView extends StatefulWidget {
-  const SignInView({Key? key}) : super(key: key);
+  const SignInView({
+    Key? key,
+    this.appBarColor = Colors.deepPurple,
+  }) : super(key: key);
 
   static const routeName = '/sign_in';
+  final Color appBarColor;
 
   @override
   State<SignInView> createState() => _SignInViewState();
@@ -28,7 +32,7 @@ class _SignInViewState extends State<SignInView> {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: widget.appBarColor,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 AppLocalizations.of(context)!.signInTitle,
@@ -41,7 +45,7 @@ class _SignInViewState extends State<SignInView> {
               centerTitle: true,
               background: AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
-                color: Colors.deepPurple,
+                color: widget.appBarColor,
               ),
             ),
             iconTheme: IconThemeData(color: passiveColor(Colors.deepPurple)),
