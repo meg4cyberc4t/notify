@@ -1,0 +1,16 @@
+{
+  "appTitle": "Notify",
+  "authPreviewIntro": "Менеджер напоминаний",
+  "authPreviewDescription": "Создайте пространство своих напоминаний!",
+  "getStarted": "Начать",
+  "signUpTitle": "Регистрация",
+  "firstNameTitle": "Имя",
+  "lastNameTitle": "Фамилия",
+  "emailTitle": "Почта",
+  "emailHint": "youremail@mail.com",
+  "passwordTitle": "Пароль",
+  "continueButton": "Продолжить",
+  "backButton": "Назад",
+  "colorPickerViewTitle": "Выберите цвет",
+  "signInTitle": "Авторизация"
+}

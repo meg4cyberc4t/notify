@@ -1,0 +1,16 @@
+{
+  "appTitle": "Notify",
+  "authPreviewIntro": "ntf manager",
+  "authPreviewDescription": "Let's create a space for your notification!",
+  "getStarted": "Get started",
+  "signUpTitle": "Sign up",
+  "firstNameTitle": "First name",
+  "lastNameTitle": "Last name",
+  "emailTitle": "Email",
+  "emailHint": "youremail@mail.com",
+  "passwordTitle": "Password",
+  "continueButton": "Continue",
+  "backButton": "Back",
+  "colorPickerViewTitle": "Choose your color",
+  "signInTitle": "Sign in"
+}
