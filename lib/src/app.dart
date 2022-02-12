@@ -37,38 +37,48 @@ class MyApp extends StatelessWidget {
           onGenerateRoute: (RouteSettings routeSettings) {
             Map<String, dynamic>? args =
                 routeSettings.arguments as Map<String, dynamic>?;
-            if (routeSettings.name == ColorPickerView.routeName) {
-              return MaterialPageRoute<Color>(
-                settings: routeSettings,
-                builder: (BuildContext context) => ColorPickerView(
-                  title: args!['title'],
-                  initialValue: args['color'],
-                ),
-              );
+            switch (routeSettings.name) {
+              case ColorPickerView.routeName:
+                return MaterialPageRoute<Color>(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => ColorPickerView(
+                    title: args!['title'],
+                    initialValue: args['color'],
+                  ),
+                );
+              case AuthPreview.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const AuthPreview(),
+                );
+              case SignUpView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const SignUpView(),
+                );
+
+              case HomePage.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const HomePage(),
+                );
+              case SignInView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) =>
+                      SignInView(appBarColor: args!['appBarColor']),
+                );
+              case _Router.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const _Router(),
+                );
+              default:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const BrandBookPage(),
+                );
             }
-            return MaterialPageRoute(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case AuthPreview.routeName:
-                    return const AuthPreview();
-                  case SignUpView.routeName:
-                    return const SignUpView();
-                  case ColorPickerView.routeName:
-                    return ColorPickerView(
-                      title: args!['title'],
-                      initialValue: args['color'],
-                    );
-                  case HomePage.routeName:
-                    return const HomePage();
-                  case SignInView.routeName:
-                    return const SignInView();
-                  case _Router.routeName:
-                    return const _Router();
-                }
-                return const BrandBookPage();
-              },
-            );
           },
         );
       },
