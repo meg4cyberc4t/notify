@@ -11,5 +11,6 @@
   "passwordTitle": "Пароль",
   "continueButton": "Продолжить",
   "backButton": "Назад",
-  "colorPickerViewTitle": "Выберите цвет"
+  "colorPickerViewTitle": "Выберите цвет",
+  "signInTitle": "Авторизация"
 }

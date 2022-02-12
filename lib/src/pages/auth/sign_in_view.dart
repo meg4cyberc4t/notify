@@ -22,7 +22,6 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    String title = 'Авторизация';
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -32,7 +31,7 @@ class _SignInViewState extends State<SignInView> {
             backgroundColor: Colors.deepPurple,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
-                title,
+                AppLocalizations.of(context)!.signInTitle,
                 style: Theme.of(context)
                     .textTheme
                     .headline6!

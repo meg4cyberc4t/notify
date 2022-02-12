@@ -11,5 +11,6 @@
   "passwordTitle": "Password",
   "continueButton": "Continue",
   "backButton": "Back",
-  "colorPickerViewTitle": "Choose your color"
+  "colorPickerViewTitle": "Choose your color",
+  "signInTitle": "Sign in"
 }
