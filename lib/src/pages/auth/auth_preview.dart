@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/src/pages/auth/sign_up_view.dart';
+import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AuthPreview extends StatelessWidget {
@@ -51,7 +51,7 @@ class AuthPreview extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () => Navigator.of(context)
-                                .pushNamed(SignUpView.routeName),
+                                .pushNamed(SignInView.routeName),
                             child: Text(
                               AppLocalizations.of(context)!.getStarted,
                             ),

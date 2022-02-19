@@ -67,7 +67,9 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) =>
-                      SignInView(appBarColor: args!['appBarColor']),
+                      args?['appBarColor'] != null
+                          ? SignInView(appBarColor: args!['appBarColor'])
+                          : const SignInView(),
                 );
               case CheckEmailView.routeName:
                 return MaterialPageRoute<bool>(

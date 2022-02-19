@@ -3,11 +3,9 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:notify/src/notify_api_client/errors/exception_model.dart';
 import 'package:notify/src/notify_api_client/notify_api_client.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
-import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/homepage.dart';
@@ -174,138 +172,76 @@ class _SignUpViewState extends State<SignUpView> {
           SliverPadding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             sliver: SliverToBoxAdapter(
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                            email: _emailController.text.trim(),
-                            password: _passwordController.text.trim(),
-                          );
-                        } on FirebaseAuthException catch (e) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(e.message!),
-                            ),
-                          );
-                          return;
-                        }
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              await FirebaseAuth.instance
+                                  .createUserWithEmailAndPassword(
+                                email: _emailController.text.trim(),
+                                password: _passwordController.text.trim(),
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Text(e.message!),
+                                ),
+                              );
+                              return;
+                            }
 
-                        if (!FirebaseAuth.instance.currentUser!.emailVerified) {
-                          final bool isVerify = await Navigator.of(context)
-                              .pushNamed(CheckEmailView.routeName) as bool;
-                          if (!isVerify) return;
-                        }
+                            if (!FirebaseAuth
+                                .instance.currentUser!.emailVerified) {
+                              final bool isVerify = await Navigator.of(context)
+                                  .pushNamed(CheckEmailView.routeName) as bool;
+                              if (!isVerify) return;
+                            }
 
-                        try {
-                          await ApiClient.user.post(
-                            firstname: _firstnameController.text.trim(),
-                            lastname: _lastnameController.text.trim(),
-                            color: colorValue,
-                          );
-                        } on NotifyApiClientException catch (e) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                content: Text(e.localTitle(context))),
-                          );
-                          debugPrint(e.message);
-                          return;
-                        }
-                        await Navigator.of(context)
-                            .pushReplacementNamed(HomePage.routeName);
-                      },
-                      child: Text(AppLocalizations.of(context)!.continueButton),
-                    ),
+                            try {
+                              await ApiClient.user.post(
+                                firstname: _firstnameController.text.trim(),
+                                lastname: _lastnameController.text.trim(),
+                                color: colorValue,
+                              );
+                            } on NotifyApiClientException catch (e) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    content: Text(e.localTitle(context))),
+                              );
+                              debugPrint(e.message);
+                              return;
+                            }
+                            await Navigator.of(context)
+                                .pushReplacementNamed(HomePage.routeName);
+                          },
+                          child: Text(
+                              AppLocalizations.of(context)!.continueButton),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: Navigator.of(context).pop,
+                          child: Text(AppLocalizations.of(context)!.backButton),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            sliver: SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () async {
-                        final FirebaseAuth _auth = FirebaseAuth.instance;
-                        final GoogleSignIn _googleSignIn = GoogleSignIn();
-                        GoogleSignInAccount? googleSignInAccount =
-                            await _googleSignIn.signIn();
-                        if (googleSignInAccount == null) {
-                          return;
-                        }
-                        GoogleSignInAuthentication googleSignInAuthentication =
-                            await googleSignInAccount.authentication;
-                        AuthCredential credential =
-                            GoogleAuthProvider.credential(
-                          accessToken: googleSignInAuthentication.accessToken,
-                          idToken: googleSignInAuthentication.idToken,
-                        );
-                        UserCredential authResult =
-                            await _auth.signInWithCredential(credential);
-                        var _user = authResult.user!;
-                        var _dname = _user.displayName!.split(' ');
-                        String firstname;
-                        String lastname;
-                        if (_dname.length <= 1) {
-                          firstname = _user.displayName!;
-                          lastname = '';
-                        } else {
-                          firstname = _dname[0];
-                          lastname = _dname[1];
-                        }
-                        try {
-                          await ApiClient.user.post(
-                            firstname: firstname,
-                            lastname: lastname,
-                          );
-                        } on NotifyApiClientException catch (e) {
-                          if (e.statusCode != 409) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: Text(e.localTitle(context))),
-                            );
-                            debugPrint(e.message);
-                            return;
-                          }
-                        }
-                        await Navigator.of(context)
-                            .pushReplacementNamed(HomePage.routeName);
-                      },
-                      child: Image.asset(
-                        'assets/images/google_logo.png',
-                        height: 32,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () async =>
-                          await Navigator.of(context).pushNamed(
-                        SignInView.routeName,
-                        arguments: {'appBarColor': colorValue},
-                      ),
-                      child: const Icon(
-                        Icons.email_outlined,
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );
