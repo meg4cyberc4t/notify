@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -55,9 +55,9 @@ class _CheckEmailViewState extends State<CheckEmailView> {
               ),
               const SizedBox(height: 100),
               Text(
-                'To check the email, we sent an mail to '
+                '${AppLocalizations.of(context)!.checkEmailViewPart1} '
                 '"${FirebaseAuth.instance.currentUser!.email}".\n'
-                'Please check your email!',
+                '${AppLocalizations.of(context)!.checkEmailViewPart2}',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleMedium,
               ),

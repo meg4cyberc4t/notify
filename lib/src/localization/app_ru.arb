@@ -12,5 +12,7 @@
   "continueButton": "Продолжить",
   "backButton": "Назад",
   "colorPickerViewTitle": "Выберите цвет",
-  "signInTitle": "Авторизация"
+  "signInTitle": "Авторизация",
+  "checkEmailViewPart1": "Для подтверждения, мы отправили вам письмо на",
+  "checkEmailViewPart2": "Пожалуйста, проверьте ваш почтовый ящик!"
 }

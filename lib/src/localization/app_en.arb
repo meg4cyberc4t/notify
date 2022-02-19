@@ -12,5 +12,7 @@
   "continueButton": "Continue",
   "backButton": "Back",
   "colorPickerViewTitle": "Choose your color",
-  "signInTitle": "Sign in"
+  "signInTitle": "Sign in",
+  "checkEmailViewPart1": "To check the email, we sent an mail to",
+  "checkEmailViewPart2": "Please check your email!"
 }
