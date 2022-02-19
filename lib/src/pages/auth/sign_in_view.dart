@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/homepage.dart';
 
 class SignInView extends StatefulWidget {
@@ -103,8 +104,13 @@ class _SignInViewState extends State<SignInView> {
                           );
                           return;
                         }
+                        if (!FirebaseAuth.instance.currentUser!.emailVerified) {
+                          final bool isVerify = await Navigator.of(context)
+                              .pushNamed(CheckEmailView.routeName) as bool;
+                          if (!isVerify) return;
+                        }
                         await Navigator.of(context)
-                            .pushNamed(HomePage.routeName);
+                            .pushReplacementNamed(HomePage.routeName);
                       },
                       child: Text(AppLocalizations.of(context)!.continueButton),
                     ),

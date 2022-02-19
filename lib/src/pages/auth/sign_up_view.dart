@@ -1,9 +1,12 @@
+// ignore_for_file: prefer_single_quotes
+
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:notify/src/notify_api_client/errors/exception_model.dart';
 import 'package:notify/src/notify_api_client/notify_api_client.dart';
+import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -193,6 +196,12 @@ class _SignUpViewState extends State<SignUpView> {
                           return;
                         }
 
+                        if (!FirebaseAuth.instance.currentUser!.emailVerified) {
+                          final bool isVerify = await Navigator.of(context)
+                              .pushNamed(CheckEmailView.routeName) as bool;
+                          if (!isVerify) return;
+                        }
+
                         try {
                           await ApiClient.user.post(
                             firstname: _firstnameController.text.trim(),
@@ -210,7 +219,7 @@ class _SignUpViewState extends State<SignUpView> {
                           return;
                         }
                         await Navigator.of(context)
-                            .pushNamed(HomePage.routeName);
+                            .pushReplacementNamed(HomePage.routeName);
                       },
                       child: Text(AppLocalizations.of(context)!.continueButton),
                     ),

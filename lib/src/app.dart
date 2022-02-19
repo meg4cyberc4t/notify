@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
+import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/brand_book_page.dart';
@@ -68,11 +69,17 @@ class MyApp extends StatelessWidget {
                   builder: (BuildContext context) =>
                       SignInView(appBarColor: args!['appBarColor']),
                 );
+              case CheckEmailView.routeName:
+                return MaterialPageRoute<bool>(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const CheckEmailView(),
+                );
               case _Router.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) => const _Router(),
                 );
+
               default:
                 return MaterialPageRoute(
                   settings: routeSettings,
