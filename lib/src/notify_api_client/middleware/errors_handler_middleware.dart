@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:notify/src/notify_api_client/config.dart';
-import 'package:notify/src/notify_api_client/errors/exception_model.dart';
+import 'package:notify/src/notify_api_client/middleware/notify_api_client_exception.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 
