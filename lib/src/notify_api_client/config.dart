@@ -7,7 +7,7 @@ class ApiClientConfig {
   static const String usersControllerPrefix = '/users';
   static const String searchControllerPrefix = '/search';
   static const String notificationsControllerPrefix = '/notifications';
-  static const String folderControllerPrefix = '/folders';
+  static const String foldersControllerPrefix = '/folders';
 
   static const String subscribtions = '/subscriptions';
   static const String subscribers = '/subscribers';
@@ -16,6 +16,11 @@ class ApiClientConfig {
   static const String fromUsers = '/from_users';
   static const String fromNotifications = '/from_notifications';
   static const String fromFolders = '/from_folders';
+
+  static const String notifications = '/notifications';
+  static const String participants = '/participants';
+  static const String invite = '/invite';
+  static const String exclude = '/exclude';
 
   static Future<String> get token =>
       FirebaseAuth.instance.currentUser!.getIdToken();

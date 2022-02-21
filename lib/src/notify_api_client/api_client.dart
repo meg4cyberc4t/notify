@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/notify_api_client/config.dart';
 import 'package:notify/src/notify_api_client/middleware/errors_handler_middleware.dart';
 import 'package:notify/src/notify_api_client/models/notify_folder_detailed.dart';
+import 'package:notify/src/notify_api_client/models/notify_notification_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_notification_quick.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
+import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
+import 'package:notify/src/notify_api_client/requests/notify_notifications.dart';
 import 'package:notify/src/notify_api_client/requests/search_requests.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
 import 'package:notify/src/notify_api_client/requests/users_requests.dart';
@@ -21,6 +24,7 @@ class ApiClient {
   static _ApiClientUser get user => _ApiClientUser();
   static _ApiClientUsers get users => _ApiClientUsers();
   static _ApiClientSearch get search => _ApiClientSearch();
+  static _ApiClientNotifications get notifications => _ApiClientNotifications();
 }
 
 class _ApiClientUser {
@@ -132,5 +136,106 @@ class _ApiClientSearch {
         ),
         context: ApiClient._context);
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+}
+
+class _ApiClientNotifications {
+  Future<NotifyNotificationQuick> get() async {
+    var res = await errorsHandlerMiddlware(
+        callback:
+            NotificationsResponses.getAll(token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyNotificationQuick.fromJson(e));
+  }
+
+  Future<NotifyNotificationDetailed> post({
+    required String title,
+    required String description,
+    required DateTime deadline,
+    RepeatMode repeatMode = RepeatMode.none,
+    bool important = false,
+  }) async {
+    var res = await errorsHandlerMiddlware(
+        callback: NotificationsResponses.post(
+            title: title,
+            description: description,
+            repeatMode: repeatMode,
+            imporant: important,
+            deadline: deadline,
+            token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<NotifyNotificationDetailed> getById(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+        callback: NotificationsResponses.getById(
+            token: await ApiClientConfig.token, uuid: uuid),
+        context: ApiClient._context);
+    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<void> delete({required String uuid}) async {
+    await errorsHandlerMiddlware(
+        callback: NotificationsResponses.delete(
+          token: await ApiClientConfig.token,
+          uuid: uuid,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<NotifyNotificationDetailed> put({
+    required String title,
+    required String description,
+    required DateTime deadline,
+    required String uuid,
+    RepeatMode repeatMode = RepeatMode.none,
+    bool important = false,
+  }) async {
+    var res = await errorsHandlerMiddlware(
+        callback: NotificationsResponses.put(
+            title: title,
+            description: description,
+            repeatMode: repeatMode,
+            imporant: important,
+            deadline: deadline,
+            uuid: uuid,
+            token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<List<NotifyUserQuick>> byIdParticipants({required String uuid}) async {
+    var res = await errorsHandlerMiddlware(
+        callback: NotificationsResponses.byIdParticipants(
+            uuid: uuid, token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+
+  Future<void> invite({
+    required String uuid,
+    required String inviteUserId,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: NotificationsResponses.invite(
+          uuid: uuid,
+          inviteUserId: inviteUserId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<void> exclude({
+    required String uuid,
+    required String excludeUserId,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: NotificationsResponses.exclude(
+          uuid: uuid,
+          excludeUserId: excludeUserId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
   }
 }
