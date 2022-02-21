@@ -3,8 +3,8 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/src/notify_api_client/api_client.dart';
 import 'package:notify/src/notify_api_client/errors/exception_model.dart';
-import 'package:notify/src/notify_api_client/notify_api_client.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -195,7 +195,13 @@ class _SignUpViewState extends State<SignUpView> {
                               );
                               return;
                             }
-
+                            FirebaseAuth.instance.currentUser!
+                                .updateDisplayName(
+                                    _firstnameController.text.trim() +
+                                        " " +
+                                        _lastnameController.text.trim());
+                            print(
+                                FirebaseAuth.instance.currentUser!.displayName);
                             if (!FirebaseAuth
                                 .instance.currentUser!.emailVerified) {
                               final bool isVerify = await Navigator.of(context)
