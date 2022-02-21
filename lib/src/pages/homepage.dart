@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:notify/src/notify_api_client/api_client.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
-import 'package:notify/src/notify_api_client/notify_api_client.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 
 class HomePage extends StatelessWidget {
