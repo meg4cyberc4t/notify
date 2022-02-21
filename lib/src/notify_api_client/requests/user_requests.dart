@@ -48,4 +48,85 @@ class UserResponses {
 
     return callback;
   }
+
+  static Future<http.Response> Function() put({
+    required final String firstname,
+    required final String lastname,
+    required final Color color,
+    required final String token,
+  }) {
+    ('Create!');
+    Future<http.Response> callback() async {
+      return await http.put(
+          Uri.parse(ApiClientConfig.serverAddress +
+              ApiClientConfig.userControllerPrefix),
+          body: jsonEncode({
+            'firstname': firstname,
+            'lastname': lastname,
+            'color': color.value,
+          }),
+          encoding: Encoding.getByName('utf-8'),
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'text/plain',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() subscriptions({
+    required final String token,
+  }) {
+    Future<http.Response> callback() {
+      return http.get(
+          Uri.parse(
+              ApiClientConfig.serverAddress + ApiClientConfig.subscribtions),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() subscribers({
+    required final String token,
+  }) {
+    Future<http.Response> callback() {
+      return http.get(
+          Uri.parse(
+              ApiClientConfig.serverAddress + ApiClientConfig.subscribers),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() changeSubscription({
+    required final String uuid,
+    required final String token,
+  }) {
+    ('Create!');
+    Future<http.Response> callback() async {
+      return await http.post(
+          Uri.parse(ApiClientConfig.serverAddress +
+              ApiClientConfig.userControllerPrefix +
+              ApiClientConfig.changeSubscription +
+              uuid),
+          encoding: Encoding.getByName('utf-8'),
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'text/plain',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
 }
