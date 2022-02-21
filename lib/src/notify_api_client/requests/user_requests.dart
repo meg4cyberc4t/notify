@@ -79,7 +79,8 @@ class UserResponses {
     Future<http.Response> callback() {
       return http.get(
           Uri.parse(
-              ApiClientConfig.serverAddress + ApiClientConfig.subscribtions),
+            ApiClientConfig.serverAddress + ApiClientConfig.subscribtions,
+          ),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -95,7 +96,8 @@ class UserResponses {
     Future<http.Response> callback() {
       return http.get(
           Uri.parse(
-              ApiClientConfig.serverAddress + ApiClientConfig.subscribers),
+            ApiClientConfig.serverAddress + ApiClientConfig.subscribers,
+          ),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -114,7 +116,7 @@ class UserResponses {
           Uri.parse(ApiClientConfig.serverAddress +
               ApiClientConfig.userControllerPrefix +
               ApiClientConfig.changeSubscription +
-              uuid),
+              '/$uuid'),
           encoding: Encoding.getByName('utf-8'),
           headers: {
             'Content-Type': 'application/json',

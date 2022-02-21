@@ -11,7 +11,7 @@ import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
 import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
 import 'package:notify/src/notify_api_client/requests/folders_requests.dart';
-import 'package:notify/src/notify_api_client/requests/notify_notifications.dart';
+import 'package:notify/src/notify_api_client/requests/notifications_requests.dart';
 import 'package:notify/src/notify_api_client/requests/search_requests.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
 import 'package:notify/src/notify_api_client/requests/users_requests.dart';

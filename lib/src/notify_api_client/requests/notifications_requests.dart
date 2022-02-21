@@ -172,7 +172,7 @@ class NotificationsResponses {
     Future<http.Response> callback() async {
       return await http.post(
           Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.fromFolders +
+              ApiClientConfig.notificationsControllerPrefix +
               '/$uuid' +
               ApiClientConfig.exclude +
               '?inviteUserId=$excludeUserId'),
