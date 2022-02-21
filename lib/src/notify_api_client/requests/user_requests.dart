@@ -11,7 +11,6 @@ class UserResponses {
     required final Color color,
     required final String token,
   }) {
-    ('Create!');
     Future<http.Response> callback() async {
       return await http.post(
           Uri.parse(ApiClientConfig.serverAddress +
@@ -54,7 +53,6 @@ class UserResponses {
     required final Color color,
     required final String token,
   }) {
-    ('Create!');
     Future<http.Response> callback() async {
       return await http.put(
           Uri.parse(ApiClientConfig.serverAddress +
@@ -111,7 +109,6 @@ class UserResponses {
     required final String uuid,
     required final String token,
   }) {
-    ('Create!');
     Future<http.Response> callback() async {
       return await http.post(
           Uri.parse(ApiClientConfig.serverAddress +
