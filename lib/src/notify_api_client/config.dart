@@ -13,6 +13,10 @@ class ApiClientConfig {
   static const String subscribers = '/subscribers';
   static const String changeSubscription = '/change_subscription';
 
+  static const String fromUsers = '/from_users';
+  static const String fromNotifications = '/from_notifications';
+  static const String fromFolders = '/from_folders';
+
   static Future<String> get token =>
       FirebaseAuth.instance.currentUser!.getIdToken();
 }

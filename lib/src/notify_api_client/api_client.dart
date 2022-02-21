@@ -4,8 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:notify/src/notify_api_client/config.dart';
 import 'package:notify/src/notify_api_client/middleware/errors_handler_middleware.dart';
+import 'package:notify/src/notify_api_client/models/notify_folder_detailed.dart';
+import 'package:notify/src/notify_api_client/models/notify_notification_quick.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
+import 'package:notify/src/notify_api_client/requests/search_requests.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
 import 'package:notify/src/notify_api_client/requests/users_requests.dart';
 
@@ -17,6 +20,7 @@ class ApiClient {
 
   static _ApiClientUser get user => _ApiClientUser();
   static _ApiClientUsers get users => _ApiClientUsers();
+  static _ApiClientSearch get search => _ApiClientSearch();
 }
 
 class _ApiClientUser {
@@ -97,6 +101,35 @@ class _ApiClientUsers {
     var res = await errorsHandlerMiddlware(
         callback: UsersResponses.subscribtions(
             token: await ApiClientConfig.token, uuid: uuid),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+}
+
+class _ApiClientSearch {
+  Future<List<NotifyUserDetailed>> fromUsers() async {
+    var res = await errorsHandlerMiddlware(
+        callback: SearchResponses.fromUsers(
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+
+  Future<List<NotifyNotificationQuick>> fromNotifications() async {
+    var res = await errorsHandlerMiddlware(
+        callback: SearchResponses.fromNotifications(
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+
+  Future<List<NotifyFolderDetailed>> fromFolders() async {
+    var res = await errorsHandlerMiddlware(
+        callback: SearchResponses.fromFolders(
+          token: await ApiClientConfig.token,
+        ),
         context: ApiClient._context);
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
