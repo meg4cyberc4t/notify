@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:notify/src/notify_api_client/config.dart';
 
 class UserResponses {
-  // post
   static Future<http.Response> Function() post({
     required final String firstname,
     required final String lastname,

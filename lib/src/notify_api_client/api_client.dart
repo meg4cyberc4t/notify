@@ -7,6 +7,7 @@ import 'package:notify/src/notify_api_client/middleware/errors_handler_middlewar
 import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
+import 'package:notify/src/notify_api_client/requests/users_requests.dart';
 
 class ApiClient {
   static late BuildContext _context;
@@ -15,6 +16,7 @@ class ApiClient {
   }
 
   static _ApiClientUser get user => _ApiClientUser();
+  static _ApiClientUsers get users => _ApiClientUsers();
 }
 
 class _ApiClientUser {
@@ -67,6 +69,34 @@ class _ApiClientUser {
   Future<List<NotifyUserQuick>> subscribers() async {
     var res = await errorsHandlerMiddlware(
         callback: UserResponses.subscribers(token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+}
+
+class _ApiClientUsers {
+  Future<NotifyUserDetailed> get(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+        callback: UsersResponses.get(
+          token: await ApiClientConfig.token,
+          uuid: uuid,
+        ),
+        context: ApiClient._context);
+    return NotifyUserDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<List<NotifyUserQuick>> subscribers(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+        callback: UsersResponses.subscribers(
+            token: await ApiClientConfig.token, uuid: uuid),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+
+  Future<List<NotifyUserQuick>> subscribtions(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+        callback: UsersResponses.subscribtions(
+            token: await ApiClientConfig.token, uuid: uuid),
         context: ApiClient._context);
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
