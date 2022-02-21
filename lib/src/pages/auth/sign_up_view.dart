@@ -8,7 +8,7 @@ import 'package:notify/src/notify_api_client/errors/exception_model.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:notify/src/pages/homepage.dart';
+import 'package:notify/src/pages/router_view.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({Key? key}) : super(key: key);
@@ -224,7 +224,7 @@ class _SignUpViewState extends State<SignUpView> {
                               return;
                             }
                             await Navigator.of(context)
-                                .pushReplacementNamed(HomePage.routeName);
+                                .pushReplacementNamed(RouterView.routeName);
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),

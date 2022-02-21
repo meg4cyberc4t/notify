@@ -7,8 +7,12 @@ import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/brand_book_page.dart';
+import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
-import 'package:notify/src/pages/homepage.dart';
+import 'package:notify/src/pages/home/home_view.dart';
+import 'package:notify/src/pages/profile/profile_view.dart';
+import 'package:notify/src/pages/router_view.dart';
+import 'package:notify/src/pages/search/profile_view.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 import 'settings/settings_controller.dart';
@@ -59,10 +63,10 @@ class MyApp extends StatelessWidget {
                   builder: (BuildContext context) => const SignUpView(),
                 );
 
-              case HomePage.routeName:
+              case RouterView.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
-                  builder: (BuildContext context) => const HomePage(),
+                  builder: (BuildContext context) => const RouterView(),
                 );
               case SignInView.routeName:
                 return MaterialPageRoute(
@@ -76,6 +80,26 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute<bool>(
                   settings: routeSettings,
                   builder: (BuildContext context) => const CheckEmailView(),
+                );
+              case HomeView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const HomeView(),
+                );
+              case ProfileView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const ProfileView(),
+                );
+              case CalendarView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const CalendarView(),
+                );
+              case SearchView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const SearchView(),
                 );
               case _Router.routeName:
                 return MaterialPageRoute(
@@ -105,6 +129,6 @@ class _Router extends StatelessWidget {
     ApiClient.initWithContext(context);
     return (FirebaseAuth.instance.currentUser == null)
         ? const AuthPreview()
-        : const HomePage();
+        : const RouterView();
   }
 }

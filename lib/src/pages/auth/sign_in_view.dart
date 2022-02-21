@@ -6,7 +6,7 @@ import 'package:notify/src/notify_api_client/api_client.dart';
 import 'package:notify/src/notify_api_client/errors/exception_model.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
-import 'package:notify/src/pages/homepage.dart';
+import 'package:notify/src/pages/router_view.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({Key? key, this.appBarColor}) : super(key: key);
@@ -113,7 +113,7 @@ class _SignInViewState extends State<SignInView> {
                           if (!isVerify) return;
                         }
                         await Navigator.of(context)
-                            .pushReplacementNamed(HomePage.routeName);
+                            .pushReplacementNamed(RouterView.routeName);
                       },
                       child: Text(AppLocalizations.of(context)!.continueButton),
                     ),
@@ -175,7 +175,7 @@ class _SignInViewState extends State<SignInView> {
                           }
                         }
                         await Navigator.of(context)
-                            .pushReplacementNamed(HomePage.routeName);
+                            .pushReplacementNamed(RouterView.routeName);
                       },
                       child: Image.asset(
                         'assets/images/google_logo.png',
