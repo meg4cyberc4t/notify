@@ -10,6 +10,7 @@ import 'package:notify/src/notify_api_client/models/notify_notification_quick.da
 import 'package:notify/src/notify_api_client/models/notify_user_detailed.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
 import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
+import 'package:notify/src/notify_api_client/requests/folders_requests.dart';
 import 'package:notify/src/notify_api_client/requests/notify_notifications.dart';
 import 'package:notify/src/notify_api_client/requests/search_requests.dart';
 import 'package:notify/src/notify_api_client/requests/user_requests.dart';
@@ -25,6 +26,7 @@ class ApiClient {
   static _ApiClientUsers get users => _ApiClientUsers();
   static _ApiClientSearch get search => _ApiClientSearch();
   static _ApiClientNotifications get notifications => _ApiClientNotifications();
+  static _ApiClientFolders get folders => _ApiClientFolders();
 }
 
 class _ApiClientUser {
@@ -234,6 +236,139 @@ class _ApiClientNotifications {
         callback: NotificationsResponses.exclude(
           uuid: uuid,
           excludeUserId: excludeUserId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+  }
+}
+
+class _ApiClientFolders {
+  Future<NotifyFolderDetailed> get() async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.getAll(token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyFolderDetailed.fromJson(e));
+  }
+
+  Future<NotifyFolderDetailed> post({
+    required String title,
+    required String description,
+  }) async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.post(
+            title: title,
+            description: description,
+            token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<NotifyFolderDetailed> getById(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.getById(
+            token: await ApiClientConfig.token, uuid: uuid),
+        context: ApiClient._context);
+    return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<void> delete({required String uuid}) async {
+    await errorsHandlerMiddlware(
+        callback: FoldersRequests.delete(
+          token: await ApiClientConfig.token,
+          uuid: uuid,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<NotifyFolderDetailed> put({
+    required String title,
+    required String description,
+    required String uuid,
+  }) async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.put(
+            title: title,
+            description: description,
+            uuid: uuid,
+            token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
+  }
+
+  Future<List<NotifyUserQuick>> byIdParticipants({required String uuid}) async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.byIdParticipants(
+            uuid: uuid, token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+  }
+
+  Future<List<NotifyNotificationQuick>> byIdNotifications(
+      {required String uuid}) async {
+    var res = await errorsHandlerMiddlware(
+        callback: FoldersRequests.byIdParticipants(
+            uuid: uuid, token: await ApiClientConfig.token),
+        context: ApiClient._context);
+    return jsonDecode(res.body).map((e) => NotifyNotificationQuick.fromJson(e));
+  }
+
+  Future<void> invite({
+    required String uuid,
+    required String inviteUserId,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: FoldersRequests.invite(
+          uuid: uuid,
+          inviteUserId: inviteUserId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<void> exclude({
+    required String uuid,
+    required String excludeUserId,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: FoldersRequests.exclude(
+          uuid: uuid,
+          excludeUserId: excludeUserId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<void> addNotification({
+    required String uuid,
+    required String excludeUserId,
+    required String folderId,
+    String? ntfId,
+    List<String>? listIds,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: FoldersRequests.addNotification(
+          uuid: uuid,
+          folderId: folderId,
+          listIds: listIds,
+          ntfId: ntfId,
+          token: await ApiClientConfig.token,
+        ),
+        context: ApiClient._context);
+  }
+
+  Future<void> removeNotification({
+    required String uuid,
+    required String excludeUserId,
+    required String folderId,
+    String? ntfId,
+    List<String>? listIds,
+  }) async {
+    await errorsHandlerMiddlware(
+        callback: FoldersRequests.removeNotification(
+          uuid: uuid,
+          folderId: folderId,
+          listIds: listIds,
+          ntfId: ntfId,
           token: await ApiClientConfig.token,
         ),
         context: ApiClient._context);

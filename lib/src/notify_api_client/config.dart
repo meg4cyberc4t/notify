@@ -22,6 +22,9 @@ class ApiClientConfig {
   static const String invite = '/invite';
   static const String exclude = '/exclude';
 
+  static const String addNotification = '/add_notification';
+  static const String removeNotification = '/remove_notification';
+
   static Future<String> get token =>
       FirebaseAuth.instance.currentUser!.getIdToken();
 }
