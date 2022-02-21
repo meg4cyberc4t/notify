@@ -200,8 +200,6 @@ class _SignUpViewState extends State<SignUpView> {
                                     _firstnameController.text.trim() +
                                         " " +
                                         _lastnameController.text.trim());
-                            print(
-                                FirebaseAuth.instance.currentUser!.displayName);
                             if (!FirebaseAuth
                                 .instance.currentUser!.emailVerified) {
                               final bool isVerify = await Navigator.of(context)

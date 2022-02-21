@@ -18,7 +18,6 @@ Future<http.Response> errorsHandlerMiddlware({
       // The user is authorized and confirmed by Firebase,
       // but there is no entry in the database
       User _user = FirebaseAuth.instance.currentUser!;
-      print(_user.displayName);
       List<String> _dname = _user.displayName!.split(' ');
       String firstname = _dname.length <= 1 ? _user.displayName! : _dname[0];
       String lastname = _dname.length <= 1 ? 'Just' : _dname[1];
