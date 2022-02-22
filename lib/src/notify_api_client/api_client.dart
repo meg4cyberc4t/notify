@@ -56,12 +56,14 @@ class _ApiClientUser {
   Future<NotifyUserDetailed> put({
     required String firstname,
     required String lastname,
+    required String status,
     required Color color,
   }) async {
     var res = await errorsHandlerMiddlware(
         callback: UserResponses.put(
             firstname: firstname,
             lastname: lastname,
+            status: status,
             color: color,
             token: await ApiClientConfig.token),
         context: ApiClient._context);

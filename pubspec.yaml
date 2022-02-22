@@ -15,6 +15,7 @@ dependencies:
   flutter_material_color_picker: ^1.1.0+2
   google_fonts: ^2.2.0
   google_sign_in: ^5.2.3
+  intl: ^0.17.0
   shared_preferences: ^2.0.12
 
 dev_dependencies:

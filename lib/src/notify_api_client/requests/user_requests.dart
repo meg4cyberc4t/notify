@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:notify/src/notify_api_client/config.dart';
 
 class UserResponses {
@@ -9,8 +10,15 @@ class UserResponses {
     required final String firstname,
     required final String lastname,
     required final Color color,
+    String? status,
     required final String token,
   }) {
+    if (status == null) {
+      final DateTime dtn = DateTime.now();
+      status = 'Hello! I have been using notify since '
+          '${DateFormat.MMMM().format(dtn)} '
+          '${dtn.day}, ${dtn.year}!';
+    }
     Future<http.Response> callback() async {
       return await http.post(
           Uri.parse(ApiClientConfig.serverAddress +
@@ -18,6 +26,7 @@ class UserResponses {
           body: jsonEncode({
             'firstname': firstname,
             'lastname': lastname,
+            'status': status,
             'color': color.value,
           }),
           encoding: Encoding.getByName('utf-8'),
@@ -50,6 +59,7 @@ class UserResponses {
   static Future<http.Response> Function() put({
     required final String firstname,
     required final String lastname,
+    required final String status,
     required final Color color,
     required final String token,
   }) {
@@ -60,6 +70,7 @@ class UserResponses {
           body: jsonEncode({
             'firstname': firstname,
             'lastname': lastname,
+            'status': status,
             'color': color.value,
           }),
           encoding: Encoding.getByName('utf-8'),
