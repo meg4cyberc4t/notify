@@ -36,7 +36,7 @@ Future<http.Response> errorsHandlerMiddlware({
       return errorsHandlerMiddlware(callback: callback, context: context);
   }
   if (res.statusCode >= 400) {
-    debugPrint(res.toString());
+    debugPrint('res: ${res.toString()}');
     throw NotifyApiClientException(
       statusCode: res.statusCode,
       message: res.body,
