@@ -10,6 +10,7 @@ class NotifyUserDetailed {
     required this.color,
     required this.subscriptionsCount,
     required this.subscribersCount,
+    required this.follow,
   });
   static NotifyUserDetailed fromJson(Map<String, dynamic> json) =>
       NotifyUserDetailed(
@@ -19,6 +20,7 @@ class NotifyUserDetailed {
         color: Color(json['color']),
         subscribersCount: json['subscribersCount'],
         subscriptionsCount: json['subscriptionsCount'],
+        follow: json['follow'],
       );
 
   String toJson() => jsonEncode({
@@ -28,6 +30,7 @@ class NotifyUserDetailed {
         'color': color.value,
         'subscribersCount': subscribersCount,
         'subscriptionsCount': subscriptionsCount,
+        'follow': follow,
       });
 
   final String id;
@@ -36,4 +39,5 @@ class NotifyUserDetailed {
   final Color color;
   final int subscriptionsCount;
   final int subscribersCount;
+  final bool follow;
 }
