@@ -113,27 +113,48 @@ class _ApiClientUsers {
 }
 
 class _ApiClientSearch {
-  Future<List<NotifyUserDetailed>> fromUsers() async {
+  Future<List<NotifyUserDetailed>> fromUsers({
+    required String pattern,
+    int? limit,
+    int? offset,
+  }) async {
     var res = await errorsHandlerMiddlware(
         callback: SearchResponses.fromUsers(
+          pattern: pattern,
+          limit: limit,
+          offset: offset,
           token: await ApiClientConfig.token,
         ),
         context: ApiClient._context);
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
-  Future<List<NotifyNotificationQuick>> fromNotifications() async {
+  Future<List<NotifyNotificationQuick>> fromNotifications({
+    required String pattern,
+    int? limit,
+    int? offset,
+  }) async {
     var res = await errorsHandlerMiddlware(
         callback: SearchResponses.fromNotifications(
+          pattern: pattern,
+          limit: limit,
+          offset: offset,
           token: await ApiClientConfig.token,
         ),
         context: ApiClient._context);
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
-  Future<List<NotifyFolderDetailed>> fromFolders() async {
+  Future<List<NotifyFolderDetailed>> fromFolders({
+    required String pattern,
+    int? limit,
+    int? offset,
+  }) async {
     var res = await errorsHandlerMiddlware(
         callback: SearchResponses.fromFolders(
+          pattern: pattern,
+          limit: limit,
+          offset: offset,
           token: await ApiClientConfig.token,
         ),
         context: ApiClient._context);
