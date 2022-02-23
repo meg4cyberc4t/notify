@@ -3,10 +3,11 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:notify/src/notify_api_client/config.dart';
-import 'package:notify/src/notify_api_client/middleware/notify_api_client_exception.dart';
-import 'package:notify/src/notify_api_client/requests/user_requests.dart';
+
 import 'package:notify/src/pages/auth/check_email_view.dart';
+import 'package:notify/src/settings/api_service/config.dart';
+import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
+import 'package:notify/src/settings/api_service/requests/user_requests.dart';
 
 Future<http.Response> errorsHandlerMiddlware({
   required Future<http.Response> Function() callback,
@@ -26,7 +27,7 @@ Future<http.Response> errorsHandlerMiddlware({
             firstname: firstname,
             lastname: lastname,
             color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            token: await ApiClientConfig.token,
+            token: await ApiServiceConfig.token,
           ),
           context: context);
       return errorsHandlerMiddlware(callback: callback, context: context);

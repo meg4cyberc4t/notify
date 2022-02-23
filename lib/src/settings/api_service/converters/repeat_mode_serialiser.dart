@@ -1,5 +1,5 @@
-import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:notify/src/models/repeat_mode.dart';
 
 class RepeatModeSerialiser implements JsonConverter<RepeatMode, int> {
   const RepeatModeSerialiser();

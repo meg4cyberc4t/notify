@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:notify/src/notify_api_client/api_client.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_in_view.dart';
@@ -13,6 +12,7 @@ import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/search/profile_view.dart';
+import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 import 'settings/settings_controller.dart';
@@ -126,7 +126,7 @@ class _Router extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ApiClient.initWithContext(context);
+    ApiService.initWithContext(context);
     return (FirebaseAuth.instance.currentUser == null)
         ? const AuthPreview()
         : const RouterView();

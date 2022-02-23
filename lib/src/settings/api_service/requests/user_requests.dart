@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:notify/src/notify_api_client/config.dart';
+import 'package:notify/src/settings/api_service/config.dart';
 
 class UserResponses {
   static Future<http.Response> Function() post({
@@ -21,8 +21,8 @@ class UserResponses {
     }
     Future<http.Response> callback() async {
       return await http.post(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.userControllerPrefix),
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.userControllerPrefix),
           body: jsonEncode({
             'firstname': firstname,
             'lastname': lastname,
@@ -45,8 +45,8 @@ class UserResponses {
   }) {
     Future<http.Response> callback() {
       return http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.userControllerPrefix),
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.userControllerPrefix),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -65,8 +65,8 @@ class UserResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.put(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.userControllerPrefix),
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.userControllerPrefix),
           body: jsonEncode({
             'firstname': firstname,
             'lastname': lastname,
@@ -90,7 +90,7 @@ class UserResponses {
     Future<http.Response> callback() {
       return http.get(
           Uri.parse(
-            ApiClientConfig.serverAddress + ApiClientConfig.subscribtions,
+            ApiServiceConfig.serverAddress + ApiServiceConfig.subscribtions,
           ),
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ class UserResponses {
     Future<http.Response> callback() {
       return http.get(
           Uri.parse(
-            ApiClientConfig.serverAddress + ApiClientConfig.subscribers,
+            ApiServiceConfig.serverAddress + ApiServiceConfig.subscribers,
           ),
           headers: {
             'Content-Type': 'application/json',
@@ -124,9 +124,9 @@ class UserResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.post(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.userControllerPrefix +
-              ApiClientConfig.changeSubscription +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.userControllerPrefix +
+              ApiServiceConfig.changeSubscription +
               '/$uuid'),
           encoding: Encoding.getByName('utf-8'),
           headers: {

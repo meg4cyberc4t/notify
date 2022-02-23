@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
-import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
-import 'package:notify/src/notify_api_client/converters/repeat_mode_serialiser.dart';
+import 'package:notify/src/models/notify_user_quick.dart';
+import 'package:notify/src/models/repeat_mode.dart';
+import 'package:notify/src/settings/api_service/converters/repeat_mode_serialiser.dart';
 
 part 'notify_notification_detailed.g.dart';
 

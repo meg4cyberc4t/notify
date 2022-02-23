@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ApiClientConfig {
+class ApiServiceConfig {
   static const String serverAddress = 'http://185.12.95.190';
 
   static const String userControllerPrefix = '/user';

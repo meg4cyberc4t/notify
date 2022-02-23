@@ -1,17 +1,15 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:notify/src/notify_api_client/config.dart';
-import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
+import 'package:notify/src/settings/api_service/config.dart';
 
-class NotificationsResponses {
+class FoldersRequests {
   static Future<http.Response> Function() getAll({
     required final String token,
   }) {
     Future<http.Response> callback() async {
       return await http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix),
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
@@ -25,21 +23,15 @@ class NotificationsResponses {
   static Future<http.Response> Function() post({
     required String title,
     required String description,
-    required RepeatMode repeatMode,
-    required DateTime deadline,
-    required bool imporant,
-    required final String token,
+    required String token,
   }) {
     Future<http.Response> callback() async {
       return await http.post(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix),
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix),
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline,
-            'important': imporant,
-            'repeat_mode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
           headers: {
@@ -58,8 +50,8 @@ class NotificationsResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid'),
           headers: {
             'Content-Type': 'application/json',
@@ -77,8 +69,8 @@ class NotificationsResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.delete(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid'),
           headers: {
             'Content-Type': 'application/json',
@@ -94,24 +86,38 @@ class NotificationsResponses {
     required String title,
     required String description,
     required String uuid,
-    required RepeatMode repeatMode,
-    required DateTime deadline,
-    required bool imporant,
     required final String token,
   }) {
     Future<http.Response> callback() async {
       return await http.put(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid'),
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline,
-            'important': imporant,
-            'repeat_mode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'text/plain',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() byIdNotifications({
+    required final String uuid,
+    required final String token,
+  }) {
+    Future<http.Response> callback() async {
+      return await http.get(
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
+              '/$uuid' +
+              ApiServiceConfig.notifications),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
@@ -128,10 +134,10 @@ class NotificationsResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid' +
-              ApiClientConfig.participants),
+              ApiServiceConfig.participants),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
@@ -149,10 +155,10 @@ class NotificationsResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.post(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid' +
-              ApiClientConfig.invite +
+              ApiServiceConfig.invite +
               '?inviteUserId=$inviteUserId'),
           headers: {
             'Content-Type': 'application/json',
@@ -171,16 +177,82 @@ class NotificationsResponses {
   }) {
     Future<http.Response> callback() async {
       return await http.post(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.notificationsControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.foldersControllerPrefix +
               '/$uuid' +
-              ApiClientConfig.exclude +
+              ApiServiceConfig.exclude +
               '?inviteUserId=$excludeUserId'),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
             'Authorization': 'Bearer $token',
           });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() addNotification({
+    required final String uuid,
+    required final String folderId,
+    required String token,
+    final String? ntfId,
+    final List<String>? listIds,
+  }) {
+    assert(ntfId == null && listIds == null);
+    assert(ntfId != null && listIds != null);
+    assert(listIds?.isEmpty ?? false);
+    Future<http.Response> callback() async {
+      var path = ApiServiceConfig.serverAddress +
+          ApiServiceConfig.foldersControllerPrefix +
+          '/$uuid' +
+          ApiServiceConfig.addNotification +
+          '?folderId=$folderId';
+      if (ntfId != null) {
+        path += '&ntfId=$ntfId';
+      } else {
+        for (var item in listIds!) {
+          path += '&listIds=$item';
+        }
+      }
+      return await http.post(Uri.parse(path), headers: {
+        'Content-Type': 'application/json',
+        'accept': 'text/plain',
+        'Authorization': 'Bearer $token',
+      });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() removeNotification({
+    required final String uuid,
+    required final String folderId,
+    required String token,
+    final String? ntfId,
+    final List<String>? listIds,
+  }) {
+    assert(ntfId == null && listIds == null);
+    assert(ntfId != null && listIds != null);
+    assert(listIds?.isEmpty ?? false);
+    Future<http.Response> callback() async {
+      var path = ApiServiceConfig.serverAddress +
+          ApiServiceConfig.foldersControllerPrefix +
+          '/$uuid' +
+          ApiServiceConfig.removeNotification +
+          '?folderId=$folderId';
+      if (ntfId != null) {
+        path += '&ntfId=$ntfId';
+      } else {
+        for (var item in listIds!) {
+          path += '&listIds=$item';
+        }
+      }
+      return await http.post(Uri.parse(path), headers: {
+        'Content-Type': 'application/json',
+        'accept': 'text/plain',
+        'Authorization': 'Bearer $token',
+      });
     }
 
     return callback;

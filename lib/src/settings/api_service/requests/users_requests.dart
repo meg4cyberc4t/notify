@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:notify/src/notify_api_client/config.dart';
+import 'package:notify/src/settings/api_service/config.dart';
 
 class UsersResponses {
   static Future<http.Response> Function() get({
@@ -8,8 +8,8 @@ class UsersResponses {
   }) {
     Future<http.Response> callback() {
       return http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.usersControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.usersControllerPrefix +
               '/$uuid'),
           headers: {
             'Content-Type': 'application/json',
@@ -26,10 +26,10 @@ class UsersResponses {
   }) {
     Future<http.Response> callback() {
       return http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.usersControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.usersControllerPrefix +
               '/$uuid' +
-              ApiClientConfig.subscribtions),
+              ApiServiceConfig.subscribtions),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -45,10 +45,10 @@ class UsersResponses {
   }) {
     Future<http.Response> callback() {
       return http.get(
-          Uri.parse(ApiClientConfig.serverAddress +
-              ApiClientConfig.usersControllerPrefix +
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.usersControllerPrefix +
               '/$uuid' +
-              ApiClientConfig.subscribers),
+              ApiServiceConfig.subscribers),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',

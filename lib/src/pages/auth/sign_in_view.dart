@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:notify/src/notify_api_client/api_client.dart';
-import 'package:notify/src/notify_api_client/middleware/notify_api_client_exception.dart';
 import 'package:notify/src/pages/auth/check_email_view.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/router_view.dart';
+import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({Key? key, this.appBarColor}) : super(key: key);
@@ -158,7 +158,7 @@ class _SignInViewState extends State<SignInView> {
                           lastname = _dname[1];
                         }
                         try {
-                          await ApiClient.user.post(
+                          await ApiService.user.post(
                             firstname: firstname,
                             lastname: lastname,
                           );

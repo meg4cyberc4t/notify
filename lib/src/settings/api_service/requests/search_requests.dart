@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:notify/src/notify_api_client/config.dart';
+import 'package:notify/src/settings/api_service/config.dart';
 
 class SearchResponses {
   static Future<http.Response> Function() fromUsers({
@@ -9,9 +9,9 @@ class SearchResponses {
     required final String token,
   }) {
     Future<http.Response> callback() async {
-      String path = ApiClientConfig.serverAddress +
-          ApiClientConfig.searchControllerPrefix +
-          ApiClientConfig.fromUsers +
+      String path = ApiServiceConfig.serverAddress +
+          ApiServiceConfig.searchControllerPrefix +
+          ApiServiceConfig.fromUsers +
           '/?pattern=$pattern';
       if (limit != null) {
         path += '&limit=$limit';
@@ -36,9 +36,9 @@ class SearchResponses {
     required final String token,
   }) {
     Future<http.Response> callback() async {
-      String path = ApiClientConfig.serverAddress +
-          ApiClientConfig.searchControllerPrefix +
-          ApiClientConfig.fromNotifications +
+      String path = ApiServiceConfig.serverAddress +
+          ApiServiceConfig.searchControllerPrefix +
+          ApiServiceConfig.fromNotifications +
           '/?pattern=$pattern';
       if (limit != null) {
         path += '&limit=$limit';
@@ -63,9 +63,9 @@ class SearchResponses {
     required final String token,
   }) {
     Future<http.Response> callback() async {
-      String path = ApiClientConfig.serverAddress +
-          ApiClientConfig.searchControllerPrefix +
-          ApiClientConfig.fromFolders +
+      String path = ApiServiceConfig.serverAddress +
+          ApiServiceConfig.searchControllerPrefix +
+          ApiServiceConfig.fromFolders +
           '/?pattern=$pattern';
       if (limit != null) {
         path += '&limit=$limit';

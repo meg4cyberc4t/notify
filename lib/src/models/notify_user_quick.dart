@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:notify/src/notify_api_client/converters/color_serialiser.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/src/settings/api_service/converters/color_serialiser.dart';
 
 part 'notify_user_quick.g.dart';
 
