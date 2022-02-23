@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'notify_folder_detailed.g.dart';
+
+@JsonSerializable()
 class NotifyFolderDetailed {
   const NotifyFolderDetailed({
     required this.id,
@@ -8,22 +11,11 @@ class NotifyFolderDetailed {
     required this.participantsCount,
     required this.notificationsCount,
   });
-  static NotifyFolderDetailed fromJson(Map<String, dynamic> json) =>
-      NotifyFolderDetailed(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        participantsCount: json['participantsCount'],
-        notificationsCount: json['notificationsCount'],
-      );
 
-  String toJson() => jsonEncode({
-        'id': id,
-        'title': title,
-        'description': description,
-        'participantsCount': participantsCount,
-        'notificationsCount': notificationsCount,
-      });
+  factory NotifyFolderDetailed.fromJson(Map<String, dynamic> json) =>
+      _$NotifyFolderDetailedFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotifyFolderDetailedToJson(this);
 
   final String id;
   final String title;

@@ -1,8 +1,11 @@
-import 'dart:convert';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:notify/src/notify_api_client/models/notify_user_quick.dart';
 import 'package:notify/src/notify_api_client/models/repeat_mode.dart';
+import 'package:notify/src/notify_api_client/converters/repeat_mode_serialiser.dart';
 
+part 'notify_notification_detailed.g.dart';
+
+@JsonSerializable()
 class NotifyNotificationDetailed {
   const NotifyNotificationDetailed({
     required this.id,
@@ -15,34 +18,16 @@ class NotifyNotificationDetailed {
     required this.uniqueClaim,
     required this.participantsCount,
   });
-  static NotifyNotificationDetailed fromJson(Map<String, dynamic> json) =>
-      NotifyNotificationDetailed(
-        id: json['id'],
-        title: json['title'],
-        description: json['description'],
-        repeatMode: RepeatMode.values[json['repeatMode']],
-        important: json['important'],
-        deadline: json['deadline'],
-        creator: NotifyUserQuick.fromJson(json['creator']),
-        uniqueClaim: json['uniqueClaim'],
-        participantsCount: json['participantsCount'],
-      );
 
-  String toJson() => jsonEncode({
-        'id': id,
-        'title': title,
-        'description': description,
-        'repeat_mode': repeatMode.index,
-        'important': important,
-        'deadline': deadline,
-        'creator': creator.toJson(),
-        'unique_claim': uniqueClaim,
-        'participantsCount': participantsCount,
-      });
+  factory NotifyNotificationDetailed.fromJson(Map<String, dynamic> json) =>
+      _$NotifyNotificationDetailedFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotifyNotificationDetailedToJson(this);
 
   final String id;
   final String title;
   final String description;
+  @RepeatModeSerialiser()
   final RepeatMode repeatMode;
   final bool important;
   final DateTime deadline;

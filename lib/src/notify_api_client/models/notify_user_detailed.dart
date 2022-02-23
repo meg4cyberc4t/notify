@@ -1,7 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:notify/src/notify_api_client/converters/color_serialiser.dart';
 
+part 'notify_user_detailed.g.dart';
+
+@JsonSerializable()
 class NotifyUserDetailed {
   const NotifyUserDetailed({
     required this.id,
@@ -13,33 +16,17 @@ class NotifyUserDetailed {
     required this.subscribersCount,
     required this.follow,
   });
-  static NotifyUserDetailed fromJson(Map<String, dynamic> json) =>
-      NotifyUserDetailed(
-        id: json['id'],
-        firstname: json['firstname'],
-        lastname: json['lastname'],
-        status: json['status'],
-        color: Color(json['color']),
-        subscribersCount: json['subscribersCount'],
-        subscriptionsCount: json['subscriptionsCount'],
-        follow: json['follow'],
-      );
 
-  String toJson() => jsonEncode({
-        'id': id,
-        'firstname': firstname,
-        'lastname': lastname,
-        'color': color.value,
-        'status': status,
-        'subscribersCount': subscribersCount,
-        'subscriptionsCount': subscriptionsCount,
-        'follow': follow,
-      });
+  factory NotifyUserDetailed.fromJson(Map<String, dynamic> json) =>
+      _$NotifyUserDetailedFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotifyUserDetailedToJson(this);
 
   final String id;
   final String firstname;
   final String lastname;
   final String status;
+  @ColorSerialiser()
   final Color color;
   final int subscriptionsCount;
   final int subscribersCount;

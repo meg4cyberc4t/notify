@@ -1,7 +1,10 @@
-import 'dart:convert';
-
+import 'package:json_annotation/json_annotation.dart';
+import 'package:notify/src/notify_api_client/converters/color_serialiser.dart';
 import 'package:flutter/material.dart';
 
+part 'notify_user_quick.g.dart';
+
+@JsonSerializable()
 class NotifyUserQuick {
   const NotifyUserQuick({
     required this.id,
@@ -9,22 +12,15 @@ class NotifyUserQuick {
     required this.lastname,
     required this.color,
   });
-  static NotifyUserQuick fromJson(Map<String, dynamic> json) => NotifyUserQuick(
-        id: json['id'],
-        firstname: json['firstname'],
-        lastname: json['lastname'],
-        color: Color(json['color']),
-      );
 
-  String toJson() => jsonEncode({
-        'id': id,
-        'firstname': firstname,
-        'lastname': lastname,
-        'color': color.value,
-      });
+  factory NotifyUserQuick.fromJson(Map<String, dynamic> json) =>
+      _$NotifyUserQuickFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NotifyUserQuickToJson(this);
 
   final String id;
   final String firstname;
   final String lastname;
+  @ColorSerialiser()
   final Color color;
 }
