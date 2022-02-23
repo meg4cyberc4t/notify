@@ -18,6 +18,8 @@ class NotifyUserQuick {
 
   Map<String, dynamic> toJson() => _$NotifyUserQuickToJson(this);
 
+  String get title => '$firstname $lastname';
+
   final String id;
   final String firstname;
   final String lastname;

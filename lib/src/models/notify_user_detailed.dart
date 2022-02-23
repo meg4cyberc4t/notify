@@ -22,6 +22,8 @@ class NotifyUserDetailed {
 
   Map<String, dynamic> toJson() => _$NotifyUserDetailedToJson(this);
 
+  String get title => '$firstname $lastname';
+
   final String id;
   final String firstname;
   final String lastname;
