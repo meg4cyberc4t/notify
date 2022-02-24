@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_single_quotes
 
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/src/pages/auth/check_email_view.dart';
+import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/router_view.dart';
@@ -22,8 +21,6 @@ class SignUpView extends StatefulWidget {
 class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   String title = '';
   late Color colorValue;
@@ -66,11 +63,6 @@ class _SignUpViewState extends State<SignUpView> {
     super.initState();
   }
 
-  Color passiveColor(Color color) =>
-      ThemeData.estimateBrightnessForColor(color) == Brightness.light
-          ? Colors.black
-          : Colors.white;
-
   @override
   Widget build(BuildContext context) {
     if (title.trim().isEmpty) {
@@ -86,10 +78,7 @@ class _SignUpViewState extends State<SignUpView> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 title,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6!
-                    .copyWith(color: passiveColor(colorValue)),
+                style: TextStyle(color: getPassiveColor(colorValue)),
                 textAlign: TextAlign.center,
               ),
               centerTitle: true,
@@ -98,7 +87,7 @@ class _SignUpViewState extends State<SignUpView> {
                 color: colorValue,
               ),
             ),
-            iconTheme: IconThemeData(color: passiveColor(colorValue)),
+            iconTheme: IconThemeData(color: getPassiveColor(colorValue)),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit_outlined),
@@ -148,30 +137,6 @@ class _SignUpViewState extends State<SignUpView> {
           SliverPadding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             sliver: SliverToBoxAdapter(
-              child: TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.emailTitle,
-                  hintText: AppLocalizations.of(context)!.emailHint,
-                ),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            sliver: SliverToBoxAdapter(
-              child: TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.passwordTitle,
-                ),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
                   Row(
@@ -179,34 +144,6 @@ class _SignUpViewState extends State<SignUpView> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            try {
-                              await FirebaseAuth.instance
-                                  .createUserWithEmailAndPassword(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                              );
-                            } on FirebaseAuthException catch (e) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  content: Text(e.message!),
-                                ),
-                              );
-                              return;
-                            }
-                            FirebaseAuth.instance.currentUser!
-                                .updateDisplayName(
-                                    _firstnameController.text.trim() +
-                                        " " +
-                                        _lastnameController.text.trim());
-                            if (!FirebaseAuth
-                                .instance.currentUser!.emailVerified) {
-                              final bool isVerify = await Navigator.of(context)
-                                  .pushNamed(CheckEmailView.routeName) as bool;
-                              if (!isVerify) return;
-                            }
-
                             try {
                               await ApiService.user.post(
                                 firstname: _firstnameController.text.trim(),
@@ -228,16 +165,6 @@ class _SignUpViewState extends State<SignUpView> {
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: Navigator.of(context).pop,
-                          child: Text(AppLocalizations.of(context)!.backButton),
                         ),
                       ),
                     ],

@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
-import 'package:notify/src/pages/auth/check_email_view.dart';
-import 'package:notify/src/pages/auth/sign_in_view.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/brand_book_page.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
@@ -12,7 +10,6 @@ import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/search/profile_view.dart';
-import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 import 'settings/settings_controller.dart';
@@ -39,7 +36,9 @@ class MyApp extends StatelessWidget {
           darkTheme: NotifyThemeData.darkThemeData,
           theme: NotifyThemeData.lightThemeData,
           themeMode: settingsController.themeMode,
-          initialRoute: '/',
+          initialRoute: FirebaseAuth.instance.currentUser == null
+              ? AuthPreview.routeName
+              : RouterView.routeName,
           onGenerateRoute: (RouteSettings routeSettings) {
             Map<String, dynamic>? args =
                 routeSettings.arguments as Map<String, dynamic>?;
@@ -62,25 +61,12 @@ class MyApp extends StatelessWidget {
                   settings: routeSettings,
                   builder: (BuildContext context) => const SignUpView(),
                 );
-
               case RouterView.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) => const RouterView(),
                 );
-              case SignInView.routeName:
-                return MaterialPageRoute(
-                  settings: routeSettings,
-                  builder: (BuildContext context) =>
-                      args?['appBarColor'] != null
-                          ? SignInView(appBarColor: args!['appBarColor'])
-                          : const SignInView(),
-                );
-              case CheckEmailView.routeName:
-                return MaterialPageRoute<bool>(
-                  settings: routeSettings,
-                  builder: (BuildContext context) => const CheckEmailView(),
-                );
+
               case HomeView.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
@@ -101,12 +87,6 @@ class MyApp extends StatelessWidget {
                   settings: routeSettings,
                   builder: (BuildContext context) => const SearchView(),
                 );
-              case _Router.routeName:
-                return MaterialPageRoute(
-                  settings: routeSettings,
-                  builder: (BuildContext context) => const _Router(),
-                );
-
               default:
                 return MaterialPageRoute(
                   settings: routeSettings,
@@ -117,18 +97,5 @@ class MyApp extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class _Router extends StatelessWidget {
-  const _Router({Key? key}) : super(key: key);
-  static const routeName = '/';
-
-  @override
-  Widget build(BuildContext context) {
-    ApiService.initWithContext(context);
-    return (FirebaseAuth.instance.currentUser == null)
-        ? const AuthPreview()
-        : const RouterView();
   }
 }

@@ -1,15 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notify/src/pages/auth/sign_in_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/models/notify_user_detailed.dart';
+import 'package:notify/src/pages/auth/sign_up_view.dart';
+import 'package:notify/src/pages/router_view.dart';
+import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
 
-class AuthPreview extends StatelessWidget {
+class AuthPreview extends StatefulWidget {
   const AuthPreview({Key? key}) : super(key: key);
-
   static const String routeName = '/auth_preview';
+
+  @override
+  State<AuthPreview> createState() => _AuthPreviewState();
+}
+
+class _AuthPreviewState extends State<AuthPreview> {
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(debugLabel: 'auth_preview');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      restorationId: AuthPreview.routeName,
       body: Stack(
         children: [
           Container(
@@ -50,8 +65,36 @@ class AuthPreview extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => Navigator.of(context)
-                                .pushNamed(SignInView.routeName),
+                            onPressed: () async {
+                              final GoogleSignIn _googleSignIn = GoogleSignIn();
+                              GoogleSignInAccount? googleSignInAccount =
+                                  await _googleSignIn.signIn();
+                              if (googleSignInAccount == null) {
+                                return;
+                              }
+                              GoogleSignInAuthentication
+                                  googleSignInAuthentication =
+                                  await googleSignInAccount.authentication;
+                              AuthCredential credential =
+                                  GoogleAuthProvider.credential(
+                                accessToken:
+                                    googleSignInAuthentication.accessToken,
+                                idToken: googleSignInAuthentication.idToken,
+                              );
+                              await FirebaseAuth.instance
+                                  .signInWithCredential(credential);
+                              try {
+                                NotifyUserDetailed user =
+                                    await ApiService.user.get();
+                                debugPrint(user.title +
+                                    ' loggined with ApiService in Notify');
+                                await Navigator.of(context, rootNavigator: true)
+                                    .pushReplacementNamed(RouterView.routeName);
+                              } on NotifyApiClientException {
+                                await Navigator.of(context)
+                                    .pushNamed(SignUpView.routeName);
+                              }
+                            },
                             child: Text(
                               AppLocalizations.of(context)!.getStarted,
                             ),

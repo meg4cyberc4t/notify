@@ -6,7 +6,7 @@ import 'package:notify/src/pages/search/profile_view.dart';
 
 class RouterView extends StatefulWidget {
   const RouterView({Key? key}) : super(key: key);
-  static const routeName = '/home_page';
+  static const routeName = '/router_page';
 
   @override
   State<RouterView> createState() => _RouterViewState();
