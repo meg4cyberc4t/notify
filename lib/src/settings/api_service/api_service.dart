@@ -17,11 +17,6 @@ import 'package:notify/src/settings/api_service/requests/user_requests.dart';
 import 'package:notify/src/settings/api_service/requests/users_requests.dart';
 
 class ApiService {
-  static late BuildContext _context;
-  static initWithContext(BuildContext context) {
-    _context = context;
-  }
-
   static _ApiServiceUser get user => _ApiServiceUser();
   static _ApiServiceUsers get users => _ApiServiceUsers();
   static _ApiServiceSearch get search => _ApiServiceSearch();
@@ -42,15 +37,13 @@ class _ApiServiceUser {
             firstname: firstname,
             lastname: lastname,
             color: color,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+            token: await ApiServiceConfig.token));
     return NotifyUserDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<NotifyUserDetailed> get() async {
     var res = await errorsHandlerMiddlware(
-        callback: UserResponses.get(token: await ApiServiceConfig.token),
-        context: ApiService._context);
+        callback: UserResponses.get(token: await ApiServiceConfig.token));
     return NotifyUserDetailed.fromJson(jsonDecode(res.body));
   }
 
@@ -61,29 +54,28 @@ class _ApiServiceUser {
     required Color color,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: UserResponses.put(
-            firstname: firstname,
-            lastname: lastname,
-            status: status,
-            color: color,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: UserResponses.put(
+          firstname: firstname,
+          lastname: lastname,
+          status: status,
+          color: color,
+          token: await ApiServiceConfig.token),
+    );
     return NotifyUserDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<List<NotifyUserQuick>> subscriptions() async {
     var res = await errorsHandlerMiddlware(
-        callback:
-            UserResponses.subscriptions(token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback:
+          UserResponses.subscriptions(token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
   Future<List<NotifyUserQuick>> subscribers() async {
     var res = await errorsHandlerMiddlware(
-        callback:
-            UserResponses.subscribers(token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: UserResponses.subscribers(token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 }
@@ -91,27 +83,27 @@ class _ApiServiceUser {
 class _ApiServiceUsers {
   Future<NotifyUserDetailed> get(String uuid) async {
     var res = await errorsHandlerMiddlware(
-        callback: UsersResponses.get(
-          token: await ApiServiceConfig.token,
-          uuid: uuid,
-        ),
-        context: ApiService._context);
+      callback: UsersResponses.get(
+        token: await ApiServiceConfig.token,
+        uuid: uuid,
+      ),
+    );
     return NotifyUserDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<List<NotifyUserQuick>> subscribers(String uuid) async {
     var res = await errorsHandlerMiddlware(
-        callback: UsersResponses.subscribers(
-            token: await ApiServiceConfig.token, uuid: uuid),
-        context: ApiService._context);
+      callback: UsersResponses.subscribers(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
   Future<List<NotifyUserQuick>> subscribtions(String uuid) async {
     var res = await errorsHandlerMiddlware(
-        callback: UsersResponses.subscribtions(
-            token: await ApiServiceConfig.token, uuid: uuid),
-        context: ApiService._context);
+      callback: UsersResponses.subscribtions(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 }
@@ -123,13 +115,13 @@ class _ApiServiceSearch {
     int? offset,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: SearchResponses.fromUsers(
-          pattern: pattern,
-          limit: limit,
-          offset: offset,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: SearchResponses.fromUsers(
+        pattern: pattern,
+        limit: limit,
+        offset: offset,
+        token: await ApiServiceConfig.token,
+      ),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
@@ -139,13 +131,13 @@ class _ApiServiceSearch {
     int? offset,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: SearchResponses.fromNotifications(
-          pattern: pattern,
-          limit: limit,
-          offset: offset,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: SearchResponses.fromNotifications(
+        pattern: pattern,
+        limit: limit,
+        offset: offset,
+        token: await ApiServiceConfig.token,
+      ),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
@@ -155,13 +147,13 @@ class _ApiServiceSearch {
     int? offset,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: SearchResponses.fromFolders(
-          pattern: pattern,
-          limit: limit,
-          offset: offset,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: SearchResponses.fromFolders(
+        pattern: pattern,
+        limit: limit,
+        offset: offset,
+        token: await ApiServiceConfig.token,
+      ),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 }
@@ -169,9 +161,9 @@ class _ApiServiceSearch {
 class _ApiServiceNotifications {
   Future<NotifyNotificationQuick> get() async {
     var res = await errorsHandlerMiddlware(
-        callback:
-            NotificationsResponses.getAll(token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback:
+          NotificationsResponses.getAll(token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyNotificationQuick.fromJson(e));
   }
 
@@ -183,32 +175,32 @@ class _ApiServiceNotifications {
     bool important = false,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: NotificationsResponses.post(
-            title: title,
-            description: description,
-            repeatMode: repeatMode,
-            imporant: important,
-            deadline: deadline,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: NotificationsResponses.post(
+          title: title,
+          description: description,
+          repeatMode: repeatMode,
+          imporant: important,
+          deadline: deadline,
+          token: await ApiServiceConfig.token),
+    );
     return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<NotifyNotificationDetailed> getById(String uuid) async {
     var res = await errorsHandlerMiddlware(
-        callback: NotificationsResponses.getById(
-            token: await ApiServiceConfig.token, uuid: uuid),
-        context: ApiService._context);
+      callback: NotificationsResponses.getById(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
     return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<void> delete({required String uuid}) async {
     await errorsHandlerMiddlware(
-        callback: NotificationsResponses.delete(
-          token: await ApiServiceConfig.token,
-          uuid: uuid,
-        ),
-        context: ApiService._context);
+      callback: NotificationsResponses.delete(
+        token: await ApiServiceConfig.token,
+        uuid: uuid,
+      ),
+    );
   }
 
   Future<NotifyNotificationDetailed> put({
@@ -220,23 +212,23 @@ class _ApiServiceNotifications {
     bool important = false,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: NotificationsResponses.put(
-            title: title,
-            description: description,
-            repeatMode: repeatMode,
-            imporant: important,
-            deadline: deadline,
-            uuid: uuid,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: NotificationsResponses.put(
+          title: title,
+          description: description,
+          repeatMode: repeatMode,
+          imporant: important,
+          deadline: deadline,
+          uuid: uuid,
+          token: await ApiServiceConfig.token),
+    );
     return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<List<NotifyUserQuick>> byIdParticipants({required String uuid}) async {
     var res = await errorsHandlerMiddlware(
-        callback: NotificationsResponses.byIdParticipants(
-            uuid: uuid, token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: NotificationsResponses.byIdParticipants(
+          uuid: uuid, token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
@@ -245,12 +237,12 @@ class _ApiServiceNotifications {
     required String inviteUserId,
   }) async {
     await errorsHandlerMiddlware(
-        callback: NotificationsResponses.invite(
-          uuid: uuid,
-          inviteUserId: inviteUserId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: NotificationsResponses.invite(
+        uuid: uuid,
+        inviteUserId: inviteUserId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 
   Future<void> exclude({
@@ -258,20 +250,20 @@ class _ApiServiceNotifications {
     required String excludeUserId,
   }) async {
     await errorsHandlerMiddlware(
-        callback: NotificationsResponses.exclude(
-          uuid: uuid,
-          excludeUserId: excludeUserId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: NotificationsResponses.exclude(
+        uuid: uuid,
+        excludeUserId: excludeUserId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 }
 
 class _ApiServiceFolders {
   Future<NotifyFolderDetailed> get() async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.getAll(token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: FoldersRequests.getAll(token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyFolderDetailed.fromJson(e));
   }
 
@@ -280,29 +272,29 @@ class _ApiServiceFolders {
     required String description,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.post(
-            title: title,
-            description: description,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: FoldersRequests.post(
+          title: title,
+          description: description,
+          token: await ApiServiceConfig.token),
+    );
     return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<NotifyFolderDetailed> getById(String uuid) async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.getById(
-            token: await ApiServiceConfig.token, uuid: uuid),
-        context: ApiService._context);
+      callback: FoldersRequests.getById(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
     return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<void> delete({required String uuid}) async {
     await errorsHandlerMiddlware(
-        callback: FoldersRequests.delete(
-          token: await ApiServiceConfig.token,
-          uuid: uuid,
-        ),
-        context: ApiService._context);
+      callback: FoldersRequests.delete(
+        token: await ApiServiceConfig.token,
+        uuid: uuid,
+      ),
+    );
   }
 
   Future<NotifyFolderDetailed> put({
@@ -311,29 +303,29 @@ class _ApiServiceFolders {
     required String uuid,
   }) async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.put(
-            title: title,
-            description: description,
-            uuid: uuid,
-            token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: FoldersRequests.put(
+          title: title,
+          description: description,
+          uuid: uuid,
+          token: await ApiServiceConfig.token),
+    );
     return NotifyFolderDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<List<NotifyUserQuick>> byIdParticipants({required String uuid}) async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.byIdParticipants(
-            uuid: uuid, token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: FoldersRequests.byIdParticipants(
+          uuid: uuid, token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
   }
 
   Future<List<NotifyNotificationQuick>> byIdNotifications(
       {required String uuid}) async {
     var res = await errorsHandlerMiddlware(
-        callback: FoldersRequests.byIdParticipants(
-            uuid: uuid, token: await ApiServiceConfig.token),
-        context: ApiService._context);
+      callback: FoldersRequests.byIdParticipants(
+          uuid: uuid, token: await ApiServiceConfig.token),
+    );
     return jsonDecode(res.body).map((e) => NotifyNotificationQuick.fromJson(e));
   }
 
@@ -342,12 +334,12 @@ class _ApiServiceFolders {
     required String inviteUserId,
   }) async {
     await errorsHandlerMiddlware(
-        callback: FoldersRequests.invite(
-          uuid: uuid,
-          inviteUserId: inviteUserId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: FoldersRequests.invite(
+        uuid: uuid,
+        inviteUserId: inviteUserId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 
   Future<void> exclude({
@@ -355,12 +347,12 @@ class _ApiServiceFolders {
     required String excludeUserId,
   }) async {
     await errorsHandlerMiddlware(
-        callback: FoldersRequests.exclude(
-          uuid: uuid,
-          excludeUserId: excludeUserId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: FoldersRequests.exclude(
+        uuid: uuid,
+        excludeUserId: excludeUserId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 
   Future<void> addNotification({
@@ -371,14 +363,14 @@ class _ApiServiceFolders {
     List<String>? listIds,
   }) async {
     await errorsHandlerMiddlware(
-        callback: FoldersRequests.addNotification(
-          uuid: uuid,
-          folderId: folderId,
-          listIds: listIds,
-          ntfId: ntfId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: FoldersRequests.addNotification(
+        uuid: uuid,
+        folderId: folderId,
+        listIds: listIds,
+        ntfId: ntfId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 
   Future<void> removeNotification({
@@ -389,13 +381,13 @@ class _ApiServiceFolders {
     List<String>? listIds,
   }) async {
     await errorsHandlerMiddlware(
-        callback: FoldersRequests.removeNotification(
-          uuid: uuid,
-          folderId: folderId,
-          listIds: listIds,
-          ntfId: ntfId,
-          token: await ApiServiceConfig.token,
-        ),
-        context: ApiService._context);
+      callback: FoldersRequests.removeNotification(
+        uuid: uuid,
+        folderId: folderId,
+        listIds: listIds,
+        ntfId: ntfId,
+        token: await ApiServiceConfig.token,
+      ),
+    );
   }
 }
