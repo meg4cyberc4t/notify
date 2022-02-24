@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LocalFutureBuilder<T> extends StatelessWidget {
   const LocalFutureBuilder({
     Key? key,
-    this.future,
+    required this.future,
     required this.onData,
     required this.onError,
     required this.onProgress,
