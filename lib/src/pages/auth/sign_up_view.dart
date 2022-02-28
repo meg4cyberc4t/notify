@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
-import 'package:notify/src/pages/color_picker_view.dart';
+import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
