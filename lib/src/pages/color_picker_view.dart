@@ -30,7 +30,7 @@ class _ColorPickerViewState extends State<ColorPickerView> {
   @override
   Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.colorPickerViewTitle),
+          title: Text(AppLocalizations.of(context)!.chooseYourColor),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),

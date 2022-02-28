@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:notify/src/settings/api_service/config.dart';
 
 class UserResponses {
@@ -10,15 +9,9 @@ class UserResponses {
     required final String firstname,
     required final String lastname,
     required final Color color,
-    String? status,
+    required final String status,
     required final String token,
   }) {
-    if (status == null) {
-      final DateTime dtn = DateTime.now();
-      status = 'Hello! I have been using notify since '
-          '${DateFormat.MMMM().format(dtn)} '
-          '${dtn.day}, ${dtn.year}!';
-    }
     Future<http.Response> callback() async {
       return await http.post(
           Uri.parse(ApiServiceConfig.serverAddress +

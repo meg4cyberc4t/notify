@@ -46,7 +46,7 @@ class _AuthPreviewState extends State<AuthPreview> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        AppLocalizations.of(context)!.authPreviewIntro,
+                        AppLocalizations.of(context)!.ntfManager,
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -55,7 +55,7 @@ class _AuthPreviewState extends State<AuthPreview> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        AppLocalizations.of(context)!.authPreviewDescription,
+                        AppLocalizations.of(context)!.authPreview,
                         style: Theme.of(context).textTheme.headline4,
                         textAlign: TextAlign.start,
                       ),

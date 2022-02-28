@@ -2,6 +2,7 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -21,7 +22,7 @@ class SignUpView extends StatefulWidget {
 class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
-
+  final TextEditingController _statusController = TextEditingController();
   String title = '';
   late Color colorValue;
 
@@ -60,13 +61,17 @@ class _SignUpViewState extends State<SignUpView> {
     colorValue = Colors.primaries[Random().nextInt(Colors.primaries.length)];
     _firstnameController.addListener(updateTitleIfUpdate);
     _lastnameController.addListener(updateTitleIfUpdate);
+    final DateTime dtn = DateTime.now();
+    _statusController.text = 'Hello! I have been using notify since '
+        '${DateFormat.MMMM().format(dtn)} '
+        '${dtn.day}, ${dtn.year}!';
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     if (title.trim().isEmpty) {
-      title = AppLocalizations.of(context)!.signUpTitle;
+      title = AppLocalizations.of(context)!.signUp;
     }
     return Scaffold(
       body: CustomScrollView(
@@ -115,7 +120,7 @@ class _SignUpViewState extends State<SignUpView> {
                 controller: _firstnameController,
                 maxLength: 30,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.firstNameTitle,
+                  labelText: AppLocalizations.of(context)!.firstname,
                   counterText: '',
                 ),
               ),
@@ -128,7 +133,20 @@ class _SignUpViewState extends State<SignUpView> {
                 controller: _lastnameController,
                 maxLength: 30,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.lastNameTitle,
+                  labelText: AppLocalizations.of(context)!.lastname,
+                  counterText: '',
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            sliver: SliverToBoxAdapter(
+              child: TextField(
+                controller: _statusController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.status,
                   counterText: '',
                 ),
               ),
@@ -148,6 +166,7 @@ class _SignUpViewState extends State<SignUpView> {
                               await ApiService.user.post(
                                 firstname: _firstnameController.text.trim(),
                                 lastname: _lastnameController.text.trim(),
+                                status: _statusController.text.trim(),
                                 color: colorValue,
                               );
                             } on NotifyApiClientException catch (e) {
