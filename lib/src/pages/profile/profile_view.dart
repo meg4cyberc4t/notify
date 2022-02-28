@@ -4,6 +4,7 @@ import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
+import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class ProfileView extends StatefulWidget {
@@ -49,8 +50,21 @@ class _ProfileViewState extends State<ProfileView>
                 ),
               ],
               leading: IconButton(
-                icon: const Icon(Icons.auto_fix_high_outlined),
-                onPressed: () async {},
+                icon: const Icon(Icons.color_lens_outlined),
+                onPressed: () async {
+                  final Color? color = await Navigator.of(context)
+                      .pushNamed(ColorPickerView.routeName, arguments: {
+                    'title': user.shortTitle,
+                  });
+                  if (color != null) {
+                    await ApiService.user.put(
+                        firstname: user.firstname,
+                        lastname: user.lastname,
+                        status: user.status,
+                        color: color);
+                    setState(() {});
+                  }
+                },
               ),
               expandedHeight: 300,
               flexibleSpace: FlexibleSpaceBar(
@@ -60,7 +74,7 @@ class _ProfileViewState extends State<ProfileView>
                   style: TextStyle(color: getPassiveColor(user.color)),
                 ),
                 background: AnimatedContainer(
-                  duration: const Duration(seconds: 400),
+                  duration: const Duration(milliseconds: 400),
                   color: user.color,
                 ),
               ),

@@ -24,6 +24,8 @@ class NotifyUserDetailed {
 
   String get title => '$firstname $lastname';
 
+  String get shortTitle => (firstname[0] + lastname[0]).toUpperCase().trim();
+
   final String id;
   final String firstname;
   final String lastname;
