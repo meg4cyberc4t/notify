@@ -7,6 +7,7 @@ import 'package:notify/src/pages/brand_book_page.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
+import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/search/profile_view.dart';
@@ -86,6 +87,13 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) => const SearchView(),
+                );
+              case EditProfileView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => EditProfileView(
+                    user: args!['user'],
+                  ),
                 );
               default:
                 return MaterialPageRoute(

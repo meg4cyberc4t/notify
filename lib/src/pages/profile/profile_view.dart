@@ -5,6 +5,7 @@ import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/color_picker_view.dart';
+import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class ProfileView extends StatefulWidget {
@@ -96,7 +97,13 @@ class _ProfileViewState extends State<ProfileView>
               sliver: SliverToBoxAdapter(
                 child: OutlinedButton(
                   child: const Text('Edit'),
-                  onPressed: () {},
+                  onPressed: () async {
+                    await Navigator.of(context)
+                        .pushNamed(EditProfileView.routeName, arguments: {
+                      'user': user,
+                    });
+                    setState(() {});
+                  },
                 ),
               ),
             ),
