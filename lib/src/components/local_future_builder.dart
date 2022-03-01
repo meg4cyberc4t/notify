@@ -9,6 +9,21 @@ class LocalFutureBuilder<T> extends StatelessWidget {
     required this.onProgress,
   }) : super(key: key);
 
+  static LocalFutureBuilder withLoading<T>({
+    Key? key,
+    required Future<T>? future,
+    required Widget Function(BuildContext context, Object error) onError,
+    required Widget Function(BuildContext context, T? data, bool isLoaded)
+        onLoading,
+  }) {
+    return LocalFutureBuilder<T>(
+      future: future,
+      onData: (BuildContext context, T data) => onLoading(context, data, true),
+      onProgress: (BuildContext context) => onLoading(context, null, false),
+      onError: onError,
+    );
+  }
+
   final Future<T>? future;
   final Widget Function(BuildContext context, T data) onData;
   final Widget Function(BuildContext context, Object error) onError;
