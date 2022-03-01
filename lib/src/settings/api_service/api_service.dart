@@ -71,14 +71,22 @@ class _ApiServiceUser {
       callback:
           UserResponses.subscriptions(token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
   }
 
   Future<List<NotifyUserQuick>> subscribers() async {
     var res = await errorsHandlerMiddlware(
       callback: UserResponses.subscribers(token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
   }
 }
 

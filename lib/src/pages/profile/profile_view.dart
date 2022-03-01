@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/src/components/list_bottom_sheet.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
+import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/edit_profile_view.dart';
@@ -143,7 +145,14 @@ class _ProfileViewState extends State<ProfileView>
                 children: [
                   Expanded(
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        List<NotifyUserQuick> subscribers =
+                            await ApiService.user.subscribers();
+                        showListUsersBottomSheet(
+                            context: context,
+                            title: 'Subscribers',
+                            users: subscribers);
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
@@ -174,7 +183,14 @@ class _ProfileViewState extends State<ProfileView>
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        List<NotifyUserQuick> subscriptions =
+                            await ApiService.user.subscriptions();
+                        showListUsersBottomSheet(
+                            context: context,
+                            title: 'Subscriptions',
+                            users: subscriptions);
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
