@@ -10,7 +10,7 @@ import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/additional/edit_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
-import 'package:notify/src/pages/search/profile_view.dart';
+import 'package:notify/src/pages/search/search_view.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 import 'settings/settings_controller.dart';

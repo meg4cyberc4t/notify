@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
+import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
@@ -20,6 +21,7 @@ class _ProfileViewState extends State<ProfileView>
     with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(debugLabel: 'profile_view');
+  final ScrollController _scrollController = ScrollController();
   @override
   bool get wantKeepAlive => true;
 
@@ -29,83 +31,108 @@ class _ProfileViewState extends State<ProfileView>
     return Scaffold(
       restorationId: 'profile_view',
       key: _scaffoldKey,
-      body: LocalFutureBuilder(
+      body: LocalFutureBuilder.withLoading<NotifyUserDetailed>(
         future: ApiService.user.get(),
-        onProgress: (BuildContext context) =>
-            const Center(child: Text('progress')),
         onError: (BuildContext context, Object err) =>
             Center(child: Text(err.toString())),
-        onData: (BuildContext context, NotifyUserDetailed user) =>
-            CustomScrollView(
+        onLoading:
+            (BuildContext context, NotifyUserDetailed? user, bool isLoaded) =>
+                CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverAppBar(
-              iconTheme: IconThemeData(color: getPassiveColor(user.color)),
+              iconTheme: IconThemeData(
+                  color: getPassiveColor(
+                user?.color ?? Theme.of(context).primaryColor,
+              )),
               actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                    await Navigator.of(context)
-                        .pushReplacementNamed(AuthPreview.routeName);
-                  },
+                LocalSplitter.withShimmer(
+                  context: context,
+                  isLoading: !isLoaded,
+                  child: IconButton(
+                    icon: const Icon(Icons.logout),
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      await Navigator.of(context)
+                          .pushReplacementNamed(AuthPreview.routeName);
+                    },
+                  ),
                 ),
               ],
-              leading: IconButton(
-                icon: const Icon(Icons.color_lens_outlined),
-                onPressed: () async {
-                  final Color? color = await Navigator.of(context)
-                      .pushNamed(ColorPickerView.routeName, arguments: {
-                    'title': user.shortTitle,
-                    'color': user.color,
-                  });
-                  if (color != null) {
-                    await ApiService.user.put(
-                        firstname: user.firstname,
-                        lastname: user.lastname,
-                        status: user.status,
-                        color: color);
-                    setState(() {});
-                  }
-                },
+              leading: LocalSplitter.withShimmer(
+                context: context,
+                isLoading: !isLoaded,
+                child: IconButton(
+                  icon: const Icon(Icons.color_lens_outlined),
+                  onPressed: () async {
+                    if (!isLoaded) return;
+                    final Color? color = await Navigator.of(context)
+                        .pushNamed(ColorPickerView.routeName, arguments: {
+                      'title': user!.shortTitle,
+                      'color': user.color,
+                    });
+                    if (color != null) {
+                      await ApiService.user.put(
+                          firstname: user.firstname,
+                          lastname: user.lastname,
+                          status: user.status,
+                          color: color);
+                      setState(() {});
+                    }
+                  },
+                ),
               ),
               expandedHeight: 300,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
-                title: Text(
-                  user.title,
-                  style: TextStyle(color: getPassiveColor(user.color)),
-                ),
+                title: LocalSplitter.withShimmer(
+                    context: context,
+                    isLoading: !isLoaded,
+                    child: Text(
+                      user?.title ?? 'Загрузка',
+                      style: TextStyle(
+                          color: user?.color != null
+                              ? getPassiveColor(user!.color)
+                              : null),
+                    )),
                 background: AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  color: user.color,
+                  duration: const Duration(seconds: 1),
+                  color: user?.color ?? Theme.of(context).primaryColor,
                 ),
               ),
               pinned: true,
-              backgroundColor: user.color,
+              backgroundColor: user?.color ?? Theme.of(context).primaryColor,
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               sliver: SliverToBoxAdapter(
-                child: Text(
-                  user.status,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
+                child: LocalSplitter.withShimmer(
+                    context: context,
+                    isLoading: !isLoaded,
+                    child: Text(
+                      user?.status ?? '...',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline6,
+                    )),
               ),
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               sliver: SliverToBoxAdapter(
-                child: OutlinedButton(
-                  child: const Text('Edit'),
-                  onPressed: () async {
-                    await Navigator.of(context)
-                        .pushNamed(EditProfileView.routeName, arguments: {
-                      'user': user,
-                    });
-                    setState(() {});
-                  },
-                ),
+                child: LocalSplitter.withShimmer(
+                    context: context,
+                    isLoading: !isLoaded,
+                    child: OutlinedButton(
+                      child: const Text('Edit'),
+                      onPressed: () async {
+                        if (!isLoaded) return;
+                        await Navigator.of(context)
+                            .pushNamed(EditProfileView.routeName, arguments: {
+                          'user': user,
+                        });
+                        setState(() {});
+                      },
+                    )),
               ),
             ),
             SliverPadding(
@@ -120,22 +147,27 @@ class _ProfileViewState extends State<ProfileView>
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  user.subscribersCount.toString(),
-                                  style: Theme.of(context).textTheme.headline4,
+                        child: LocalSplitter.withShimmer(
+                          isLoading: !isLoaded,
+                          context: context,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    user?.subscribersCount.toString() ?? '0',
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              'Subscribers',
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                          ],
+                              Text(
+                                'Subscribers',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -146,22 +178,27 @@ class _ProfileViewState extends State<ProfileView>
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Text(
-                                  user.subscriptionsCount.toString(),
-                                  style: Theme.of(context).textTheme.headline4,
+                        child: LocalSplitter.withShimmer(
+                          isLoading: !isLoaded,
+                          context: context,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    user?.subscriptionsCount.toString() ?? '0',
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              'Subscriptions',
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                          ],
+                              Text(
+                                'Subscriptions',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -172,31 +209,35 @@ class _ProfileViewState extends State<ProfileView>
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Center(
-                                child: Icon(
-                                  Icons.add_alert,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .color,
-                                  semanticLabel: 'Add notification',
-                                  size: Theme.of(context)
-                                          .textTheme
-                                          .headline4!
-                                          .fontSize! -
-                                      8,
+                        child: LocalSplitter.withShimmer(
+                          isLoading: !isLoaded,
+                          context: context,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add_alert,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .color,
+                                    semanticLabel: 'Add notification',
+                                    size: Theme.of(context)
+                                            .textTheme
+                                            .headline4!
+                                            .fontSize! -
+                                        8,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              'Remind',
-                              style: Theme.of(context).textTheme.bodyText2,
-                            ),
-                          ],
+                              Text(
+                                'Remind',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
