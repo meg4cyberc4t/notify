@@ -37,9 +37,7 @@ class MyApp extends StatelessWidget {
           darkTheme: NotifyThemeData.darkThemeData,
           theme: NotifyThemeData.lightThemeData,
           themeMode: settingsController.themeMode,
-          initialRoute: FirebaseAuth.instance.currentUser == null
-              ? AuthPreview.routeName
-              : RouterView.routeName,
+          initialRoute: '/',
           onGenerateRoute: (RouteSettings routeSettings) {
             Map<String, dynamic>? args =
                 routeSettings.arguments as Map<String, dynamic>?;
@@ -94,6 +92,11 @@ class MyApp extends StatelessWidget {
                     user: args!['user'],
                   ),
                 );
+              case __Router.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => const __Router(),
+                );
               default:
                 return MaterialPageRoute(
                   settings: routeSettings,
@@ -105,4 +108,15 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+class __Router extends StatelessWidget {
+  const __Router({Key? key}) : super(key: key);
+  static const routeName = '/';
+
+  @override
+  Widget build(BuildContext context) =>
+      FirebaseAuth.instance.currentUser == null
+          ? const AuthPreview()
+          : const RouterView();
 }
