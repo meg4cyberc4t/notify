@@ -88,6 +88,13 @@ class _ApiServiceUser {
     }
     return list;
   }
+
+  Future<void> changeSubscription(String uuid) async {
+    await errorsHandlerMiddlware(
+      callback: UserResponses.changeSubscription(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
+  }
 }
 
 class _ApiServiceUsers {
@@ -123,13 +130,6 @@ class _ApiServiceUsers {
       list.add(NotifyUserQuick.fromJson(item));
     }
     return list;
-  }
-
-  Future<void> changeSubscription(String uuid) async {
-    await errorsHandlerMiddlware(
-      callback: UsersResponses.changeSubscription(
-          token: await ApiServiceConfig.token, uuid: uuid),
-    );
   }
 }
 
