@@ -68,7 +68,11 @@ class _ListUsersViewState extends State<ListUsersView>
                       width: 40,
                     ),
                     title: Text(user.title),
-                    subtitle: Text(user.status),
+                    subtitle: Text(
+                      user.status,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   );
                 }),
       ),
