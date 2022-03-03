@@ -20,7 +20,7 @@ class UsersResponses {
     return callback;
   }
 
-  static Future<http.Response> Function() subscribtions({
+  static Future<http.Response> Function() subscriptions({
     required final String uuid,
     required final String token,
   }) {
@@ -29,7 +29,7 @@ class UsersResponses {
           Uri.parse(ApiServiceConfig.serverAddress +
               ApiServiceConfig.usersControllerPrefix +
               '/$uuid' +
-              ApiServiceConfig.subscribtions),
+              ApiServiceConfig.subscriptions),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -49,6 +49,25 @@ class UsersResponses {
               ApiServiceConfig.usersControllerPrefix +
               '/$uuid' +
               ApiServiceConfig.subscribers),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
+  static Future<http.Response> Function() changeSubscription({
+    required final String uuid,
+    required final String token,
+  }) {
+    Future<http.Response> callback() {
+      return http.post(
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.usersControllerPrefix +
+              '/$uuid' +
+              ApiServiceConfig.changeSubscription),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',

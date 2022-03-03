@@ -8,7 +8,7 @@ import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
+import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({Key? key}) : super(key: key);
@@ -169,12 +169,12 @@ class _SignUpViewState extends State<SignUpView> {
                                 status: _statusController.text.trim(),
                                 color: colorValue,
                               );
-                            } on NotifyApiClientException catch (e) {
+                            } on ApiServiceException catch (e) {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    content: Text(e.localTitle(context))),
+                                    content: Text(e.toString())),
                               );
                               debugPrint(e.message);
                               return;

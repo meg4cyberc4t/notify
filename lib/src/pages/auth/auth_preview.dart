@@ -6,7 +6,7 @@ import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
+import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 
 class AuthPreview extends StatefulWidget {
   const AuthPreview({Key? key}) : super(key: key);
@@ -90,7 +90,7 @@ class _AuthPreviewState extends State<AuthPreview> {
                                     ' loggined with ApiService in Notify');
                                 await Navigator.of(context, rootNavigator: true)
                                     .pushReplacementNamed(RouterView.routeName);
-                              } on NotifyApiClientException {
+                              } on ApiServiceException {
                                 await Navigator.of(context)
                                     .pushNamed(SignUpView.routeName);
                               }

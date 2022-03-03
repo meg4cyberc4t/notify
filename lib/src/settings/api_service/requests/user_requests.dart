@@ -83,7 +83,7 @@ class UserResponses {
     Future<http.Response> callback() {
       return http.get(
           Uri.parse(
-            ApiServiceConfig.serverAddress + ApiServiceConfig.subscribtions,
+            ApiServiceConfig.serverAddress + ApiServiceConfig.subscriptions,
           ),
           headers: {
             'Content-Type': 'application/json',

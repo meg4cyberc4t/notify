@@ -12,6 +12,7 @@ NotifyUserQuick _$NotifyUserQuickFromJson(Map<String, dynamic> json) =>
       firstname: json['firstname'] as String,
       lastname: json['lastname'] as String,
       color: const ColorSerialiser().fromJson(json['color'] as int),
+      status: json['status'] as String,
     );
 
 Map<String, dynamic> _$NotifyUserQuickToJson(NotifyUserQuick instance) =>
@@ -19,5 +20,6 @@ Map<String, dynamic> _$NotifyUserQuickToJson(NotifyUserQuick instance) =>
       'id': instance.id,
       'firstname': instance.firstname,
       'lastname': instance.lastname,
+      'status': instance.status,
       'color': const ColorSerialiser().toJson(instance.color),
     };

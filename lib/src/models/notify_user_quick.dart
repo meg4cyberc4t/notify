@@ -11,6 +11,7 @@ class NotifyUserQuick {
     required this.firstname,
     required this.lastname,
     required this.color,
+    required this.status,
   });
 
   factory NotifyUserQuick.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +25,7 @@ class NotifyUserQuick {
   final String id;
   final String firstname;
   final String lastname;
+  final String status;
   @ColorSerialiser()
   final Color color;
 }
