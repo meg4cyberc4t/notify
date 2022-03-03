@@ -7,7 +7,7 @@ Future<http.Response> errorsHandlerMiddlware({
 }) async {
   http.Response res = await callback();
   if (res.statusCode >= 400) {
-    debugPrint('res: ${res.toString()}');
+    debugPrint('res: ${res.body.toString()} : ${res.statusCode.toString()}');
     throw ApiServiceException(
       statusCode: res.statusCode,
       message: res.body,
