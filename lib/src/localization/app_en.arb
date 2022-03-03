@@ -15,5 +15,12 @@
   "chooseYourColor": "Choose your color",
   "signIn": "Sign in",
   "checkEmailViewPart1": "To check the email, we sent an mail to",
-  "checkEmailViewPart2": "Please check your email!"
+  "checkEmailViewPart2": "Please check your emaiwl!",
+  "loading": "Loading",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "subscribers": "Subscribers",
+  "subscriptions": "Subscriptions",
+  "remind": "Remind",
+  "edit": "Edit"
 }

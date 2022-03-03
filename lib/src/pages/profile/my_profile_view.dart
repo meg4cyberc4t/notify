@@ -10,6 +10,7 @@ import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/edit_profile_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/settings_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyProfileView extends StatefulWidget {
   const MyProfileView({Key? key}) : super(key: key);
@@ -107,7 +108,7 @@ class _MyProfileViewState extends State<MyProfileView>
                         context: context,
                         isLoading: !isLoaded,
                         child: Text(
-                          user?.title ?? 'Загрузка',
+                          user?.title ?? AppLocalizations.of(context)!.loading,
                           style: TextStyle(
                               color: user?.color != null
                                   ? getPassiveColor(user!.color)
@@ -144,7 +145,7 @@ class _MyProfileViewState extends State<MyProfileView>
                         context: context,
                         isLoading: !isLoaded,
                         child: OutlinedButton(
-                          child: const Text('Edit'),
+                          child: Text(AppLocalizations.of(context)!.edit),
                           onPressed: () async {
                             if (!isLoaded) return;
                             await Navigator.of(context).pushNamed(
@@ -168,7 +169,8 @@ class _MyProfileViewState extends State<MyProfileView>
                           onTap: () async {
                             await Navigator.of(context)
                                 .pushNamed(ListUsersView.routeName, arguments: {
-                              'title': 'Subscribers',
+                              'title':
+                                  AppLocalizations.of(context)!.subscribers,
                               'callback': ApiService.user.subscribers,
                             });
                           },
@@ -194,7 +196,7 @@ class _MyProfileViewState extends State<MyProfileView>
                                     ),
                                   ),
                                   Text(
-                                    'Subscribers',
+                                    AppLocalizations.of(context)!.subscribers,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -209,7 +211,8 @@ class _MyProfileViewState extends State<MyProfileView>
                           onTap: () async {
                             await Navigator.of(context)
                                 .pushNamed(ListUsersView.routeName, arguments: {
-                              'title': 'Subscriptions',
+                              'title':
+                                  AppLocalizations.of(context)!.subscriptions,
                               'callback': ApiService.user.subscriptions,
                             });
                           },
@@ -235,7 +238,7 @@ class _MyProfileViewState extends State<MyProfileView>
                                     ),
                                   ),
                                   Text(
-                                    'Subscriptions',
+                                    AppLocalizations.of(context)!.subscriptions,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -266,7 +269,9 @@ class _MyProfileViewState extends State<MyProfileView>
                                             .textTheme
                                             .headline4!
                                             .color,
-                                        semanticLabel: 'Add notification',
+                                        semanticLabel:
+                                            AppLocalizations.of(context)!
+                                                .remind,
                                         size: Theme.of(context)
                                                 .textTheme
                                                 .headline4!
@@ -276,7 +281,7 @@ class _MyProfileViewState extends State<MyProfileView>
                                     ),
                                   ),
                                   Text(
-                                    'Remind',
+                                    AppLocalizations.of(context)!.remind,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),

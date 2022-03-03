@@ -7,6 +7,7 @@ import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/profile/my_profile_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/settings_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({
@@ -60,7 +61,7 @@ class _ProfileViewState extends State<ProfileView>
                     context: context,
                     isLoading: !isLoaded,
                     child: Text(
-                      user?.title ?? 'Загрузка',
+                      user?.title ?? AppLocalizations.of(context)!.loading,
                       style: TextStyle(
                           color: user?.color != null
                               ? getPassiveColor(user!.color)
@@ -96,13 +97,13 @@ class _ProfileViewState extends State<ProfileView>
                     child: Builder(
                       builder: (BuildContext context) {
                         if (!isLoaded) {
-                          return const TextButton(
-                            child: Text('Загрузка'),
+                          return TextButton(
+                            child: Text(AppLocalizations.of(context)!.loading),
                             onPressed: null,
                           );
                         } else if (user!.follow) {
                           return OutlinedButton(
-                            child: const Text('Unfollow'),
+                            child: Text(AppLocalizations.of(context)!.unfollow),
                             onPressed: () async {
                               if (!isLoaded) return;
                               await ApiService.user
@@ -112,7 +113,7 @@ class _ProfileViewState extends State<ProfileView>
                           );
                         }
                         return ElevatedButton(
-                          child: const Text('Follow'),
+                          child: Text(AppLocalizations.of(context)!.follow),
                           onPressed: () async {
                             if (!isLoaded) return;
                             await ApiService.user.changeSubscription(widget.id);
@@ -135,7 +136,7 @@ class _ProfileViewState extends State<ProfileView>
                         callback() => ApiService.users.subscribers(widget.id);
                         await Navigator.of(context)
                             .pushNamed(ListUsersView.routeName, arguments: {
-                          'title': 'Subscribers',
+                          'title': AppLocalizations.of(context)!.subscribers,
                           'callback': callback,
                         });
                       },
@@ -158,7 +159,7 @@ class _ProfileViewState extends State<ProfileView>
                                 ),
                               ),
                               Text(
-                                'Subscribers',
+                                AppLocalizations.of(context)!.subscribers,
                                 style: Theme.of(context).textTheme.bodyText2,
                               ),
                             ],
@@ -173,7 +174,7 @@ class _ProfileViewState extends State<ProfileView>
                         callback() => ApiService.users.subscriptions(widget.id);
                         await Navigator.of(context)
                             .pushNamed(ListUsersView.routeName, arguments: {
-                          'title': 'Subscriptions',
+                          'title': AppLocalizations.of(context)!.subscriptions,
                           'callback': callback,
                         });
                       },
@@ -196,7 +197,7 @@ class _ProfileViewState extends State<ProfileView>
                                 ),
                               ),
                               Text(
-                                'Subscriptions',
+                                AppLocalizations.of(context)!.subscriptions,
                                 style: Theme.of(context).textTheme.bodyText2,
                               ),
                             ],
@@ -225,7 +226,8 @@ class _ProfileViewState extends State<ProfileView>
                                         .textTheme
                                         .headline4!
                                         .color,
-                                    semanticLabel: 'Add notification',
+                                    semanticLabel:
+                                        AppLocalizations.of(context)!.remind,
                                     size: Theme.of(context)
                                             .textTheme
                                             .headline4!
@@ -235,7 +237,7 @@ class _ProfileViewState extends State<ProfileView>
                                 ),
                               ),
                               Text(
-                                'Remind',
+                                AppLocalizations.of(context)!.remind,
                                 style: Theme.of(context).textTheme.bodyText2,
                               ),
                             ],

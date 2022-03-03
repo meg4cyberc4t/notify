@@ -15,5 +15,12 @@
   "chooseYourColor": "Выберите цвет",
   "signIn": "Авторизация",
   "checkEmailViewPart1": "Для подтверждения, мы отправили вам письмо на",
-  "checkEmailViewPart2": "Пожалуйста, проверьте ваш почтовый ящик!"
+  "checkEmailViewPart2": "Пожалуйста, проверьте ваш почтовый ящик!",
+  "loading": "Загрузка",
+  "follow": "Подписаться",
+  "unfollow": "Отписаться",
+  "subscribers": "Подписчики",
+  "subscriptions": "Подписки",
+  "remind": "Напомнить",
+  "edit": "Изменить"
 }
