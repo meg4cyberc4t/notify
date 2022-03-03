@@ -3,7 +3,6 @@ import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/api_service/middleware/notify_api_client_exception.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({
@@ -143,24 +142,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            try {
-                              await ApiService.user.put(
-                                firstname: _firstnameController.text.trim(),
-                                lastname: _lastnameController.text.trim(),
-                                status: _statusController.text.trim(),
-                                color: color,
-                              );
-                              Navigator.of(context).pop();
-                            } on NotifyApiClientException catch (e) {
+                            await ApiService.user
+                                .put(
+                              firstname: _firstnameController.text.trim(),
+                              lastname: _lastnameController.text.trim(),
+                              status: _statusController.text.trim(),
+                              color: color,
+                            )
+                                .catchError((Object error) {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    content: Text(e.localTitle(context))),
+                                    content: Text(error.toString())),
                               );
-                              debugPrint(e.message);
-                              return;
-                            }
+                            });
+                            Navigator.of(context).pop();
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),

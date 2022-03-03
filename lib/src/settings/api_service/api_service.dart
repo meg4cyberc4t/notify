@@ -106,15 +106,30 @@ class _ApiServiceUsers {
       callback: UsersResponses.subscribers(
           token: await ApiServiceConfig.token, uuid: uuid),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
   }
 
-  Future<List<NotifyUserQuick>> subscribtions(String uuid) async {
+  Future<List<NotifyUserQuick>> subscriptions(String uuid) async {
     var res = await errorsHandlerMiddlware(
-      callback: UsersResponses.subscribtions(
+      callback: UsersResponses.subscriptions(
           token: await ApiServiceConfig.token, uuid: uuid),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
+  }
+
+  Future<void> changeSubscription(String uuid) async {
+    await errorsHandlerMiddlware(
+      callback: UsersResponses.changeSubscription(
+          token: await ApiServiceConfig.token, uuid: uuid),
+    );
   }
 }
 
@@ -239,7 +254,11 @@ class _ApiServiceNotifications {
       callback: NotificationsResponses.byIdParticipants(
           uuid: uuid, token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
   }
 
   Future<void> invite({
@@ -327,7 +346,11 @@ class _ApiServiceFolders {
       callback: FoldersRequests.byIdParticipants(
           uuid: uuid, token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserQuick.fromJson(item));
+    }
+    return list;
   }
 
   Future<List<NotifyNotificationQuick>> byIdNotifications(
@@ -336,7 +359,11 @@ class _ApiServiceFolders {
       callback: FoldersRequests.byIdParticipants(
           uuid: uuid, token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyNotificationQuick.fromJson(e));
+    List<NotifyNotificationQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyNotificationQuick.fromJson(item));
+    }
+    return list;
   }
 
   Future<void> invite({

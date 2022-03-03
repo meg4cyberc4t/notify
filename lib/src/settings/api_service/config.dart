@@ -9,7 +9,7 @@ class ApiServiceConfig {
   static const String notificationsControllerPrefix = '/notifications';
   static const String foldersControllerPrefix = '/folders';
 
-  static const String subscribtions = '/subscriptions';
+  static const String subscriptions = '/subscriptions';
   static const String subscribers = '/subscribers';
   static const String changeSubscription = '/change_subscription';
 
