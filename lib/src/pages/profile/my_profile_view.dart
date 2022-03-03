@@ -64,38 +64,42 @@ class _MyProfileViewState extends State<MyProfileView>
                       ),
                     ),
                   ],
-                  leading: LocalSplitter.withShimmer(
-                    context: context,
-                    isLoading: !isLoaded,
-                    child: IconButton(
-                      icon: const Icon(Icons.color_lens_outlined),
-                      onPressed: () async {
-                        if (!isLoaded) return;
-                        final Color? color = await Navigator.of(context)
-                            .pushNamed(ColorPickerView.routeName, arguments: {
-                          'title': user!.shortTitle,
-                          'color': user.color,
-                        });
-                        if (color != null) {
-                          await ApiService.user
-                              .put(
-                                  firstname: user.firstname,
-                                  lastname: user.lastname,
-                                  status: user.status,
-                                  color: color)
-                              .whenComplete(() => setState(() {}))
-                              .catchError((Object error) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Error loading data!'),
-                              ),
-                            );
-                          });
-                        }
-                      },
-                    ),
-                  ),
+                  leading: Navigator.of(context).canPop()
+                      ? null
+                      : LocalSplitter.withShimmer(
+                          context: context,
+                          isLoading: !isLoaded,
+                          child: IconButton(
+                            icon: const Icon(Icons.color_lens_outlined),
+                            onPressed: () async {
+                              if (!isLoaded) return;
+                              final Color? color = await Navigator.of(context)
+                                  .pushNamed(ColorPickerView.routeName,
+                                      arguments: {
+                                    'title': user!.shortTitle,
+                                    'color': user.color,
+                                  });
+                              if (color != null) {
+                                await ApiService.user
+                                    .put(
+                                        firstname: user.firstname,
+                                        lastname: user.lastname,
+                                        status: user.status,
+                                        color: color)
+                                    .whenComplete(() => setState(() {}))
+                                    .catchError((Object error) {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error loading data!'),
+                                    ),
+                                  );
+                                });
+                              }
+                            },
+                          ),
+                        ),
                   expandedHeight: MediaQuery.of(context).size.height * 0.4,
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
