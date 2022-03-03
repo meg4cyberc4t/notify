@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
-import 'package:notify/src/pages/profile/profile_view.dart';
+import 'package:notify/src/pages/profile/my_profile_view.dart';
 import 'package:notify/src/pages/search/search_view.dart';
 
 class RouterView extends StatefulWidget {
@@ -24,7 +24,7 @@ class _RouterViewState extends State<RouterView> {
           HomeView(),
           CalendarView(),
           SearchView(),
-          ProfileView(),
+          MyProfileView(),
         ],
         onPageChanged: (final int value) =>
             setState(() => selectedIndex = value),
