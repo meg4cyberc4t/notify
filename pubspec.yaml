@@ -42,6 +42,9 @@ flutter_icons:
   ios: true
   image_path: "assets/images/icon.png" # flutter pub run flutter_launcher_icons:main
 
+  # For generating key:
+  # keytool -genkey -v -keystore ~/.keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key -storetype JKS
+  # gradlew signingReport 
 
-  # generating json models
+  # For generating json models:
   # flutter pub run build_runner build
