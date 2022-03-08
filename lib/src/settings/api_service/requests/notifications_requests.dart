@@ -37,7 +37,7 @@ class NotificationsResponses {
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline.toIso8601String(),
+            'deadline': deadline.toUtc().toIso8601String(),
             'important': imporant,
             'repeat_mode': repeatMode.index,
           }),
@@ -107,7 +107,7 @@ class NotificationsResponses {
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline.toIso8601String(),
+            'deadline': deadline.toUtc().toIso8601String(),
             'important': imporant,
             'repeat_mode': repeatMode.index,
           }),
