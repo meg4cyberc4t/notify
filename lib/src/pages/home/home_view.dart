@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
-import 'package:notify/src/pages/additional/notification_view.dart';
+import 'package:notify/src/pages/additional/create_edit_notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class HomeView extends StatefulWidget {
@@ -48,7 +48,7 @@ class _HomeViewState extends State<HomeView> {
             tooltip: 'Create notification',
             onPressed: () async {
               await Navigator.of(context).pushNamed(
-                NotificationView.routeNameCreateNotification,
+                CreateEditNotificationView.routeNameCreateNotification,
               );
               setState(() {});
             }));
