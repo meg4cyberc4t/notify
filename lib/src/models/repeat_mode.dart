@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 enum RepeatMode {
   none,
   everyday,
@@ -6,32 +9,32 @@ enum RepeatMode {
   everyyear,
 }
 
-String getRepeatModeTitle(RepeatMode rp) {
+String getRepeatModeTitle(BuildContext context, RepeatMode rp) {
   switch (rp) {
     case RepeatMode.none:
-      return 'One-time';
+      return AppLocalizations.of(context)!.oneTime;
     case RepeatMode.everyday:
-      return 'Every day';
+      return AppLocalizations.of(context)!.everyDay;
     case RepeatMode.everymonth:
-      return 'Every month';
+      return AppLocalizations.of(context)!.everyMonth;
     case RepeatMode.everyweek:
-      return 'Every week';
+      return AppLocalizations.of(context)!.everyWeek;
     case RepeatMode.everyyear:
-      return 'Every year';
+      return AppLocalizations.of(context)!.everyYear;
   }
 }
 
-String getRepeatModeDescription(RepeatMode rp) {
+String getRepeatModeDescription(BuildContext context, RepeatMode rp) {
   switch (rp) {
     case RepeatMode.none:
-      return 'We will remind you of the reminder only once';
+      return AppLocalizations.of(context)!.oneTimeDescription;
     case RepeatMode.everyday:
-      return 'We will remind you at the specified time';
-    case RepeatMode.everymonth:
-      return 'We will remind you at the specified time and day of the week';
+      return AppLocalizations.of(context)!.everyDayDescription;
     case RepeatMode.everyweek:
-      return 'Remind yourself of this in the coming months';
+      return AppLocalizations.of(context)!.everyWeekDescription;
+    case RepeatMode.everymonth:
+      return AppLocalizations.of(context)!.everyMonthDescription;
     case RepeatMode.everyyear:
-      return 'Reminder once a year!';
+      return AppLocalizations.of(context)!.everyYearDescription;
   }
 }

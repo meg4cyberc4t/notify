@@ -12,8 +12,8 @@ Future<RepeatMode?> showRepeatItBottomSheet({
       children: RepeatMode.values
           .map((e) => CheckboxListTile(
                 value: e.index == RepeatMode.values.indexOf(value),
-                title: Text(getRepeatModeTitle(e)),
-                subtitle: Text(getRepeatModeDescription(e)),
+                title: Text(getRepeatModeTitle(context, e)),
+                subtitle: Text(getRepeatModeDescription(context, e)),
                 onChanged: e.index == RepeatMode.values.indexOf(value)
                     ? null
                     : (bool? value) {
