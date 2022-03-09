@@ -68,7 +68,7 @@ class _EditNotificationViewState extends State<EditNotificationView> {
   Widget build(BuildContext context) {
     _dateController.text =
         DateFormat('yyyy.MM.dd').format(_deadlineNotifier.value);
-    _timeController.text = DateFormat('HH:MM').format(_deadlineNotifier.value);
+    _timeController.text = DateFormat('HH:mm').format(_deadlineNotifier.value);
     _repeatModeController.text =
         getRepeatModeTitle(context, _repeatModeNotifier.value);
     _imporantController.text = _importantNotifier.value
