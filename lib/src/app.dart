@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:notify/src/models/notify_notification_input.dart';
-import 'package:notify/src/pages/additional/create_edit_notification_view.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
+import 'package:notify/src/pages/additional/edit_notification_view.dart';
+import 'package:notify/src/pages/additional/create_notification_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
@@ -15,8 +16,6 @@ import 'package:notify/src/pages/profile/my_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/search/search_view.dart';
-import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 import 'settings/settings_controller.dart';
@@ -119,61 +118,17 @@ class MyApp extends StatelessWidget {
                   settings: routeSettings,
                   builder: (BuildContext context) => const __Router(),
                 );
-              case CreateEditNotificationView.routeNameCreateNotification:
+              case CreateNotificationView.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
-                  builder: (BuildContext context) => CreateEditNotificationView(
-                    titleView: 'Create notification',
-                    onSubmit: (BuildContext context,
-                        NotifyNotificationInput ntf, String? _) async {
-                      try {
-                        await ApiService.notifications.post(
-                          title: ntf.title,
-                          description: ntf.description,
-                          deadline: ntf.deadline,
-                          important: ntf.important,
-                          repeatMode: ntf.repeatMode,
-                        );
-                        Navigator.of(context).pop();
-                      } on ApiServiceException catch (err) {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(err.message),
-                        ));
-                      }
-                    },
-                  ),
+                  builder: (BuildContext context) =>
+                      const CreateNotificationView(),
                 );
-              case CreateEditNotificationView.routeNameEditNotification:
-                return MaterialPageRoute(
+              case EditNotificationView.routeName:
+                return MaterialPageRoute<bool>(
                   settings: routeSettings,
-                  builder: (BuildContext context) => CreateEditNotificationView(
-                    titleView: 'Edit notification',
-                    title: args!['title'],
-                    description: args['description'],
-                    deadline: args['deadline'],
-                    important: args['important'],
-                    repeatMode: args['repeat_mode'],
-                    uuid: args['uuid'],
-                    onSubmit: (BuildContext context,
-                        NotifyNotificationInput ntf, String? uuid) async {
-                      try {
-                        await ApiService.notifications.put(
-                          uuid: uuid!,
-                          title: ntf.title,
-                          description: ntf.description,
-                          deadline: ntf.deadline,
-                          important: ntf.important,
-                          repeatMode: ntf.repeatMode,
-                        );
-                        Navigator.of(context).pop();
-                      } on ApiServiceException catch (err) {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(err.message),
-                        ));
-                      }
-                    },
+                  builder: (BuildContext context) => EditNotificationView(
+                    notification: NotifyNotificationQuick.fromJson(args!),
                   ),
                 );
               default:

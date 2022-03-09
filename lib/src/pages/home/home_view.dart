@@ -3,7 +3,8 @@ import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/notification_list_tile.dart';
 import 'package:notify/src/components/show_delete_dialog.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
-import 'package:notify/src/pages/additional/create_edit_notification_view.dart';
+import 'package:notify/src/pages/additional/edit_notification_view.dart';
+import 'package:notify/src/pages/additional/create_notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class HomeView extends StatefulWidget {
@@ -46,7 +47,14 @@ class _HomeViewState extends State<HomeView>
                     .map(
                       (e) => NotificationListTile(
                           notification: e,
-                          onTap: () {},
+                          onTap: () async {
+                            final bool? value =
+                                await Navigator.of(context).pushNamed<bool>(
+                              EditNotificationView.routeName,
+                              arguments: e.toJson(),
+                            );
+                            if (value != null && value == true) setState(() {});
+                          },
                           onLongPress: () async {
                             showDeleteDialog(context: context, title: e.title)
                                 .then((value) async {
@@ -73,9 +81,8 @@ class _HomeViewState extends State<HomeView>
             child: const Icon(Icons.add),
             tooltip: 'Create notification',
             onPressed: () async {
-              await Navigator.of(context).pushNamed(
-                CreateEditNotificationView.routeNameCreateNotification,
-              );
+              await Navigator.of(context)
+                  .pushNamed(CreateNotificationView.routeName);
               setState(() {});
             }));
   }

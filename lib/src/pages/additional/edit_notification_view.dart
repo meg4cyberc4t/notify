@@ -3,42 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/show_select_repeat_mode_bottom_sheet.dart';
-import 'package:notify/src/models/notify_notification_input.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 
-class CreateEditNotificationView extends StatefulWidget {
-  const CreateEditNotificationView({
-    required this.titleView,
-    required this.onSubmit,
-    this.title,
-    this.uuid,
-    this.description,
-    this.deadline,
-    this.repeatMode,
-    this.important,
-    Key? key,
-  }) : super(key: key);
-  final String titleView;
-  final Function(BuildContext, NotifyNotificationInput, String? uuid) onSubmit;
+class EditNotificationView extends StatefulWidget {
+  const EditNotificationView({required this.notification, Key? key})
+      : super(key: key);
+  final NotifyNotificationQuick notification;
 
-  final String? uuid;
-  final String? title;
-  final String? description;
-  final DateTime? deadline;
-  final RepeatMode? repeatMode;
-  final bool? important;
-
-  static const routeNameCreateNotification = 'create_notification_view';
-  static const routeNameEditNotification = 'edit_notification_view';
+  static const routeName = 'edit_notification_view';
 
   @override
-  State<CreateEditNotificationView> createState() =>
-      _CreateEditNotificationViewState();
+  State<EditNotificationView> createState() => _EditNotificationViewState();
 }
 
-class _CreateEditNotificationViewState
-    extends State<CreateEditNotificationView> {
+class _EditNotificationViewState extends State<EditNotificationView> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
@@ -56,19 +38,14 @@ class _CreateEditNotificationViewState
 
   @override
   void initState() {
-    if (widget.title != null) {
-      _titleController.text = widget.title!;
-    }
-    if (widget.description != null) {
-      _descriptionController.text = widget.description!;
-    }
+    _titleController.text = widget.notification.title;
+    _descriptionController.text = widget.notification.description;
 
-    final DateTime deadline =
-        widget.deadline ?? DateTime.now().add(const Duration(minutes: 1));
+    final DateTime deadline = widget.notification.deadline;
     _deadlineNotifier = ValueNotifier(deadline);
 
-    _repeatModeNotifier = ValueNotifier(widget.repeatMode ?? RepeatMode.none);
-    _importantNotifier = ValueNotifier(widget.important ?? false);
+    _repeatModeNotifier = ValueNotifier(widget.notification.repeatMode);
+    _importantNotifier = ValueNotifier(widget.notification.important);
     super.initState();
   }
 
@@ -100,7 +77,7 @@ class _CreateEditNotificationViewState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.titleView),
+        title: Text(widget.notification.title),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -256,19 +233,24 @@ class _CreateEditNotificationViewState
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.check),
-        onPressed: () {
+        onPressed: () async {
           if (!_formKey.currentState!.validate()) return;
-          widget.onSubmit(
-            context,
-            NotifyNotificationInput(
+          try {
+            await ApiService.notifications.put(
+              uuid: widget.notification.id,
               title: _titleController.text.trim(),
               description: _descriptionController.text.trim(),
-              repeatMode: _repeatModeNotifier.value,
-              important: _importantNotifier.value,
               deadline: _deadlineNotifier.value,
-            ),
-            widget.uuid,
-          );
+              important: _importantNotifier.value,
+              repeatMode: _repeatModeNotifier.value,
+            );
+            Navigator.of(context).pop(true);
+          } on ApiServiceException catch (err) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(err.message),
+            ));
+          }
         },
       ),
     );
