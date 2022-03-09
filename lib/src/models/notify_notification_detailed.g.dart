@@ -31,7 +31,7 @@ Map<String, dynamic> _$NotifyNotificationDetailedToJson(
       'repeatMode': const RepeatModeSerialiser().toJson(instance.repeatMode),
       'important': instance.important,
       'deadline': const DateTimeSerialiser().toJson(instance.deadline),
-      'creator': instance.creator,
+      'creator': instance.creator.toJson(),
       'uniqueClaim': instance.uniqueClaim,
       'participantsCount': instance.participantsCount,
     };
