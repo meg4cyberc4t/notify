@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/settings/api_service/config.dart';
@@ -27,7 +26,7 @@ class NotificationsResponses {
     required String description,
     required RepeatMode repeatMode,
     required DateTime deadline,
-    required bool imporant,
+    required bool important,
     required final String token,
   }) {
     Future<http.Response> callback() async {
@@ -37,9 +36,9 @@ class NotificationsResponses {
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline,
-            'important': imporant,
-            'repeat_mode': repeatMode.index,
+            'deadline': deadline.toUtc().toIso8601String(),
+            'important': important,
+            'repeatMode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
           headers: {
@@ -107,9 +106,9 @@ class NotificationsResponses {
           body: jsonEncode({
             'title': title,
             'description': description,
-            'deadline': deadline,
+            'deadline': deadline.toUtc().toIso8601String(),
             'important': imporant,
-            'repeat_mode': repeatMode.index,
+            'repeatMode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
           headers: {

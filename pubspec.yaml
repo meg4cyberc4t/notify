@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_material_color_picker: ^1.1.0+2
+  flutter_vibrate: ^1.3.0
   google_fonts: ^2.2.0
   google_sign_in: ^5.2.3
   intl: ^0.17.0
@@ -42,6 +43,9 @@ flutter_icons:
   ios: true
   image_path: "assets/images/icon.png" # flutter pub run flutter_launcher_icons:main
 
+  # For generating key:
+  # keytool -genkey -v -keystore ~/.keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key -storetype JKS
+  # gradlew signingReport 
 
-  # generating json models
+  # For generating json models:
   # flutter pub run build_runner build

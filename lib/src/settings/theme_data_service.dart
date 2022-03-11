@@ -61,6 +61,9 @@ mixin NotifyThemeData {
         trackColor:
             MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.5)),
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primary,
+      ),
       checkboxTheme: CheckboxThemeData(
         checkColor: MaterialStateProperty.all<Color>(colorScheme.onPrimary),
         fillColor: MaterialStateProperty.all<Color>(colorScheme.primary),

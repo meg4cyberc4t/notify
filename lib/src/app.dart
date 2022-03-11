@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
+import 'package:notify/src/pages/additional/edit_notification_view.dart';
+import 'package:notify/src/pages/additional/create_notification_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
@@ -114,6 +117,19 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) => const __Router(),
+                );
+              case CreateNotificationView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) =>
+                      const CreateNotificationView(),
+                );
+              case EditNotificationView.routeName:
+                return MaterialPageRoute<bool>(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => EditNotificationView(
+                    notification: NotifyNotificationQuick.fromJson(args!),
+                  ),
                 );
               default:
                 return MaterialPageRoute(

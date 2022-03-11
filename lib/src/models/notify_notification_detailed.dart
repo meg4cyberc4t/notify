@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
+import 'package:notify/src/settings/api_service/converters/datetime_serialiser.dart';
 import 'package:notify/src/settings/api_service/converters/repeat_mode_serialiser.dart';
 
 part 'notify_notification_detailed.g.dart';
@@ -30,6 +31,7 @@ class NotifyNotificationDetailed {
   @RepeatModeSerialiser()
   final RepeatMode repeatMode;
   final bool important;
+  @DateTimeSerialiser()
   final DateTime deadline;
   final NotifyUserQuick creator;
   final int uniqueClaim;

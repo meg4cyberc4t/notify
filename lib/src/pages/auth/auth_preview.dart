@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
@@ -66,24 +67,25 @@ class _AuthPreviewState extends State<AuthPreview> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () async {
-                              final GoogleSignIn _googleSignIn = GoogleSignIn();
-                              GoogleSignInAccount? googleSignInAccount =
-                                  await _googleSignIn.signIn();
-                              if (googleSignInAccount == null) {
-                                return;
-                              }
-                              GoogleSignInAuthentication
-                                  googleSignInAuthentication =
-                                  await googleSignInAccount.authentication;
-                              AuthCredential credential =
-                                  GoogleAuthProvider.credential(
-                                accessToken:
-                                    googleSignInAuthentication.accessToken,
-                                idToken: googleSignInAuthentication.idToken,
-                              );
-                              await FirebaseAuth.instance
-                                  .signInWithCredential(credential);
                               try {
+                                final GoogleSignIn _googleSignIn =
+                                    GoogleSignIn();
+                                GoogleSignInAccount? googleSignInAccount =
+                                    await _googleSignIn.signIn();
+                                if (googleSignInAccount == null) {
+                                  return;
+                                }
+                                GoogleSignInAuthentication
+                                    googleSignInAuthentication =
+                                    await googleSignInAccount.authentication;
+                                AuthCredential credential =
+                                    GoogleAuthProvider.credential(
+                                  accessToken:
+                                      googleSignInAuthentication.accessToken,
+                                  idToken: googleSignInAuthentication.idToken,
+                                );
+                                await FirebaseAuth.instance
+                                    .signInWithCredential(credential);
                                 NotifyUserDetailed user =
                                     await ApiService.user.get();
                                 debugPrint(user.title +
@@ -93,6 +95,10 @@ class _AuthPreviewState extends State<AuthPreview> {
                               } on ApiServiceException {
                                 await Navigator.of(context)
                                     .pushNamed(SignUpView.routeName);
+                              } on PlatformException catch (e) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(e.toString())));
                               }
                             },
                             child: Text(

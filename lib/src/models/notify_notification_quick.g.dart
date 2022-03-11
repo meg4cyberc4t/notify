@@ -15,7 +15,7 @@ NotifyNotificationQuick _$NotifyNotificationQuickFromJson(
       repeatMode:
           const RepeatModeSerialiser().fromJson(json['repeatMode'] as int),
       important: json['important'] as bool,
-      deadline: DateTime.parse(json['deadline'] as String),
+      deadline: const DateTimeSerialiser().fromJson(json['deadline'] as String),
       creator:
           NotifyUserQuick.fromJson(json['creator'] as Map<String, dynamic>),
       uniqueClaim: json['uniqueClaim'] as int,
@@ -29,7 +29,7 @@ Map<String, dynamic> _$NotifyNotificationQuickToJson(
       'description': instance.description,
       'repeatMode': const RepeatModeSerialiser().toJson(instance.repeatMode),
       'important': instance.important,
-      'deadline': instance.deadline.toIso8601String(),
-      'creator': instance.creator,
+      'deadline': const DateTimeSerialiser().toJson(instance.deadline),
+      'creator': instance.creator.toJson(),
       'uniqueClaim': instance.uniqueClaim,
     };
