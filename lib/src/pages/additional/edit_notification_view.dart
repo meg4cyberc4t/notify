@@ -21,6 +21,7 @@ class EditNotificationView extends StatefulWidget {
 }
 
 class _EditNotificationViewState extends State<EditNotificationView> {
+  bool foolproofSubmitButton = true;
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
@@ -235,6 +236,8 @@ class _EditNotificationViewState extends State<EditNotificationView> {
         child: const Icon(Icons.check),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) return;
+          if (!foolproofSubmitButton) return;
+          foolproofSubmitButton = false;
           try {
             await ApiService.notifications.put(
               uuid: widget.notification.id,
@@ -251,6 +254,7 @@ class _EditNotificationViewState extends State<EditNotificationView> {
               content: Text(err.message),
             ));
           }
+          foolproofSubmitButton = true;
         },
       ),
     );

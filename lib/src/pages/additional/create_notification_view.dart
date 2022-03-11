@@ -18,6 +18,8 @@ class CreateNotificationView extends StatefulWidget {
 }
 
 class _CreateNotificationViewState extends State<CreateNotificationView> {
+  bool foolproofSubmitButton = true;
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
@@ -229,6 +231,8 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
         child: const Icon(Icons.check),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) return;
+          if (!foolproofSubmitButton) return;
+          foolproofSubmitButton = false;
           try {
             await ApiService.notifications.post(
               title: _titleController.text.trim(),
@@ -244,6 +248,7 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
               content: Text(err.message),
             ));
           }
+          foolproofSubmitButton = true;
         },
       ),
     );
