@@ -1,3 +1,22 @@
+//                         __      __   ______
+//                        /  |    /  | /      \
+//    _______    ______   _$$ |_   $$/ /$$$$$$  |__    __
+//   /       \  /      \ / $$   |  /  |$$ |_ $$//  |  /  |
+//   $$$$$$$  |/$$$$$$  |$$$$$$/   $$ |$$   |   $$ |  $$ |
+//   $$ |  $$ |$$ |  $$ |  $$ | __ $$ |$$$$/    $$ |  $$ |
+//   $$ |  $$ |$$ \__$$ |  $$ |/  |$$ |$$ |     $$ \__$$ |
+//   $$ |  $$ |$$    $$/   $$  $$/ $$ |$$ |     $$    $$ |
+//   $$/   $$/  $$$$$$/     $$$$/  $$/ $$/       $$$$$$$ |
+//                                              /  \__$$ |
+//                                              $$    $$/
+//                                               $$$$$$/
+//
+//                                      by Igor Molchanov
+//
+//  This repository has an introductory nature with the code,
+//  using it as an example. It may not start if there are no
+//  authorizing elements.
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,6 +61,7 @@ class MyApp extends StatelessWidget {
           darkTheme: NotifyThemeData.darkThemeData,
           theme: NotifyThemeData.lightThemeData,
           themeMode: settingsController.themeMode,
+          debugShowCheckedModeBanner: false,
           initialRoute: '/',
           onGenerateRoute: (RouteSettings routeSettings) {
             Map<String, dynamic>? args =
