@@ -27,7 +27,7 @@ class NotificationsResponses {
     required String description,
     required RepeatMode repeatMode,
     required DateTime deadline,
-    required bool imporant,
+    required bool important,
     required final String token,
   }) {
     Future<http.Response> callback() async {
@@ -38,7 +38,7 @@ class NotificationsResponses {
             'title': title,
             'description': description,
             'deadline': deadline.toUtc().toIso8601String(),
-            'important': imporant,
+            'important': important,
             'repeat_mode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
