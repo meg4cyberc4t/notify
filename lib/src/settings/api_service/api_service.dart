@@ -147,7 +147,11 @@ class _ApiServiceSearch {
         token: await ApiServiceConfig.token,
       ),
     );
-    return jsonDecode(res.body).map((e) => NotifyUserQuick.fromJson(e));
+    List<NotifyUserDetailed> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyUserDetailed.fromJson(item));
+    }
+    return list;
   }
 
   Future<List<NotifyNotificationQuick>> fromNotifications({
@@ -216,7 +220,7 @@ class _ApiServiceNotifications {
           title: title,
           description: description,
           repeatMode: repeatMode,
-          imporant: important,
+          important: important,
           deadline: deadline,
           token: await ApiServiceConfig.token),
     );
@@ -301,11 +305,15 @@ class _ApiServiceNotifications {
 }
 
 class _ApiServiceFolders {
-  Future<NotifyFolderDetailed> get() async {
+  Future<List<NotifyFolderDetailed>> get() async {
     var res = await errorsHandlerMiddlware(
       callback: FoldersRequests.getAll(token: await ApiServiceConfig.token),
     );
-    return jsonDecode(res.body).map((e) => NotifyFolderDetailed.fromJson(e));
+    List<NotifyFolderDetailed> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyFolderDetailed.fromJson(item));
+    }
+    return list;
   }
 
   Future<NotifyFolderDetailed> post({
