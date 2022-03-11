@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
@@ -169,18 +170,21 @@ class _SignUpViewState extends State<SignUpView> {
                                 status: _statusController.text.trim(),
                                 color: colorValue,
                               );
+                              while (Navigator.of(context).canPop()) {
+                                Navigator.of(context).pop();
+                              }
+                              Navigator.of(context)
+                                  .popAndPushNamed(HomeView.routeName);
                             } on ApiServiceException catch (e) {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    content: Text(e.toString())),
+                                    content: Text(e.message.toString())),
                               );
                               debugPrint(e.message);
                               return;
                             }
-                            await Navigator.of(context)
-                                .pushReplacementNamed(RouterView.routeName);
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),
