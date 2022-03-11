@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/settings/api_service/config.dart';
@@ -39,7 +38,7 @@ class NotificationsResponses {
             'description': description,
             'deadline': deadline.toUtc().toIso8601String(),
             'important': important,
-            'repeat_mode': repeatMode.index,
+            'repeatMode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
           headers: {
@@ -109,7 +108,7 @@ class NotificationsResponses {
             'description': description,
             'deadline': deadline.toUtc().toIso8601String(),
             'important': imporant,
-            'repeat_mode': repeatMode.index,
+            'repeatMode': repeatMode.index,
           }),
           encoding: Encoding.getByName('utf-8'),
           headers: {
