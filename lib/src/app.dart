@@ -145,6 +145,14 @@ class MyApp extends StatelessWidget {
                   builder: (BuildContext context) =>
                       const CreateNotificationView(),
                 );
+              case NotificationView.routeName:
+                return MaterialPageRoute(
+                  settings: routeSettings,
+                  builder: (BuildContext context) => NotificationView(
+                    id: args!['id'],
+                    cache: args.containsKey('cache') ? args['cache'] : null,
+                  ),
+                );
               case EditNotificationView.routeName:
                 return MaterialPageRoute<bool>(
                   settings: routeSettings,
