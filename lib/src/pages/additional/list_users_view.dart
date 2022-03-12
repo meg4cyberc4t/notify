@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/components/user_list_tile.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
-import 'package:notify/src/pages/profile/profile_view.dart';
 
 class ListUsersView extends StatefulWidget {
   const ListUsersView({

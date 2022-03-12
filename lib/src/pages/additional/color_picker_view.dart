@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:notify/src/widgets/user_avatar.dart';
+import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ColorPickerView extends StatefulWidget {
@@ -40,13 +40,28 @@ class _ColorPickerViewState extends State<ColorPickerView> {
               children: <Widget>[
                 const SizedBox(), //Space
                 ValueListenableBuilder(
-                  valueListenable: selectedColor,
-                  builder: (BuildContext context, Color value, _) => UserAvatar(
-                    size: AvatarSize.max,
-                    color: value,
-                    title: widget.title.toUpperCase(),
-                  ),
-                ),
+                    valueListenable: selectedColor,
+                    builder: (BuildContext context, Color color, _) => InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          child: AnimatedContainer(
+                            height: 100,
+                            width: 100,
+                            duration: const Duration(milliseconds: 500),
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Text(
+                                widget.title.toUpperCase(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline3!
+                                    .copyWith(color: getPassiveColor(color)),
+                              ),
+                            ),
+                          ),
+                        )),
                 ValueListenableBuilder(
                   valueListenable: selectedColor,
                   builder: (BuildContext context, Color value, _) =>
