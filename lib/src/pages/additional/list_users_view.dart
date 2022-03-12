@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
+import 'package:notify/src/components/user_list_tile.dart';
 import 'package:notify/src/methods/get_passive_color.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
@@ -45,36 +46,8 @@ class _ListUsersViewState extends State<ListUsersView>
         onData: (BuildContext context, List<NotifyUserQuick> users) =>
             ListView.builder(
                 itemCount: users.length,
-                itemBuilder: (context, index) {
-                  var user = users[index];
-                  return ListTile(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(ProfileView.routeName, arguments: {
-                      'id': user.id,
-                      'preTitle': user.title,
-                    }),
-                    leading: AnimatedContainer(
-                      duration: const Duration(seconds: 1),
-                      decoration: BoxDecoration(
-                        color: user.color,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                          child: Text(
-                        user.shortTitle,
-                        style: TextStyle(color: getPassiveColor(user.color)),
-                      )),
-                      height: 40,
-                      width: 40,
-                    ),
-                    title: Text(user.title),
-                    subtitle: Text(
-                      user.status,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }),
+                itemBuilder: (context, index) =>
+                    UserListTile(user: users[index])),
       ),
     );
   }
