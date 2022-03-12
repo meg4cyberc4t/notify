@@ -5,8 +5,8 @@ import 'package:notify/src/components/notification_list_tile.dart';
 import 'package:notify/src/components/show_delete_dialog.dart';
 import 'package:notify/src/models/notify_folder_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
-import 'package:notify/src/pages/additional/create_notification_view.dart';
-import 'package:notify/src/pages/additional/edit_notification_view.dart';
+import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
+import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class HomeView extends StatefulWidget {
@@ -38,9 +38,7 @@ class _HomeViewState extends State<HomeView>
               ntfs.sort((a, b) => b.deadline.compareTo(a.deadline));
               //  await ApiService.folders.get()
               return __SeparateVariable(
-                folders: [1, 2, 3, 4]
-                    .map((e) => NotifyFolderDetailed.empty)
-                    .toList(),
+                folders: [],
                 notifications: ntfs
                     .where(
                         (element) => element.deadline.day == DateTime.now().day)
@@ -83,14 +81,20 @@ class _HomeViewState extends State<HomeView>
                       (e) => NotificationListTile(
                           notification: e,
                           onTap: () async {
-                            final bool? value =
-                                await Navigator.of(context).pushNamed<bool>(
-                              EditNotificationView.routeName,
-                              arguments: e.toJson(),
-                            );
-                            if (value != null && value == true) {
-                              setState(() {});
-                            }
+                            await Navigator.of(context).pushNamed(
+                                NotificationView.routeName,
+                                arguments: {
+                                  'id': e.id,
+                                  'cache': e,
+                                });
+                            // final bool? value =
+                            //     await Navigator.of(context).pushNamed<bool>(
+                            //   EditNotificationView.routeName,
+                            //   arguments: e.toJson(),
+                            // );
+                            // if (value != null && value == true) {
+                            //   setState(() {});
+                            // }
                           },
                           onLongPress: () async {
                             showDeleteDialog(context: context, title: e.title)

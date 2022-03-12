@@ -7,7 +7,7 @@ import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
-import 'package:notify/src/pages/additional/edit_profile_view.dart';
+import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/settings_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
