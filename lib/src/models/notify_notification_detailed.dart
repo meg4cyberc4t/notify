@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/settings/api_service/converters/datetime_serialiser.dart';
@@ -24,6 +25,19 @@ class NotifyNotificationDetailed {
       _$NotifyNotificationDetailedFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotifyNotificationDetailedToJson(this);
+
+  NotifyNotificationQuick get toQuick {
+    return NotifyNotificationQuick(
+      id: id,
+      title: title,
+      description: description,
+      repeatMode: repeatMode,
+      important: important,
+      deadline: deadline,
+      creator: creator,
+      uniqueClaim: uniqueClaim,
+    );
+  }
 
   final String id;
   final String title;
