@@ -32,7 +32,6 @@ import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
-import 'package:notify/src/pages/profile/my_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/search/search_view.dart';
@@ -96,17 +95,13 @@ class MyApp extends StatelessWidget {
                   settings: routeSettings,
                   builder: (BuildContext context) => const HomeView(),
                 );
-              case MyProfileView.routeName:
-                return MaterialPageRoute(
-                  settings: routeSettings,
-                  builder: (BuildContext context) => const MyProfileView(),
-                );
+
               case ProfileView.routeName:
                 return MaterialPageRoute(
                   settings: routeSettings,
                   builder: (BuildContext context) => ProfileView(
-                    id: args!['id'],
-                    preTitle: args['preTitle'],
+                    id: args?['id'],
+                    preTitle: args?['preTitle'],
                   ),
                 );
               case CalendarView.routeName:

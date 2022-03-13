@@ -1,22 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
+import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
-import 'package:notify/src/pages/profile/my_profile_view.dart';
+import 'package:notify/src/pages/auth/auth_preview.dart';
+import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/settings_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({
-    required this.id,
+    this.id,
     this.preTitle,
     Key? key,
   }) : super(key: key);
   static const routeName = 'profile_view';
-  final String id;
+  final String? id;
   final String? preTitle;
 
   @override
@@ -33,15 +35,14 @@ class _ProfileViewState extends State<ProfileView>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.id == SettingsService.instance.userId()) {
-      return const MyProfileView();
-    }
     super.build(context);
     return Scaffold(
       restorationId: 'profile_view',
       key: _scaffoldKey,
       body: LocalFutureBuilder.withLoading<NotifyUserDetailed>(
-        future: ApiService.users.get(widget.id),
+        future: (widget.id == null)
+            ? ApiService.user.get()
+            : ApiService.users.get(widget.id!),
         onError: (BuildContext context, Object err) =>
             Center(child: Text(err.toString())),
         onLoading:
@@ -54,6 +55,17 @@ class _ProfileViewState extends State<ProfileView>
                   color:
                       (user?.color ?? Theme.of(context).primaryColor).passive),
               expandedHeight: 300,
+              actions: [
+                if (user?.itsMe ?? false)
+                  IconButton(
+                    icon: const Icon(Icons.logout),
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      await Navigator.of(context)
+                          .pushReplacementNamed(AuthPreview.routeName);
+                    },
+                  ),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 title: LocalSplitter.withShimmer(
@@ -70,6 +82,44 @@ class _ProfileViewState extends State<ProfileView>
                   color: user?.color ?? Theme.of(context).primaryColor,
                 ),
               ),
+              leading: !(user?.itsMe ?? false)
+                  ? null
+                  : Navigator.of(context).canPop()
+                      ? null
+                      : LocalSplitter.withShimmer(
+                          context: context,
+                          isLoading: !isLoaded,
+                          child: IconButton(
+                            icon: const Icon(Icons.color_lens_outlined),
+                            onPressed: () async {
+                              if (!isLoaded) return;
+                              final Color? color = await Navigator.of(context)
+                                  .pushNamed(ColorPickerView.routeName,
+                                      arguments: {
+                                    'title': user!.shortTitle,
+                                    'color': user.color,
+                                  });
+                              if (color != null) {
+                                await ApiService.user
+                                    .put(
+                                        firstname: user.firstname,
+                                        lastname: user.lastname,
+                                        status: user.status,
+                                        color: color)
+                                    .whenComplete(() => setState(() {}))
+                                    .catchError((Object error) {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error loading data!'),
+                                    ),
+                                  );
+                                });
+                              }
+                            },
+                          ),
+                        ),
               pinned: true,
               backgroundColor: user?.color ?? Theme.of(context).primaryColor,
             ),
@@ -104,9 +154,20 @@ class _ProfileViewState extends State<ProfileView>
                             child: Text(AppLocalizations.of(context)!.unfollow),
                             onPressed: () async {
                               if (!isLoaded) return;
-                              await ApiService.user
-                                  .changeSubscription(widget.id);
+                              await ApiService.user.changeSubscription(user.id);
                               setState(() {});
+                            },
+                          );
+                        } else if (user.itsMe) {
+                          return OutlinedButton(
+                            child: Text(AppLocalizations.of(context)!.edit),
+                            onPressed: () async {
+                              if (!isLoaded) return;
+                              await Navigator.of(context).pushNamed(
+                                  EditProfileView.routeName,
+                                  arguments: {
+                                    'user': user,
+                                  }).whenComplete(() => setState(() {}));
                             },
                           );
                         }
@@ -114,7 +175,7 @@ class _ProfileViewState extends State<ProfileView>
                           child: Text(AppLocalizations.of(context)!.follow),
                           onPressed: () async {
                             if (!isLoaded) return;
-                            await ApiService.user.changeSubscription(widget.id);
+                            await ApiService.user.changeSubscription(user.id);
                             setState(() {});
                           },
                         );
@@ -131,7 +192,8 @@ class _ProfileViewState extends State<ProfileView>
                   Expanded(
                     child: InkWell(
                       onTap: () async {
-                        callback() => ApiService.users.subscribers(widget.id);
+                        if (user == null) return;
+                        callback() => ApiService.users.subscribers(user.id);
                         await Navigator.of(context)
                             .pushNamed(ListUsersView.routeName, arguments: {
                           'title': AppLocalizations.of(context)!.subscribers,
@@ -169,7 +231,8 @@ class _ProfileViewState extends State<ProfileView>
                   Expanded(
                     child: InkWell(
                       onTap: () async {
-                        callback() => ApiService.users.subscriptions(widget.id);
+                        if (user == null) return;
+                        callback() => ApiService.users.subscriptions(user.id);
                         await Navigator.of(context)
                             .pushNamed(ListUsersView.routeName, arguments: {
                           'title': AppLocalizations.of(context)!.subscriptions,
