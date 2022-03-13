@@ -16,6 +16,7 @@ NotifyUserDetailed _$NotifyUserDetailedFromJson(Map<String, dynamic> json) =>
       subscriptionsCount: json['subscriptionsCount'] as int,
       subscribersCount: json['subscribersCount'] as int,
       follow: json['follow'] as bool,
+      itsMe: json['itsMe'] as bool,
     );
 
 Map<String, dynamic> _$NotifyUserDetailedToJson(NotifyUserDetailed instance) =>
@@ -28,4 +29,5 @@ Map<String, dynamic> _$NotifyUserDetailedToJson(NotifyUserDetailed instance) =>
       'subscriptionsCount': instance.subscriptionsCount,
       'subscribersCount': instance.subscribersCount,
       'follow': instance.follow,
+      'itsMe': instance.itsMe,
     };
