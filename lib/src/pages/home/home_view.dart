@@ -78,12 +78,15 @@ class _HomeViewState extends State<HomeView>
                         notification: e,
                         onTap: () async {
                           if (e == null) return;
-                          await Navigator.of(context).pushNamed(
-                              NotificationView.routeName,
-                              arguments: {
+                          final bool? result = await Navigator.of(context)
+                              .pushNamed<bool>(NotificationView.routeName,
+                                  arguments: {
                                 'id': e.id,
                                 'cache': e,
                               });
+                          if (result != null && result) {
+                            setState(() {});
+                          }
                         },
                         onLongPress: () async {
                           if (e == null) return;

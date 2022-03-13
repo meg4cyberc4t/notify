@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/local_future_builder.dart';
+import 'package:notify/src/components/show_delete_dialog.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/components/view_models/user_list_tile.dart';
 import 'package:notify/src/models/notify_notification_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
+import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
@@ -157,6 +159,60 @@ class _NotificationViewState extends State<NotificationView> {
                     trailing: Text(
                       'Создатель',
                       style: TextStyle(color: Theme.of(context).hintColor),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              if (notification == null) return;
+                              showDeleteDialog(
+                                      context: context,
+                                      title: notification.title)
+                                  .then((value) async {
+                                if (value != null && value) {
+                                  await ApiService.notifications.delete(
+                                      notification: notification.toQuick);
+                                  Navigator.of(context).pop(true);
+                                }
+                              });
+                            },
+                            child: Text(
+                              'Удалить',
+                              style: TextStyle(
+                                color: Theme.of(context).errorColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (RepeatMode.none != notification?.repeatMode)
+                          const SizedBox(width: 8),
+                        if (RepeatMode.none != notification?.repeatMode)
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                if (notification == null) return;
+                                await ApiService.notifications
+                                    .delete(notification: notification.toQuick);
+                                await ApiService.notifications.post(
+                                  title: notification.title,
+                                  description: notification.description,
+                                  deadline: getRepeatModeNextDateTime(
+                                      notification.deadline,
+                                      notification.repeatMode),
+                                  important: notification.important,
+                                  repeatMode: notification.repeatMode,
+                                );
+                                Navigator.of(context).pop(true);
+                              },
+                              child: const Text('Отложить'),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],

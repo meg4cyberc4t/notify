@@ -28,7 +28,7 @@ class UserListTile extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(seconds: 1),
           decoration: BoxDecoration(
-            color: user?.color ?? Colors.grey,
+            color: user?.color ?? Theme.of(context).backgroundColor,
             borderRadius: BorderRadius.circular(15),
           ),
           child: user != null

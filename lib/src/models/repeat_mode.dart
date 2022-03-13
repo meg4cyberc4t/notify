@@ -9,6 +9,20 @@ enum RepeatMode {
   everyyear,
 }
 
+DateTime getRepeatModeNextDateTime(DateTime deadline, RepeatMode rp) =>
+    DateTime(
+      (rp == RepeatMode.everyyear) ? deadline.year + 1 : deadline.year,
+      (rp == RepeatMode.everymonth) ? deadline.month + 1 : deadline.month,
+      (rp == RepeatMode.everyday)
+          ? deadline.day + 1
+          : (rp == RepeatMode.everyweek)
+              ? deadline.month + 7
+              : deadline.day,
+      deadline.hour,
+      deadline.minute,
+      deadline.second,
+    );
+
 String getRepeatModeTitle(BuildContext context, RepeatMode rp) {
   switch (rp) {
     case RepeatMode.none:
