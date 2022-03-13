@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_splitter.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,7 +32,7 @@ class UserListTile extends StatelessWidget {
               ? Center(
                   child: Text(
                   user!.shortTitle,
-                  style: TextStyle(color: getPassiveColor(user!.color)),
+                  style: TextStyle(color: user!.color.passive),
                 ))
               : null,
           height: 40,

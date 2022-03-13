@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
@@ -79,7 +79,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 title,
-                style: TextStyle(color: getPassiveColor(color)),
+                style: TextStyle(color: color.passive),
                 textAlign: TextAlign.center,
               ),
               centerTitle: true,
@@ -88,7 +88,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 color: color,
               ),
             ),
-            iconTheme: IconThemeData(color: getPassiveColor(color)),
+            iconTheme: IconThemeData(color: color.passive),
           ),
           const SliverToBoxAdapter(
             child: SizedBox(height: 8),

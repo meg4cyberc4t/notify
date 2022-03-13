@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/profile/my_profile_view.dart';
@@ -51,9 +51,8 @@ class _ProfileViewState extends State<ProfileView>
           slivers: [
             SliverAppBar(
               iconTheme: IconThemeData(
-                  color: getPassiveColor(
-                user?.color ?? Theme.of(context).primaryColor,
-              )),
+                  color:
+                      (user?.color ?? Theme.of(context).primaryColor).passive),
               expandedHeight: 300,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
@@ -63,9 +62,8 @@ class _ProfileViewState extends State<ProfileView>
                     child: Text(
                       user?.title ?? AppLocalizations.of(context)!.loading,
                       style: TextStyle(
-                          color: user?.color != null
-                              ? getPassiveColor(user!.color)
-                              : null),
+                          color:
+                              user?.color != null ? user!.color.passive : null),
                     )),
                 background: AnimatedContainer(
                   duration: const Duration(seconds: 1),

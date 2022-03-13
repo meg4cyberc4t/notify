@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
@@ -48,9 +48,8 @@ class _MyProfileViewState extends State<MyProfileView>
               slivers: [
                 SliverAppBar(
                   iconTheme: IconThemeData(
-                      color: getPassiveColor(
-                    user?.color ?? Theme.of(context).primaryColor,
-                  )),
+                      color: (user?.color ?? Theme.of(context).primaryColor)
+                          .passive),
                   actions: <Widget>[
                     LocalSplitter.withShimmer(
                       context: context,
@@ -111,7 +110,7 @@ class _MyProfileViewState extends State<MyProfileView>
                           user?.title ?? AppLocalizations.of(context)!.loading,
                           style: TextStyle(
                               color: user?.color != null
-                                  ? getPassiveColor(user!.color)
+                                  ? user!.color.passive
                                   : null),
                         )),
                     background: AnimatedContainer(

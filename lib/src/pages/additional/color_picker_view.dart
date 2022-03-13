@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ColorPickerView extends StatefulWidget {
@@ -57,7 +57,7 @@ class _ColorPickerViewState extends State<ColorPickerView> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline3!
-                                    .copyWith(color: getPassiveColor(color)),
+                                    .copyWith(color: color.passive),
                               ),
                             ),
                           ),
