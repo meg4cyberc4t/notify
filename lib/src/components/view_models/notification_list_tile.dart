@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationListTile extends StatelessWidget {
   const NotificationListTile({
@@ -10,7 +12,7 @@ class NotificationListTile extends StatelessWidget {
     this.onTap,
     Key? key,
   }) : super(key: key);
-  final NotifyNotificationQuick notification;
+  final NotifyNotificationQuick? notification;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
@@ -31,11 +33,14 @@ class NotificationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = DateTime.now().isBefore(notification.deadline);
+    final enabled =
+        notification != null && DateTime.now().isBefore(notification!.deadline);
     final disabledColor = Theme.of(context).hintColor;
-    final leadingColor = notification.important
-        ? Colors.red
-        : Theme.of(context).colorScheme.primary;
+    final leadingColor = notification == null
+        ? Theme.of(context).hintColor
+        : notification!.important
+            ? Colors.red
+            : Theme.of(context).colorScheme.primary;
     final leading = Padding(
       padding: const EdgeInsets.only(bottom: 2),
       child: Container(
@@ -44,41 +49,55 @@ class NotificationListTile extends StatelessWidget {
         color: leadingColor.withOpacity(!enabled ? 0.5 : 1),
       ),
     );
-    final subtitle = notification.description.isNotEmpty
-        ? Text(
-            notification.description,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: enabled ? null : disabledColor),
-            textAlign: TextAlign.start,
-          )
-        : null;
-    final trailing = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          timeLeftString(notification.deadline),
-          style: TextStyle(color: Theme.of(context).hintColor),
-        ),
-        Text(
-          getRepeatModeTitle(context, notification.repeatMode),
+    Widget? subtitle;
+    if ((notification?.description ?? AppLocalizations.of(context)!.loading)
+        .isNotEmpty) {
+      subtitle = LocalSplitter.withShimmer(
+        isLoading: notification == null,
+        context: context,
+        child: Text(
+          notification?.description ?? AppLocalizations.of(context)!.loading,
           style: Theme.of(context)
               .textTheme
-              .caption!
-              .copyWith(color: Theme.of(context).hintColor),
+              .bodySmall
+              ?.copyWith(color: enabled ? null : disabledColor),
+          textAlign: TextAlign.start,
         ),
-      ],
+      );
+    }
+    final title = LocalSplitter.withShimmer(
+      context: context,
+      isLoading: notification == null,
+      child: Text(
+        notification?.title ?? AppLocalizations.of(context)!.loading,
+        style: Theme.of(context)
+            .textTheme
+            .titleMedium
+            ?.copyWith(color: enabled ? null : disabledColor),
+        textAlign: TextAlign.start,
+      ),
     );
-    final title = Text(
-      notification.title,
-      style: Theme.of(context)
-          .textTheme
-          .titleMedium
-          ?.copyWith(color: enabled ? null : disabledColor),
-      textAlign: TextAlign.start,
-    );
+    Widget trailing = const SizedBox();
+    if (notification != null) {
+      trailing = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            timeLeftString(notification!.deadline),
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+          Text(
+            getRepeatModeTitle(context, notification!.repeatMode),
+            style: Theme.of(context)
+                .textTheme
+                .caption!
+                .copyWith(color: Theme.of(context).hintColor),
+          ),
+        ],
+      );
+    }
+
     const double leadingWidth = 16;
     return InkWell(
       onTap: onTap,
@@ -103,7 +122,6 @@ class NotificationListTile extends StatelessWidget {
             ),
             trailing,
           ],
-          // enableFeedback: true,
         ),
       ),
     );
