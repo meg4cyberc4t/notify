@@ -30,7 +30,7 @@ class _HomeViewState extends State<HomeView>
         ),
         body: RefreshIndicator(
           onRefresh: () async => setState(() {}),
-          child: LocalFutureBuilder(
+          child: LocalFutureBuilder.withLoading(
             onError: (BuildContext context, Object error) =>
                 Text(error.toString()),
             future: () async {
@@ -45,93 +45,82 @@ class _HomeViewState extends State<HomeView>
                     .toList(),
               );
             }(),
-            onProgress: (BuildContext context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            onData: (
+            onLoading: (
               BuildContext context,
-              __SeparateVariable vari,
+              __SeparateVariable? vari,
+              bool isLoaded,
             ) {
-              final ntfs = vari.notifications;
+              final List<NotifyNotificationQuick?> ntfs =
+                  vari?.notifications ?? [null, null, null];
               // final folders = vari.folders;
-              return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppBar(
-                      centerTitle: true,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                      titleTextStyle:
-                          Theme.of(context).textTheme.titleLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                      title: const Text('Today notifications'),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () => Navigator.of(context)
-                              .pushNamed(CreateNotificationView.routeName)
-                              .whenComplete(() => setState(() {})),
-                        )
-                      ],
-                    ),
-                    ...ntfs.map(
-                      (e) => NotificationListTile(
-                          notification: e,
-                          onTap: () async {
-                            await Navigator.of(context).pushNamed(
-                                NotificationView.routeName,
-                                arguments: {
-                                  'id': e.id,
-                                  'cache': e,
-                                });
-                            // final bool? value =
-                            //     await Navigator.of(context).pushNamed<bool>(
-                            //   EditNotificationView.routeName,
-                            //   arguments: e.toJson(),
-                            // );
-                            // if (value != null && value == true) {
-                            //   setState(() {});
-                            // }
-                          },
-                          onLongPress: () async {
-                            showDeleteDialog(context: context, title: e.title)
-                                .then((value) async {
-                              if (value != null && value) {
-                                await ApiService.notifications
-                                    .delete(uuid: e.id);
-                                setState(() {});
-                              }
-                            });
-                          }),
-                    ),
-                    // AppBar(
-                    //   centerTitle: true,
-                    //   backgroundColor: Colors.transparent,
-                    //   elevation: 0,
-                    //   titleTextStyle:
-                    //       Theme.of(context).textTheme.titleLarge!.copyWith(
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //   title: const Text('Folders'),
-                    //   actions: [
-                    //     IconButton(
-                    //       icon: const Icon(Icons.add),
-                    //       onPressed: () {},
-                    //     )
-                    //   ],
-                    // ),
-                    // ...folders.map((e) => Padding(
-                    //       padding: const EdgeInsets.all(4),
-                    //       child: FolderListTile(
-                    //         folder: e,
-                    //         onTap: () async {},
-                    //       ),
-                    //     )),
-                  ],
-                ),
+              return ListView(
+                children: [
+                  AppBar(
+                    centerTitle: true,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    titleTextStyle:
+                        Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                    title: const Text('Today notifications'),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () => Navigator.of(context)
+                            .pushNamed(CreateNotificationView.routeName)
+                            .whenComplete(() => setState(() {})),
+                      )
+                    ],
+                  ),
+                  ...ntfs.map(
+                    (e) => NotificationListTile(
+                        notification: e,
+                        onTap: () async {
+                          if (e == null) return;
+                          await Navigator.of(context).pushNamed(
+                              NotificationView.routeName,
+                              arguments: {
+                                'id': e.id,
+                                'cache': e,
+                              });
+                        },
+                        onLongPress: () async {
+                          if (e == null) return;
+
+                          showDeleteDialog(context: context, title: e.title)
+                              .then((value) async {
+                            if (value != null && value) {
+                              await ApiService.notifications.delete(uuid: e.id);
+                              setState(() {});
+                            }
+                          });
+                        }),
+                  ),
+                  // AppBar(
+                  //   centerTitle: true,
+                  //   backgroundColor: Colors.transparent,
+                  //   elevation: 0,
+                  //   titleTextStyle:
+                  //       Theme.of(context).textTheme.titleLarge!.copyWith(
+                  //             fontWeight: FontWeight.bold,
+                  //           ),
+                  //   title: const Text('Folders'),
+                  //   actions: [
+                  //     IconButton(
+                  //       icon: const Icon(Icons.add),
+                  //       onPressed: () {},
+                  //     )
+                  //   ],
+                  // ),
+                  // ...folders.map((e) => Padding(
+                  //       padding: const EdgeInsets.all(4),
+                  //       child: FolderListTile(
+                  //         folder: e,
+                  //         onTap: () async {},
+                  //       ),
+                  //     )),
+                ],
               );
             },
           ),
