@@ -87,11 +87,11 @@ class _HomeViewState extends State<HomeView>
                         },
                         onLongPress: () async {
                           if (e == null) return;
-
                           showDeleteDialog(context: context, title: e.title)
                               .then((value) async {
                             if (value != null && value) {
-                              await ApiService.notifications.delete(uuid: e.id);
+                              await ApiService.notifications
+                                  .delete(notification: e);
                               setState(() {});
                             }
                           });

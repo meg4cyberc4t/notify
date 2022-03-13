@@ -18,10 +18,34 @@ class NotifyNotificationQuick {
     required this.uniqueClaim,
   });
 
+  NotifyNotificationQuick copyWith({
+    String? id,
+    String? title,
+    String? description,
+    RepeatMode? repeatMode,
+    bool? important,
+    DateTime? deadline,
+    NotifyUserQuick? creator,
+    int? uniqueClaim,
+  }) {
+    return NotifyNotificationQuick(
+      id: id ??= this.id,
+      title: title ??= this.title,
+      description: description ??= this.description,
+      repeatMode: repeatMode ??= this.repeatMode,
+      important: important ??= this.important,
+      deadline: deadline ??= this.deadline,
+      creator: creator ??= this.creator,
+      uniqueClaim: uniqueClaim ??= this.uniqueClaim,
+    );
+  }
+
   factory NotifyNotificationQuick.fromJson(Map<String, dynamic> json) =>
       _$NotifyNotificationQuickFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotifyNotificationQuickToJson(this);
+
+  String get payload => id;
 
   final String id;
   final String title;

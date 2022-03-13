@@ -15,6 +15,7 @@ import 'package:notify/src/settings/api_service/requests/notifications_requests.
 import 'package:notify/src/settings/api_service/requests/search_requests.dart';
 import 'package:notify/src/settings/api_service/requests/user_requests.dart';
 import 'package:notify/src/settings/api_service/requests/users_requests.dart';
+import 'package:notify/src/settings/notifications_service.dart';
 
 class ApiService {
   static _ApiServiceUser get user => _ApiServiceUser();
@@ -203,7 +204,10 @@ class _ApiServiceNotifications {
     );
     List<NotifyNotificationQuick> list = [];
     for (var item in jsonDecode(res.body)) {
-      list.add(NotifyNotificationQuick.fromJson(item));
+      final NotifyNotificationQuick notification =
+          NotifyNotificationQuick.fromJson(item);
+      await NotificationService.instance.schedule(notification);
+      list.add(notification);
     }
     return list;
   }
@@ -224,7 +228,10 @@ class _ApiServiceNotifications {
           deadline: deadline,
           token: await ApiServiceConfig.token),
     );
-    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    final NotifyNotificationDetailed notification =
+        NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    await NotificationService.instance.schedule(notification.toQuick);
+    return notification;
   }
 
   Future<NotifyNotificationDetailed> getById(String uuid) async {
@@ -232,14 +239,18 @@ class _ApiServiceNotifications {
       callback: NotificationsResponses.getById(
           token: await ApiServiceConfig.token, uuid: uuid),
     );
-    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    final NotifyNotificationDetailed notification =
+        NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    await NotificationService.instance.schedule(notification.toQuick);
+    return notification;
   }
 
-  Future<void> delete({required String uuid}) async {
+  Future<void> delete({required NotifyNotificationQuick notification}) async {
+    await NotificationService.instance.cancel(notification.uniqueClaim);
     await errorsHandlerMiddlware(
       callback: NotificationsResponses.delete(
         token: await ApiServiceConfig.token,
-        uuid: uuid,
+        uuid: notification.id,
       ),
     );
   }
@@ -262,7 +273,10 @@ class _ApiServiceNotifications {
           uuid: uuid,
           token: await ApiServiceConfig.token),
     );
-    return NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    final NotifyNotificationDetailed notification =
+        NotifyNotificationDetailed.fromJson(jsonDecode(res.body));
+    await NotificationService.instance.schedule(notification.toQuick);
+    return notification;
   }
 
   Future<List<NotifyUserQuick>> byIdParticipants({required String uuid}) async {
