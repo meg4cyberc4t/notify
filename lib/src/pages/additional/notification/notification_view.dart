@@ -166,7 +166,7 @@ class _NotificationViewState extends State<NotificationView> {
                 if (ntf == null) return;
                 final bool? result = await Navigator.of(context).pushNamed(
                     EditNotificationView.routeName,
-                    arguments: ntf!.toJson());
+                    arguments: {'notification': ntf!});
                 if (result != null && result) setState(() {});
               },
             ),

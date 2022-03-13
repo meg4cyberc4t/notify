@@ -6,8 +6,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ColorPickerView extends StatefulWidget {
   const ColorPickerView({
     required this.title,
-    final Key? key,
     this.initialValue,
+    final Key? key,
   }) : super(key: key);
   final Color? initialValue;
   final String title;
