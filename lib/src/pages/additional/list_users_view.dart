@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
-import 'package:notify/src/components/local_splitter.dart';
-import 'package:notify/src/components/user_list_tile.dart';
+import 'package:notify/src/components/view_models/user_list_tile.dart';
 import 'package:notify/src/models/notify_user_quick.dart';
 
 class ListUsersView extends StatefulWidget {
@@ -34,18 +33,13 @@ class _ListUsersViewState extends State<ListUsersView>
             child: Text('Error'),
           );
         },
-        onProgress: (BuildContext context) => Center(
-          child: LocalSplitter.withShimmer(
-            context: context,
-            isLoading: true,
-            child: const CircularProgressIndicator(),
-          ),
-        ),
+        onProgress: (BuildContext context) =>
+            const Center(child: CircularProgressIndicator()),
         onData: (BuildContext context, List<NotifyUserQuick> users) =>
             ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) =>
-                    UserListTile(user: users[index])),
+          itemCount: users.length,
+          itemBuilder: (context, index) => UserListTile(user: users[index]),
+        ),
       ),
     );
   }

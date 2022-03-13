@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/local_future_builder.dart';
-import 'package:notify/src/components/notification_list_tile.dart';
-import 'package:notify/src/components/user_list_tile.dart';
+import 'package:notify/src/components/view_models/notification_list_tile.dart';
+import 'package:notify/src/components/view_models/user_list_tile.dart';
 import 'package:notify/src/models/notify_notification_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
@@ -28,19 +28,18 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
     final String title = widget.cache?.title ?? 'Notification';
-
+    NotifyNotificationQuick? ntf = widget.cache;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
-      body: LocalFutureBuilder(
+      body: LocalFutureBuilder.withLoading(
         future: ApiService.notifications.getById(widget.id),
         onError: (BuildContext context, Object error) =>
             Center(child: Text(error.toString())),
-        onProgress: (BuildContext context) =>
-            const Center(child: CircularProgressIndicator()),
-        onData:
-            (BuildContext context, NotifyNotificationDetailed notification) {
+        onLoading: (BuildContext context,
+            NotifyNotificationDetailed? notification, bool isLoaded) {
+          if (notification != null) ntf = notification.toQuick;
           return Scaffold(
             body: SingleChildScrollView(
               child: Column(
@@ -49,7 +48,7 @@ class _NotificationViewState extends State<NotificationView> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: NotificationListTile(
-                        notification: notification.toQuick),
+                        notification: notification?.toQuick),
                   ),
                   const SizedBox(height: 16),
                   Padding(
@@ -66,8 +65,9 @@ class _NotificationViewState extends State<NotificationView> {
                                 Expanded(
                                   child: Center(
                                     child: Text(
-                                      DateFormat('HH:mm')
-                                          .format(notification.deadline),
+                                      DateFormat('HH:mm').format(
+                                          notification?.deadline ??
+                                              DateTime.now()),
                                       style:
                                           Theme.of(context).textTheme.headline4,
                                     ),
@@ -90,8 +90,9 @@ class _NotificationViewState extends State<NotificationView> {
                                 Expanded(
                                   child: Center(
                                     child: Text(
-                                      DateFormat('dd.MM')
-                                          .format(notification.deadline),
+                                      DateFormat('dd.MM').format(
+                                          notification?.deadline ??
+                                              DateTime.now()),
                                       style:
                                           Theme.of(context).textTheme.headline4,
                                     ),
@@ -108,6 +109,7 @@ class _NotificationViewState extends State<NotificationView> {
                         Expanded(
                           child: InkWell(
                             onTap: () async {
+                              if (notification == null) return;
                               await Navigator.of(context).pushNamed(
                                   ListUsersView.routeName,
                                   arguments: {
@@ -127,8 +129,9 @@ class _NotificationViewState extends State<NotificationView> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        notification.participantsCount
-                                            .toString(),
+                                        notification?.participantsCount
+                                                .toString() ??
+                                            '0',
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline4,
@@ -149,7 +152,7 @@ class _NotificationViewState extends State<NotificationView> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  UserListTile(user: notification.creator),
+                  UserListTile(user: notification?.creator),
                   Text(
                     'Создатель',
                     style: Theme.of(context).textTheme.bodyText2,
@@ -160,9 +163,10 @@ class _NotificationViewState extends State<NotificationView> {
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.edit),
               onPressed: () async {
+                if (ntf == null) return;
                 final bool? result = await Navigator.of(context).pushNamed(
                     EditNotificationView.routeName,
-                    arguments: notification.toQuick.toJson());
+                    arguments: ntf!.toJson());
                 if (result != null && result) setState(() {});
               },
             ),
