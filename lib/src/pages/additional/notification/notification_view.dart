@@ -152,10 +152,12 @@ class _NotificationViewState extends State<NotificationView> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  UserListTile(user: notification?.creator),
-                  Text(
-                    'Создатель',
-                    style: Theme.of(context).textTheme.bodyText2,
+                  UserListTile(
+                    user: notification?.creator,
+                    trailing: Text(
+                      'Создатель',
+                      style: TextStyle(color: Theme.of(context).hintColor),
+                    ),
                   ),
                 ],
               ),

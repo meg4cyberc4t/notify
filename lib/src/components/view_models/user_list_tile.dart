@@ -6,8 +6,10 @@ import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserListTile extends StatelessWidget {
-  const UserListTile({Key? key, required this.user}) : super(key: key);
+  const UserListTile({Key? key, required this.user, this.trailing})
+      : super(key: key);
   final NotifyUserQuick? user;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class UserListTile extends StatelessWidget {
           'preTitle': user!.title,
         });
       },
+      trailing: trailing,
       leading: LocalSplitter.withShimmer(
         context: context,
         isLoading: user == null,
