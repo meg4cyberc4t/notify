@@ -45,5 +45,38 @@
   "everyYearDescription": "Напомним раз в год!",
   "createNotification": "Создать напоминание",
   "editNotification": "Редактировать напоминание",
-  "notifications": "Напоминания"
+  "notifications": "Напоминания",
+  "recentNotifications": "Последние напоминания", 
+  "notification": "Уведомление",
+  "participants": "Участники",
+  "creator": "Создатель",
+  "delete": "Удалить",
+  "delay": "Отложить",
+  "sendInvation": "Отправить приглашение",
+  "exclude": "Исключить",
+  "excludeMessage": "Вы точно хотите исключить\"{title}\"?",
+  "@excludeMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "deleteMessage": "Вы точно хотите удалить \"{title}\"?",
+  "@deleteMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "homeviewTitle": "Домашняя страница",
+  "minutesLeft": "{minutes}м осталось",
+  "@minutesLeft": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "minutesPassed": "{minutes}м прошло",
+  "@minutesPassed": {
+    "placeholders": {
+      "minutes": {}
+    }
+  }
 }

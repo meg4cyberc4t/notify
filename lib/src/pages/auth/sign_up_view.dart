@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:notify/src/methods/get_passive_color.dart';
+import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/home/home_view.dart';
@@ -81,7 +81,7 @@ class _SignUpViewState extends State<SignUpView> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 title,
-                style: TextStyle(color: getPassiveColor(colorValue)),
+                style: TextStyle(color: colorValue.passive),
                 textAlign: TextAlign.center,
               ),
               centerTitle: true,
@@ -90,7 +90,7 @@ class _SignUpViewState extends State<SignUpView> {
                 color: colorValue,
               ),
             ),
-            iconTheme: IconThemeData(color: getPassiveColor(colorValue)),
+            iconTheme: IconThemeData(color: colorValue.passive),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit_outlined),

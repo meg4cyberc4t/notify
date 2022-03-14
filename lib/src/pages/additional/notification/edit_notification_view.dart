@@ -3,23 +3,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/show_select_repeat_mode_bottom_sheet.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
+import 'package:notify/src/settings/sus_service.dart';
+import 'package:provider/provider.dart';
 
-class CreateNotificationView extends StatefulWidget {
-  const CreateNotificationView({Key? key}) : super(key: key);
+class EditNotificationView extends StatefulWidget {
+  const EditNotificationView({required this.notification, Key? key})
+      : super(key: key);
+  final NotifyNotificationQuick notification;
 
-  static const routeName = 'create_notification_view';
+  static const routeName = 'edit_notification_view';
 
   @override
-  State<CreateNotificationView> createState() => _CreateNotificationViewState();
+  State<EditNotificationView> createState() => _EditNotificationViewState();
 }
 
-class _CreateNotificationViewState extends State<CreateNotificationView> {
+class _EditNotificationViewState extends State<EditNotificationView> {
   bool foolproofSubmitButton = true;
-
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
@@ -37,11 +41,14 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
 
   @override
   void initState() {
-    final DateTime deadline = DateTime.now().add(const Duration(minutes: 1));
+    _titleController.text = widget.notification.title;
+    _descriptionController.text = widget.notification.description;
+
+    final DateTime deadline = widget.notification.deadline;
     _deadlineNotifier = ValueNotifier(deadline);
 
-    _repeatModeNotifier = ValueNotifier(RepeatMode.none);
-    _importantNotifier = ValueNotifier(false);
+    _repeatModeNotifier = ValueNotifier(widget.notification.repeatMode);
+    _importantNotifier = ValueNotifier(widget.notification.important);
     super.initState();
   }
 
@@ -73,7 +80,7 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createNotification),
+        title: Text(widget.notification.title),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -131,7 +138,10 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
                         onTap: () async {
                           final DateTime? date = await showDatePicker(
                             context: context,
-                            initialDate: _deadlineNotifier.value,
+                            initialDate:
+                                _deadlineNotifier.value.isBefore(DateTime.now())
+                                    ? DateTime.now()
+                                    : _deadlineNotifier.value,
                             firstDate: DateTime.now(),
                             lastDate: DateTime.now().add(
                               const Duration(days: 3650),
@@ -234,14 +244,18 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
           if (!foolproofSubmitButton) return;
           foolproofSubmitButton = false;
           try {
-            await ApiService.notifications.post(
+            await ApiService.notifications.put(
+              uuid: widget.notification.id,
               title: _titleController.text.trim(),
               description: _descriptionController.text.trim(),
               deadline: _deadlineNotifier.value,
               important: _importantNotifier.value,
               repeatMode: _repeatModeNotifier.value,
             );
-            Navigator.of(context).pop(true);
+            Provider.of<NotificationViewLocalState>(context, listen: false)
+                .updateState();
+            Provider.of<HomeLocalState>(context, listen: false).updateState();
+            Navigator.of(context).pop();
           } on ApiServiceException catch (err) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

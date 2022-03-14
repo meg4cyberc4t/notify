@@ -3,25 +3,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/show_select_repeat_mode_bottom_sheet.dart';
-import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
+import 'package:notify/src/settings/sus_service.dart';
+import 'package:provider/provider.dart';
 
-class EditNotificationView extends StatefulWidget {
-  const EditNotificationView({required this.notification, Key? key})
-      : super(key: key);
-  final NotifyNotificationQuick notification;
+class CreateNotificationView extends StatefulWidget {
+  const CreateNotificationView({Key? key}) : super(key: key);
 
-  static const routeName = 'edit_notification_view';
+  static const routeName = 'create_notification_view';
 
   @override
-  State<EditNotificationView> createState() => _EditNotificationViewState();
+  State<CreateNotificationView> createState() => _CreateNotificationViewState();
 }
 
-class _EditNotificationViewState extends State<EditNotificationView> {
+class _CreateNotificationViewState extends State<CreateNotificationView> {
   bool foolproofSubmitButton = true;
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
@@ -39,14 +39,11 @@ class _EditNotificationViewState extends State<EditNotificationView> {
 
   @override
   void initState() {
-    _titleController.text = widget.notification.title;
-    _descriptionController.text = widget.notification.description;
-
-    final DateTime deadline = widget.notification.deadline;
+    final DateTime deadline = DateTime.now().add(const Duration(minutes: 1));
     _deadlineNotifier = ValueNotifier(deadline);
 
-    _repeatModeNotifier = ValueNotifier(widget.notification.repeatMode);
-    _importantNotifier = ValueNotifier(widget.notification.important);
+    _repeatModeNotifier = ValueNotifier(RepeatMode.none);
+    _importantNotifier = ValueNotifier(false);
     super.initState();
   }
 
@@ -78,7 +75,7 @@ class _EditNotificationViewState extends State<EditNotificationView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.notification.title),
+        title: Text(AppLocalizations.of(context)!.createNotification),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -239,14 +236,14 @@ class _EditNotificationViewState extends State<EditNotificationView> {
           if (!foolproofSubmitButton) return;
           foolproofSubmitButton = false;
           try {
-            await ApiService.notifications.put(
-              uuid: widget.notification.id,
+            await ApiService.notifications.post(
               title: _titleController.text.trim(),
               description: _descriptionController.text.trim(),
               deadline: _deadlineNotifier.value,
               important: _importantNotifier.value,
               repeatMode: _repeatModeNotifier.value,
             );
+            Provider.of<HomeLocalState>(context, listen: false).updateState();
             Navigator.of(context).pop(true);
           } on ApiServiceException catch (err) {
             ScaffoldMessenger.of(context).clearSnackBars();
