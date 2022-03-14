@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/dialogs/show_delete_dialog.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
@@ -31,7 +32,8 @@ class NotificationView extends StatefulWidget {
 class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
-    final String title = widget.cache?.title ?? 'Notification';
+    final String title =
+        widget.cache?.title ?? AppLocalizations.of(context)!.notification;
     NotifyNotificationQuick? ntf = widget.cache;
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +83,7 @@ class _NotificationViewState extends State<NotificationView> {
                                     ),
                                   ),
                                   Text(
-                                    'Время',
+                                    AppLocalizations.of(context)!.time,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -109,7 +111,7 @@ class _NotificationViewState extends State<NotificationView> {
                                     ),
                                   ),
                                   Text(
-                                    'Дата',
+                                    AppLocalizations.of(context)!.date,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -147,7 +149,8 @@ class _NotificationViewState extends State<NotificationView> {
                                       ),
                                     ),
                                     Text(
-                                      'Участники',
+                                      AppLocalizations.of(context)!
+                                          .participants,
                                       style:
                                           Theme.of(context).textTheme.bodyText2,
                                     ),
@@ -163,7 +166,7 @@ class _NotificationViewState extends State<NotificationView> {
                     UserListTile(
                       user: notification?.creator,
                       trailing: Text(
-                        'Создатель',
+                        AppLocalizations.of(context)!.creator,
                         style: TextStyle(color: Theme.of(context).hintColor),
                       ),
                     ),
@@ -191,7 +194,7 @@ class _NotificationViewState extends State<NotificationView> {
                                 });
                               },
                               child: Text(
-                                'Удалить',
+                                AppLocalizations.of(context)!.delete,
                                 style: TextStyle(
                                   color: Theme.of(context).errorColor,
                                 ),
@@ -221,7 +224,8 @@ class _NotificationViewState extends State<NotificationView> {
                                       .updateState();
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('Отложить'),
+                                child:
+                                    Text(AppLocalizations.of(context)!.delay),
                               ),
                             ),
                         ],

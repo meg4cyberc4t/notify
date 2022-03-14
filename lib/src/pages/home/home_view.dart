@@ -10,6 +10,7 @@ import 'package:notify/src/pages/additional/notification/notification_view.dart'
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _HomeViewState extends State<HomeView>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text(AppLocalizations.of(context)!.homeviewTitle),
       ),
       body: RefreshIndicator(
         onRefresh: () async =>
@@ -64,7 +65,8 @@ class _HomeViewState extends State<HomeView>
                         Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
-                    title: const Text('Recent notifications'),
+                    title:
+                        Text(AppLocalizations.of(context)!.recentNotifications),
                     actions: [
                       IconButton(
                         icon: const Icon(Icons.add),

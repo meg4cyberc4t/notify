@@ -45,5 +45,38 @@
   "everyYearDescription": "Recall once a year!",
   "createNotification": "Create notification",
   "editNotification": "Edit notification",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "recentNotifications": "Recent notifications", 
+  "notification": "Notification",
+  "participants": "Participants",
+  "creator": "Creator",
+  "delete": "Delete",
+  "delay": "Delay",
+  "sendInvation": "Send invation",
+  "exclude": "Exclude",
+  "excludeMessage": "Are you sure you want to exclude \"{title}\"?",
+  "@excludeMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "deleteMessage": "Are you sure you want to delete \"{title}\"?",
+  "@deleteMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "homeviewTitle": "Home",
+  "minutesLeft": "{minutes}m lost",
+  "@minutesLeft": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "minutesPassed": "{minutes}m passed",
+  "@minutesPassed": {
+    "placeholders": {
+      "minutes": {}
+    }
+  }
 }

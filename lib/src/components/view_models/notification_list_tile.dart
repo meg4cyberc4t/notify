@@ -16,23 +16,25 @@ class NotificationListTile extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
 
-  String timeLeftString(DateTime deadline) {
-    final Duration difference = deadline.difference(DateTime.now());
-    if (difference.inDays >= 1) {
-      return DateFormat('dd.MM').format(deadline);
-    }
-    if (difference.abs().inHours < 1) {
-      if (difference.isNegative) {
-        return '${-difference.inMinutes}m passed';
-      } else {
-        return '${difference.inMinutes}m left';
-      }
-    }
-    return DateFormat('HH:mm').format(deadline);
-  }
-
   @override
   Widget build(BuildContext context) {
+    String timeLeftString(DateTime deadline) {
+      final Duration difference = deadline.difference(DateTime.now());
+      if (difference.inDays >= 1) {
+        return DateFormat('dd.MM').format(deadline);
+      }
+      if (difference.abs().inHours < 1) {
+        if (difference.isNegative) {
+          return AppLocalizations.of(context)!
+              .minutesPassed(-difference.inMinutes);
+        } else {
+          return AppLocalizations.of(context)!
+              .minutesLeft(difference.inMinutes);
+        }
+      }
+      return DateFormat('HH:mm').format(deadline);
+    }
+
     final enabled =
         notification != null && DateTime.now().isBefore(notification!.deadline);
     final disabledColor = Theme.of(context).hintColor;

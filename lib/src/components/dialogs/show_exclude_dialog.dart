@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<T?> showExcludeDialog<T>({
   required BuildContext context,
@@ -7,15 +8,15 @@ Future<T?> showExcludeDialog<T>({
   return await showDialog<T>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Delete'),
-      content: Text('Are you sure you want to exclude "$title"?'),
+      title: Text(AppLocalizations.of(context)!.exclude),
+      content: Text(AppLocalizations.of(context)!.excludeMessage(title)),
       actions: <Widget>[
         TextButton(
-          child: const Text('No'),
+          child: Text(AppLocalizations.of(context)!.no),
           onPressed: () => Navigator.of(context).pop(false),
         ),
         TextButton(
-          child: const Text('Yes'),
+          child: Text(AppLocalizations.of(context)!.yes),
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

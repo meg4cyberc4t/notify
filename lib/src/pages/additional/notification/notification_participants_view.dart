@@ -9,6 +9,7 @@ import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 import 'package:notify/src/settings/sus_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationParticipantsView extends StatefulWidget {
   const NotificationParticipantsView({
@@ -31,12 +32,12 @@ class _NotificationParticipantsViewState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Participants'),
+        title: Text(AppLocalizations.of(context)!.participants),
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context)
                 .pushNamed(ListUsersView.routeName, arguments: {
-              'title': 'Send an invitation',
+              'title': AppLocalizations.of(context)!.sendInvation,
               'callback': () async {
                 final List<NotifyUserQuick> candidates =
                     await ApiService.user.subscribers();
