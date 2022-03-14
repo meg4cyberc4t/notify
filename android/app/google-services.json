@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "968720438303",
+    "firebase_url": "https://notify-69147-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "notify-69147",
+    "storage_bucket": "notify-69147.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968720438303:android:b8b5d48f90aa547691f12a",
+        "android_client_info": {
+          "package_name": "com.meg4cyberc4t.notify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968720438303-eah5ndefp0btqf027lela35ri1mmfo37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meg4cyberc4t.notify",
+            "certificate_hash": "08e1e10d148c577e178a7a06abc74eb8fc7c8b23"
+          }
+        },
+        {
+          "client_id": "968720438303-56g4ci9ohuj17t4qnuttpdiq5aqdeu6q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_-gyqHiHs5HGBYARwCj-sWKHyonbghhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968720438303-56g4ci9ohuj17t4qnuttpdiq5aqdeu6q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
