@@ -136,7 +136,10 @@ class _EditNotificationViewState extends State<EditNotificationView> {
                         onTap: () async {
                           final DateTime? date = await showDatePicker(
                             context: context,
-                            initialDate: _deadlineNotifier.value,
+                            initialDate:
+                                _deadlineNotifier.value.isBefore(DateTime.now())
+                                    ? DateTime.now()
+                                    : _deadlineNotifier.value,
                             firstDate: DateTime.now(),
                             lastDate: DateTime.now().add(
                               const Duration(days: 3650),

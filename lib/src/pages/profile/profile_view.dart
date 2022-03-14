@@ -269,7 +269,12 @@ class _ProfileViewState extends State<ProfileView>
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(ProfileView.routeName,
+                            arguments: {
+                              'id': 'a0919472-82a5-42d5-9716-85affff81f35'
+                            });
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,

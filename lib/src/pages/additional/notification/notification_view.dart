@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notify/src/components/local_future_builder.dart';
-import 'package:notify/src/components/show_delete_dialog.dart';
+import 'package:notify/src/components/dialogs/show_delete_dialog.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/components/view_models/user_list_tile.dart';
 import 'package:notify/src/models/notify_notification_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
-import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
+import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class NotificationView extends StatefulWidget {
@@ -113,12 +113,9 @@ class _NotificationViewState extends State<NotificationView> {
                             onTap: () async {
                               if (notification == null) return;
                               await Navigator.of(context).pushNamed(
-                                  ListUsersView.routeName,
+                                  NotificationParticipantsView.routeName,
                                   arguments: {
-                                    'title': 'Участники',
-                                    'callback': () => ApiService.notifications
-                                        .byIdParticipants(
-                                            uuid: notification.id),
+                                    'notification': notification,
                                   });
                             },
                             borderRadius: BorderRadius.circular(8),

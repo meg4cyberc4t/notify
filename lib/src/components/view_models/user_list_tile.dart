@@ -6,20 +6,29 @@ import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserListTile extends StatelessWidget {
-  const UserListTile({Key? key, required this.user, this.trailing})
-      : super(key: key);
+  const UserListTile({
+    Key? key,
+    required this.user,
+    this.trailing,
+    this.onTap,
+  }) : super(key: key);
   final NotifyUserQuick? user;
   final Widget? trailing;
+  final Function(NotifyUserQuick user)? onTap;
 
   @override
   Widget build(BuildContext context) {
+    Function(NotifyUserQuick user)? onPressed = onTap ??
+        (NotifyUserQuick user) {
+          Navigator.of(context).pushNamed(ProfileView.routeName, arguments: {
+            'id': user.id,
+            'preTitle': user.title,
+          });
+        };
     return ListTile(
       onTap: () {
         if (user == null) return;
-        Navigator.of(context).pushNamed(ProfileView.routeName, arguments: {
-          'id': user!.id,
-          'preTitle': user!.title,
-        });
+        onPressed(user!);
       },
       trailing: trailing,
       leading: LocalSplitter.withShimmer(

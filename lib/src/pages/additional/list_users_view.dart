@@ -8,12 +8,14 @@ class ListUsersView extends StatefulWidget {
     Key? key,
     required this.title,
     required this.callback,
+    this.onSelect,
   }) : super(key: key);
 
   static const String routeName = 'list_users_view';
 
   final String title;
   final Future<List<NotifyUserQuick>> Function() callback;
+  final Function(NotifyUserQuick e)? onSelect;
 
   @override
   State<ListUsersView> createState() => _ListUsersViewState();
@@ -38,7 +40,10 @@ class _ListUsersViewState extends State<ListUsersView>
         onData: (BuildContext context, List<NotifyUserQuick> users) =>
             ListView.builder(
           itemCount: users.length,
-          itemBuilder: (context, index) => UserListTile(user: users[index]),
+          itemBuilder: (context, index) => UserListTile(
+            user: users[index],
+            onTap: widget.onSelect,
+          ),
         ),
       ),
     );
