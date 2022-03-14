@@ -8,6 +8,8 @@ import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
+import 'package:notify/src/settings/sus_service.dart';
+import 'package:provider/provider.dart';
 
 class EditNotificationView extends StatefulWidget {
   const EditNotificationView({required this.notification, Key? key})
@@ -250,7 +252,10 @@ class _EditNotificationViewState extends State<EditNotificationView> {
               important: _importantNotifier.value,
               repeatMode: _repeatModeNotifier.value,
             );
-            Navigator.of(context).pop(true);
+            Provider.of<NotificationViewLocalState>(context, listen: false)
+                .updateState();
+            Provider.of<HomeLocalState>(context, listen: false).updateState();
+            Navigator.of(context).pop();
           } on ApiServiceException catch (err) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

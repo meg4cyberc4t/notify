@@ -8,6 +8,8 @@ import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/sus_service.dart';
+import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -25,12 +27,14 @@ class _HomeViewState extends State<HomeView>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async => setState(() {}),
-          child: LocalFutureBuilder.withLoading(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async =>
+            Provider.of<HomeLocalState>(context, listen: false).updateState(),
+        child: Consumer<HomeLocalState>(
+          builder: (context, value, _) => LocalFutureBuilder.withLoading(
             onError: (BuildContext context, Object error) =>
                 Text(error.toString()),
             future: () async {
@@ -66,7 +70,10 @@ class _HomeViewState extends State<HomeView>
                         icon: const Icon(Icons.add),
                         onPressed: () => Navigator.of(context)
                             .pushNamed(CreateNotificationView.routeName)
-                            .whenComplete(() => setState(() {})),
+                            .whenComplete(() => Provider.of<HomeLocalState>(
+                                    context,
+                                    listen: false)
+                                .updateState()),
                       )
                     ],
                   ),
@@ -75,15 +82,12 @@ class _HomeViewState extends State<HomeView>
                         notification: e,
                         onTap: () async {
                           if (e == null) return;
-                          final bool? result = await Navigator.of(context)
-                              .pushNamed<bool>(NotificationView.routeName,
-                                  arguments: {
+                          await Navigator.of(context).pushNamed<bool>(
+                              NotificationView.routeName,
+                              arguments: {
                                 'id': e.id,
                                 'cache': e,
                               });
-                          if (result != null && result) {
-                            setState(() {});
-                          }
                         },
                         onLongPress: () async {
                           if (e == null) return;
@@ -92,7 +96,9 @@ class _HomeViewState extends State<HomeView>
                             if (value != null && value) {
                               await ApiService.notifications
                                   .delete(notification: e);
-                              setState(() {});
+                              Provider.of<HomeLocalState>(context,
+                                      listen: false)
+                                  .updateState();
                             }
                           });
                         }),
@@ -125,14 +131,14 @@ class _HomeViewState extends State<HomeView>
             },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            tooltip: 'Create notification',
-            onPressed: () async {
-              await Navigator.of(context)
-                  .pushNamed(CreateNotificationView.routeName);
-              setState(() {});
-            }));
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        tooltip: 'Create notification',
+        onPressed: () async =>
+            Navigator.of(context).pushNamed(CreateNotificationView.routeName),
+      ),
+    );
   }
 }
 
