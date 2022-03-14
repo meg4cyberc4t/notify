@@ -1,0 +1,82 @@
+{
+  "appTitle": "Notify",
+  "ntfManager": "Менеджер напоминаний",
+  "authPreview": "Создайте пространство своих напоминаний!",
+  "getStarted": "Начать",
+  "signUp": "Регистрация",
+  "firstname": "Имя",
+  "lastname": "Фамилия",
+  "email": "Почта",
+  "emailHint": "youremail@mail.com",
+  "status": "Статус",
+  "password": "Пароль",
+  "continueButton": "Продолжить",
+  "backButton": "Назад",
+  "chooseYourColor": "Выберите цвет",
+  "signIn": "Авторизация",
+  "checkEmailViewPart1": "Для подтверждения, мы отправили вам письмо на",
+  "checkEmailViewPart2": "Пожалуйста, проверьте ваш почтовый ящик!",
+  "loading": "Загрузка",
+  "follow": "Подписаться",
+  "unfollow": "Отписаться",
+  "subscribers": "Подписчики",
+  "subscriptions": "Подписки",
+  "remind": "Напомнить",
+  "edit": "Изменить",
+  "yes": "Да",
+  "no": "Нет",
+  "title": "Название",
+  "description": "Описание",
+  "date": "Дата",
+  "time": "Время",
+  "repeatMode": "Повторение",
+  "important": "Важно",
+  "enterSomeText": "Поле не может быть пустым!",
+  "incorrectValue": "Некорректное значение!",
+  "oneTime": "Один раз",
+  "oneTimeDescription": "Если нужно напомнить один раз",
+  "everyDay": "Каждый день",
+  "everyDayDescription": "Будем напоминать каждый раз в определённое время",
+  "everyWeek": "Каждую неделю",
+  "everyWeekDescription": "Будем напоминать каждый раз в определённое время и день",
+  "everyMonth": "Каждый месяц",
+  "everyMonthDescription": "Напомните себе об этом каждый месяц",
+  "everyYear": "Каждый год",
+  "everyYearDescription": "Напомним раз в год!",
+  "createNotification": "Создать напоминание",
+  "editNotification": "Редактировать напоминание",
+  "notifications": "Напоминания",
+  "recentNotifications": "Последние напоминания", 
+  "notification": "Уведомление",
+  "participants": "Участники",
+  "creator": "Создатель",
+  "delete": "Удалить",
+  "delay": "Отложить",
+  "sendInvation": "Отправить приглашение",
+  "exclude": "Исключить",
+  "excludeMessage": "Вы точно хотите исключить\"{title}\"?",
+  "@excludeMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "deleteMessage": "Вы точно хотите удалить \"{title}\"?",
+  "@deleteMessage": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "homeviewTitle": "Домашняя страница",
+  "minutesLeft": "{minutes}м осталось",
+  "@minutesLeft": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "minutesPassed": "{minutes}м прошло",
+  "@minutesPassed": {
+    "placeholders": {
+      "minutes": {}
+    }
+  }
+}
