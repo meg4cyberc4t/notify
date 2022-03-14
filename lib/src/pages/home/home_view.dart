@@ -39,10 +39,7 @@ class _HomeViewState extends State<HomeView>
               //  await ApiService.folders.get()
               return __SeparateVariable(
                 folders: [],
-                notifications: ntfs
-                    .where(
-                        (element) => element.deadline.day == DateTime.now().day)
-                    .toList(),
+                notifications: ntfs,
               );
             }(),
             onLoading: (
@@ -63,7 +60,7 @@ class _HomeViewState extends State<HomeView>
                         Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
-                    title: const Text('Today notifications'),
+                    title: const Text('Recent notifications'),
                     actions: [
                       IconButton(
                         icon: const Icon(Icons.add),
