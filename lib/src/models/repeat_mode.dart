@@ -16,7 +16,7 @@ DateTime getRepeatModeNextDateTime(DateTime deadline, RepeatMode rp) =>
       (rp == RepeatMode.everyday)
           ? deadline.day + 1
           : (rp == RepeatMode.everyweek)
-              ? deadline.month + 7
+              ? deadline.day + 7
               : deadline.day,
       deadline.hour,
       deadline.minute,
