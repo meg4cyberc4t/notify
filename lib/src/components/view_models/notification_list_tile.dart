@@ -62,6 +62,8 @@ class NotificationListTile extends StatelessWidget {
               .bodySmall
               ?.copyWith(color: enabled ? null : disabledColor),
           textAlign: TextAlign.start,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       );
     }
@@ -75,6 +77,8 @@ class NotificationListTile extends StatelessWidget {
             .titleMedium
             ?.copyWith(color: enabled ? null : disabledColor),
         textAlign: TextAlign.start,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
     Widget trailing = const SizedBox();
@@ -104,24 +108,31 @@ class NotificationListTile extends StatelessWidget {
       onLongPress: onLongPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                leading,
-                const SizedBox(width: leadingWidth),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
                   children: [
-                    title,
-                    if (subtitle != null) subtitle,
+                    leading,
+                    const SizedBox(width: leadingWidth),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          title,
+                          if (subtitle != null) subtitle,
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            ),
-            trailing,
-          ],
+              ),
+              const SizedBox(width: leadingWidth),
+              trailing,
+            ],
+          ),
         ),
       ),
     );
