@@ -174,7 +174,7 @@ class NotificationsResponses {
               ApiServiceConfig.notificationsControllerPrefix +
               '/$uuid' +
               ApiServiceConfig.exclude +
-              '?inviteUserId=$excludeUserId'),
+              '?excludeUserId=$excludeUserId'),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
