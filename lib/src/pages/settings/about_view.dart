@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class AboutView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('О приложении'),
+        title: Text(AppLocalizations.of(context)!.aboutApp),
       ),
       body: LocalFutureBuilder(
         future: PackageInfo.fromPlatform(),
@@ -35,7 +36,7 @@ class AboutView extends StatelessWidget {
               ListTile(
                 onTap: () => launch(_codeUrl),
                 title: Text(
-                  'Приложение: ${info.appName}',
+                  info.appName,
                   textAlign: TextAlign.center,
                 ),
                 subtitle: Text(
@@ -46,21 +47,22 @@ class AboutView extends StatelessWidget {
               ListTile(
                 onTap: () => launch(_releasesUrl),
                 title: Text(
-                  'Версия: ${info.version}+${info.buildNumber}',
+                  AppLocalizations.of(context)!
+                      .version(info.version, info.buildNumber),
                   textAlign: TextAlign.center,
                 ),
               ),
               ListTile(
                 onTap: () => launch(_codeUrl),
-                title: const Text(
-                  'Исходный код',
+                title: Text(
+                  AppLocalizations.of(context)!.sourceCode,
                   textAlign: TextAlign.center,
                 ),
               ),
               ListTile(
                 onTap: () => launch(_newIssueUrl),
-                title: const Text(
-                  'Сообщить об ошибке',
+                title: Text(
+                  AppLocalizations.of(context)!.reportBug,
                   textAlign: TextAlign.center,
                 ),
               ),

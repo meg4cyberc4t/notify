@@ -5,6 +5,7 @@ import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/settings/settings_controller.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -26,15 +27,15 @@ class SettingsView extends StatelessWidget {
             ),
           ),
         );
-
+// AppLocalizations.of(context)!
     return Scaffold(
-      appBar: AppBar(title: const Text('Настройки')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings)),
       body: Wrap(
         children: [
-          _localHeadline('Основные'),
+          _localHeadline(AppLocalizations.of(context)!.settingsMain),
           ListTile(
-            title: const Text('Тема приложения'),
-            subtitle: Text(getThemeModeTitle(
+            title: Text(AppLocalizations.of(context)!.applicationTheme),
+            subtitle: Text(getThemeModeTitle(context,
                 Provider.of<ThemeNotifier>(context, listen: false).themeMode)),
             onTap: () {
               int value = Provider.of<ThemeNotifier>(context, listen: false)
@@ -50,7 +51,7 @@ class SettingsView extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              'Выйти',
+              AppLocalizations.of(context)!.logout,
               style: TextStyle(color: Theme.of(context).errorColor),
             ),
             onTap: () async {
@@ -63,10 +64,10 @@ class SettingsView extends StatelessWidget {
             },
           ),
           separator,
-          _localHeadline('Дополнительно'),
+          _localHeadline(AppLocalizations.of(context)!.settingsAdditional),
           ListTile(
             onTap: () => Navigator.of(context).pushNamed(AboutView.routeName),
-            title: const Text('О приложении'),
+            title: Text(AppLocalizations.of(context)!.aboutApp),
             leading: const Icon(Icons.info),
             minLeadingWidth: 0,
           ),
