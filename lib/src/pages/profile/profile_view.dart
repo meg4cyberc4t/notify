@@ -59,11 +59,8 @@ class _ProfileViewState extends State<ProfileView>
                 if (user?.itsMe ?? false)
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () async {
+                    onPressed: () {
                       Navigator.of(context).pushNamed(SettingsView.routeName);
-                      // await FirebaseAuth.instance.signOut();
-                      // await Navigator.of(context)
-                      //     .pushReplacementNamed(AuthPreview.routeName);
                     },
                   ),
               ],

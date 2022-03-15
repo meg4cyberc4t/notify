@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/methods/get_theme_mode_title.dart';
+import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
-import 'package:notify/src/pages/settings/feedback_view.dart';
 import 'package:notify/src/settings/settings_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,7 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(title: const Text('Настройки')),
       body: Wrap(
         children: [
+          _localHeadline('Основные'),
           ListTile(
             title: const Text('Тема приложения'),
             subtitle: Text(getThemeModeTitle(
@@ -46,19 +48,26 @@ class SettingsView extends StatelessWidget {
                   ThemeMode.values[value];
             },
           ),
+          ListTile(
+            title: Text(
+              'Выйти',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+            onTap: () async {
+              while (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+              await FirebaseAuth.instance.signOut();
+              await Navigator.of(context)
+                  .popAndPushNamed(AuthPreview.routeName);
+            },
+          ),
           separator,
           _localHeadline('Дополнительно'),
           ListTile(
             onTap: () => Navigator.of(context).pushNamed(AboutView.routeName),
             title: const Text('О приложении'),
             leading: const Icon(Icons.info),
-            minLeadingWidth: 0,
-          ),
-          ListTile(
-            onTap: () =>
-                Navigator.of(context).pushNamed(FeedbackView.routeName),
-            title: const Text('Обратная связь'),
-            leading: const Icon(Icons.report),
             minLeadingWidth: 0,
           ),
         ],

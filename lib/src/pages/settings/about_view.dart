@@ -10,6 +10,8 @@ class AboutView extends StatelessWidget {
   static const String _codeUrl = 'https://github.com/meg4cyberc4t/notify';
   static const String _releasesUrl =
       'https://github.com/meg4cyberc4t/notify/releases/';
+  static const String _newIssueUrl =
+      'https://github.com/meg4cyberc4t/notify/issues/new';
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,20 @@ class AboutView extends StatelessWidget {
                 onTap: () => launch(_releasesUrl),
                 title: Text(
                   'Версия: ${info.version}+${info.buildNumber}',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              ListTile(
+                onTap: () => launch(_codeUrl),
+                title: const Text(
+                  'Исходный код',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              ListTile(
+                onTap: () => launch(_newIssueUrl),
+                title: const Text(
+                  'Сообщить об ошибке',
                   textAlign: TextAlign.center,
                 ),
               ),

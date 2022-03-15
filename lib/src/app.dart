@@ -36,7 +36,6 @@ import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/search/search_view.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
-import 'package:notify/src/pages/settings/feedback_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/sus_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
@@ -184,11 +183,6 @@ class MyApp extends StatelessWidget {
                     return MaterialPageRoute(
                       settings: routeSettings,
                       builder: (BuildContext context) => const AboutView(),
-                    );
-                  case FeedbackView.routeName:
-                    return MaterialPageRoute(
-                      settings: routeSettings,
-                      builder: (BuildContext context) => const FeedbackView(),
                     );
                   default:
                     return MaterialPageRoute(
