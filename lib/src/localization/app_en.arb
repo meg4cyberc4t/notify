@@ -78,5 +78,24 @@
     "placeholders": {
       "minutes": {}
     }
-  }
+  },
+  "settings": "Settings",
+  "settingsMain": "Main",
+  "settingsAdditional": "Additional",
+  "aboutApp": "About app",
+  "logout": "Logout",
+  "applicationTheme": "Application Theme",
+  "system": "System",
+  "dark": "Dark",
+  "light": "Light",
+  "version": "Version: {version}+{buildNumber}",
+  "@version": {
+    "placeholders": {
+      "version": {},
+      "buildNumber": {}
+    }
+  },
+  "sourceCode": "Source code",
+  "reportBug": "Report a bug"
+
 }

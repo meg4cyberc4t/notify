@@ -78,5 +78,23 @@
     "placeholders": {
       "minutes": {}
     }
-  }
+  },
+  "settings": "Настройки",
+  "settingsMain": "Основные",
+  "settingsAdditional": "Дополнительные",
+  "aboutApp": "О приложении",
+  "logout": "Выйти",
+  "applicationTheme": "Тема приложения",
+  "system": "Системная",
+  "dark": "Тёмная",
+  "light": "Светлая",
+  "version": "Версия: {version}+{buildNumber}",
+  "@version": {
+    "placeholders": {
+      "version": {},
+      "buildNumber": {}
+    }
+  },
+  "sourceCode": "Исходный код",
+  "reportBug": "Сообщить об ошибке"
 }

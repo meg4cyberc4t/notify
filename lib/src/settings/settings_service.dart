@@ -5,17 +5,15 @@ class SettingsService {
   SettingsService._();
   static SettingsService instance = SettingsService._();
 
-  late final SharedPreferences preferences;
-
   Future<void> init() async {
     preferences = await SharedPreferences.getInstance();
   }
 
-  ThemeMode themeMode() {
-    return ThemeMode.values[preferences.getInt('ThemeMode') ?? 0];
-  }
+  late final SharedPreferences preferences;
 
-  void updateThemeMode(ThemeMode theme) {
-    preferences.setInt('ThemeMode', ThemeMode.values.indexOf(theme));
-  }
+  ThemeMode get themeMode =>
+      ThemeMode.values[preferences.getInt('ThemeMode') ?? 0];
+
+  set themeMode(ThemeMode theme) =>
+      preferences.setInt('ThemeMode', ThemeMode.values.indexOf(theme));
 }

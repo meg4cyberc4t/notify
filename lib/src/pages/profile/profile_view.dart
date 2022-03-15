@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
@@ -6,8 +5,8 @@ import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
-import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
+import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,6 +29,7 @@ class _ProfileViewState extends State<ProfileView>
   final GlobalKey<ScaffoldState> _scaffoldKey =
       GlobalKey<ScaffoldState>(debugLabel: 'profile_view');
   final ScrollController _scrollController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -58,11 +58,9 @@ class _ProfileViewState extends State<ProfileView>
               actions: [
                 if (user?.itsMe ?? false)
                   IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      await Navigator.of(context)
-                          .pushReplacementNamed(AuthPreview.routeName);
+                    icon: const Icon(Icons.settings),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(SettingsView.routeName);
                     },
                   ),
               ],

@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'settings_service.dart';
 
-class SettingsController with ChangeNotifier {
+class ThemeNotifier with ChangeNotifier {
+  ThemeNotifier() {
+    _themeMode = SettingsService.instance.themeMode;
+  }
   late ThemeMode _themeMode;
 
   ThemeMode get themeMode => _themeMode;
 
-  Future<void> loadSettings() async {
-    _themeMode = SettingsService.instance.themeMode();
+  set themeMode(ThemeMode value) {
+    if (value == _themeMode) return;
+    _themeMode = value;
+    SettingsService.instance.themeMode = value;
     notifyListeners();
-  }
-
-  Future<void> updateThemeMode(ThemeMode? newThemeMode) async {
-    if (newThemeMode == null) return;
-    if (newThemeMode == _themeMode) return;
-    _themeMode = newThemeMode;
-    notifyListeners();
-    SettingsService.instance.updateThemeMode(newThemeMode);
   }
 }
