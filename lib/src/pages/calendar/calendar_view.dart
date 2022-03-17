@@ -8,6 +8,7 @@ import 'package:notify/src/pages/additional/notification/notification_view.dart'
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarView extends StatefulWidget {
   const CalendarView({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class _CalendarViewState extends State<CalendarView>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calendar'),
+        title: Text(AppLocalizations.of(context)!.calendar),
       ),
       body: Consumer<CalendarPageState>(
         builder: (context, _, __) => RefreshIndicator(
@@ -116,9 +117,10 @@ class _CalendarViewState extends State<CalendarView>
                                   child: Center(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Icon(Icons.search_off_outlined),
-                                        Text('Не найдено'),
+                                      children: [
+                                        const Icon(Icons.search_off_outlined),
+                                        Text(AppLocalizations.of(context)!
+                                            .notFound),
                                       ],
                                     ),
                                   ),

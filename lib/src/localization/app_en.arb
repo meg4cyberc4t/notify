@@ -96,6 +96,7 @@
     }
   },
   "sourceCode": "Source code",
-  "reportBug": "Report a bug"
-
+  "reportBug": "Report a bug",
+  "calendar": "Calendar",
+  "notFound": "Not found"
 }
