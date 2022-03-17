@@ -111,9 +111,17 @@ class _CalendarViewState extends State<CalendarView>
                                 ),
                               ),
                               if (ntfsItems.isEmpty)
-                                const SizedBox(
+                                SizedBox(
                                   height: 300,
-                                  child: Center(child: Text('not found')),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: const [
+                                        Icon(Icons.search_off_outlined),
+                                        Text('Не найдено'),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ...ntfsItems.map(
                                 (e) => NotificationListTile(
