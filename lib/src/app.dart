@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
               create: (context) => NotificationParticipantsLocalState()),
           ChangeNotifierProvider(create: (context) => ThemeNotifier()),
+          ChangeNotifierProvider(create: (context) => CalendarPageState()),
         ],
         builder: (context, child) {
           return Consumer<ThemeNotifier>(
