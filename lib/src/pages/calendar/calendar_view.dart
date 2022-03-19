@@ -81,7 +81,8 @@ class _CalendarViewState extends State<CalendarView>
                                             decoration: const InputDecoration(
                                               labelText: 'Даты',
                                               hintText: 'Выберите диапазон дат',
-                                              icon: Icon(Icons.calendar_month),
+                                              suffixIcon:
+                                                  Icon(Icons.calendar_month),
                                             ),
                                             textInputAction:
                                                 TextInputAction.next,
