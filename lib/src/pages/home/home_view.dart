@@ -82,22 +82,20 @@ class _HomeViewState extends State<HomeView>
                   ...ntfs.map(
                     (e) => NotificationListTile(
                         notification: e,
-                        onTap: () async {
-                          if (e == null) return;
+                        onTap: (ntf) async {
                           await Navigator.of(context).pushNamed<bool>(
                               NotificationView.routeName,
                               arguments: {
-                                'id': e.id,
+                                'id': ntf.id,
                                 'cache': e,
                               });
                         },
-                        onLongPress: () async {
-                          if (e == null) return;
-                          showDeleteDialog(context: context, title: e.title)
+                        onLongPress: (ntf) async {
+                          showDeleteDialog(context: context, title: ntf.title)
                               .then((value) async {
                             if (value != null && value) {
                               await ApiService.notifications
-                                  .delete(notification: e);
+                                  .delete(notification: ntf);
                               Provider.of<HomeLocalState>(context,
                                       listen: false)
                                   .updateState();

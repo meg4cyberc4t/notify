@@ -98,5 +98,20 @@
   "sourceCode": "Исходный код",
   "reportBug": "Сообщить об ошибке",
   "calendar": "Календарь",
-  "notFound": "Не найдено"
+  "notFound": "Не найдено",
+  "search": "Поиск",
+  "enterToSearch": "Введите для поиска",
+  "search_hint": "Поиск в Notify",
+  "usersWithWord": "Пользователи с \"{word}\"",
+  "@usersWithWord": {
+    "placeholders": {
+      "word": {}
+    }
+  },
+  "notificationsWithWord": "Напоминания с \"{word}\"",
+  "@notificationsWithWord": {
+    "placeholders": {
+      "word": {}
+    }
+  }
 }

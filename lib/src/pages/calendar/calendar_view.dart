@@ -128,23 +128,21 @@ class _CalendarViewState extends State<CalendarView>
                               ...ntfsItems.map(
                                 (e) => NotificationListTile(
                                   notification: e,
-                                  onTap: () async {
-                                    if (e == null) return;
+                                  onTap: (ntf) async {
                                     await Navigator.of(context).pushNamed<bool>(
                                         NotificationView.routeName,
                                         arguments: {
-                                          'id': e.id,
-                                          'cache': e,
+                                          'id': ntf.id,
+                                          'cache': ntf,
                                         });
                                   },
-                                  onLongPress: () async {
-                                    if (e == null) return;
+                                  onLongPress: (ntf) async {
                                     showDeleteDialog(
-                                            context: context, title: e.title)
+                                            context: context, title: ntf.title)
                                         .then((value) async {
                                       if (value != null && value) {
                                         await ApiService.notifications
-                                            .delete(notification: e);
+                                            .delete(notification: ntf);
                                         Provider.of<CalendarPageState>(context,
                                                 listen: false)
                                             .updateState();

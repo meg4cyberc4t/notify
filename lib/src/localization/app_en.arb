@@ -98,5 +98,20 @@
   "sourceCode": "Source code",
   "reportBug": "Report a bug",
   "calendar": "Calendar",
-  "notFound": "Not found"
+  "notFound": "Not found",
+  "search": "Search",
+  "enterToSearch": "Enter to search",
+  "search_hint": "Search Notify",
+  "usersWithWord": "Users with \"{word}\"",
+  "@usersWithWord": {
+    "placeholders": {
+      "word": {}
+    }
+  },
+  "notificationsWithWord": "Notifications with \"{word}\"",
+  "@notificationsWithWord": {
+    "placeholders": {
+      "word": {}
+    }
+  }
 }

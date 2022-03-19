@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
-import 'package:notify/src/components/view_models/user_list_tile.dart';
-import 'package:notify/src/models/notify_user_quick.dart';
+import 'package:notify/src/components/view_models/notification_list_tile.dart';
+import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ListUsersView extends StatefulWidget {
-  const ListUsersView({
+class ListNotificationsView extends StatefulWidget {
+  const ListNotificationsView({
     Key? key,
     required this.title,
     required this.callback,
     this.onSelect,
   }) : super(key: key);
 
-  static const String routeName = 'list_users_view';
+  static const String routeName = 'list_notifications_view';
 
   final String title;
-  final Future<List<NotifyUserQuick>> Function() callback;
-  final Function(NotifyUserQuick e)? onSelect;
+  final Future<List<NotifyNotificationQuick>> Function() callback;
+  final Function(NotifyNotificationQuick e)? onSelect;
 
   @override
-  State<ListUsersView> createState() => _ListUsersViewState();
+  State<ListNotificationsView> createState() => _ListNotificationsViewState();
 }
 
-class _ListUsersViewState extends State<ListUsersView>
+class _ListNotificationsViewState extends State<ListNotificationsView>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: LocalFutureBuilder<List<NotifyUserQuick>>(
+      body: LocalFutureBuilder<List<NotifyNotificationQuick>>(
           future: widget.callback(),
           onError: (BuildContext context, Object error) {
             debugPrint(error.toString());
@@ -38,8 +38,8 @@ class _ListUsersViewState extends State<ListUsersView>
           },
           onProgress: (BuildContext context) =>
               const Center(child: CircularProgressIndicator()),
-          onData: (BuildContext context, List<NotifyUserQuick> users) {
-            if (users.isEmpty) {
+          onData: (BuildContext context, List<NotifyNotificationQuick> ntfs) {
+            if (ntfs.isEmpty) {
               return SizedBox(
                 height: 300,
                 child: Center(
@@ -57,9 +57,9 @@ class _ListUsersViewState extends State<ListUsersView>
               );
             }
             return ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) => UserListTile(
-                user: users[index],
+              itemCount: ntfs.length,
+              itemBuilder: (context, index) => NotificationListTile(
+                notification: ntfs[index],
                 onTap: widget.onSelect,
               ),
             );
