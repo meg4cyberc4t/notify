@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchView extends StatefulWidget {
   static const String routeName = '/search_view';
@@ -18,7 +19,7 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search'),
+        title: Text(AppLocalizations.of(context)!.search),
       ),
       body: Column(
         children: [
@@ -27,9 +28,9 @@ class _SearchViewState extends State<SearchView> {
             child: TextField(
               controller: _searchController,
               autofocus: true,
-              decoration: const InputDecoration(
-                suffixIcon: Icon(Icons.search),
-                hintText: 'Search Notify',
+              decoration: InputDecoration(
+                suffixIcon: const Icon(Icons.search),
+                hintText: AppLocalizations.of(context)!.search_hint,
               ),
             ),
           ),
@@ -42,10 +43,10 @@ class _SearchViewState extends State<SearchView> {
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.search_outlined),
+                      children: [
+                        const Icon(Icons.search_outlined),
                         Text(
-                          'Введите для поиска',
+                          AppLocalizations.of(context)!.enterToSearch,
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -59,11 +60,13 @@ class _SearchViewState extends State<SearchView> {
                     ListTile(
                       onTap: () => Navigator.of(context)
                           .pushNamed(ListUsersView.routeName, arguments: {
-                        'title': 'Users with "${value.text}"',
+                        'title': AppLocalizations.of(context)!
+                            .usersWithWord(value.text),
                         'callback': () =>
                             ApiService.search.fromUsers(pattern: value.text)
                       }),
-                      title: Text('Users with "${value.text}"'),
+                      title: Text(AppLocalizations.of(context)!
+                          .usersWithWord(value.text)),
                       leading: const Icon(Icons.person_search_outlined),
                       minLeadingWidth: 0,
                       trailing: const Icon(Icons.navigate_next_outlined),
@@ -72,11 +75,13 @@ class _SearchViewState extends State<SearchView> {
                       onTap: () => Navigator.of(context).pushNamed(
                           ListNotificationsView.routeName,
                           arguments: {
-                            'title': 'Notifications with "${value.text}"',
+                            'title': AppLocalizations.of(context)!
+                                .notificationsWithWord(value.text),
                             'callback': () => ApiService.search
                                 .fromNotifications(pattern: value.text)
                           }),
-                      title: Text('Notifications with "${value.text}"'),
+                      title: Text(AppLocalizations.of(context)!
+                          .notificationsWithWord(value.text)),
                       leading: const Icon(Icons.list_alt),
                       minLeadingWidth: 0,
                       trailing: const Icon(Icons.navigate_next_outlined),
