@@ -135,7 +135,7 @@ class _ApiServiceUsers {
 }
 
 class _ApiServiceSearch {
-  Future<List<NotifyUserDetailed>> fromUsers({
+  Future<List<NotifyUserQuick>> fromUsers({
     required String pattern,
     int? limit,
     int? offset,
@@ -148,9 +148,9 @@ class _ApiServiceSearch {
         token: await ApiServiceConfig.token,
       ),
     );
-    List<NotifyUserDetailed> list = [];
+    List<NotifyUserQuick> list = [];
     for (var item in jsonDecode(res.body)) {
-      list.add(NotifyUserDetailed.fromJson(item));
+      list.add(NotifyUserQuick.fromJson(item));
     }
     return list;
   }
