@@ -13,8 +13,8 @@ class NotificationListTile extends StatelessWidget {
     Key? key,
   }) : super(key: key);
   final NotifyNotificationQuick? notification;
-  final VoidCallback? onTap;
-  final VoidCallback? onLongPress;
+  final Function(NotifyNotificationQuick)? onTap;
+  final Function(NotifyNotificationQuick)? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +106,14 @@ class NotificationListTile extends StatelessWidget {
 
     const double leadingWidth = 16;
     return InkWell(
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: () {
+        if (notification == null) return;
+        if (onTap != null) onTap!(notification!);
+      },
+      onLongPress: () {
+        if (notification == null) return;
+        if (onLongPress != null) onLongPress!(notification!);
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
         child: SizedBox(
