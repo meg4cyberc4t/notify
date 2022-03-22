@@ -12,7 +12,6 @@ import 'package:notify/src/pages/additional/notification/edit_notification_view.
 import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service.dart';
-import 'package:provider/provider.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({

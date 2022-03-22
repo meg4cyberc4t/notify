@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+export 'package:provider/provider.dart';
 
 /// Screen Update Service
 /// The use of these states is not supposed to be Cubit,

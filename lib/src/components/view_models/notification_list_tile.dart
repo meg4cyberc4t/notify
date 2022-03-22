@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:notify/src/components/dialogs/show_delete_dialog.dart';
 import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/additional/notification/notification_view.dart';
+import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/sus_service.dart';
 
-class NotificationListTile extends StatelessWidget {
+class NotificationListTile extends StatefulWidget {
   const NotificationListTile({
     required this.notification,
     this.onLongPress,
@@ -17,7 +21,29 @@ class NotificationListTile extends StatelessWidget {
   final Function(NotifyNotificationQuick)? onLongPress;
 
   @override
+  State<NotificationListTile> createState() => _NotificationListTileState();
+}
+
+class _NotificationListTileState extends State<NotificationListTile> {
+  @override
   Widget build(BuildContext context) {
+    Function(NotifyNotificationQuick)? onTap = widget.onTap ??
+        (NotifyNotificationQuick ntf) async {
+          await Navigator.of(context).pushNamed<bool>(
+              NotificationView.routeName,
+              arguments: {'id': ntf.id, 'cache': ntf});
+        };
+    Function(NotifyNotificationQuick)? onLongPress = widget.onLongPress ??
+        (NotifyNotificationQuick ntf) async {
+          await showDeleteDialog(context: context, title: ntf.title)
+              .then((value) async {
+            if (value != null && value) {
+              await ApiService.notifications.delete(notification: ntf);
+              Provider.of<HomeLocalState>(context, listen: false).updateState();
+            }
+          });
+        };
+
     String timeLeftString(DateTime deadline) {
       final Duration difference = deadline.difference(DateTime.now());
       if (difference.inDays >= 1) {
@@ -35,12 +61,12 @@ class NotificationListTile extends StatelessWidget {
       return DateFormat('HH:mm').format(deadline);
     }
 
-    final enabled =
-        notification != null && DateTime.now().isBefore(notification!.deadline);
+    final enabled = widget.notification != null &&
+        DateTime.now().isBefore(widget.notification!.deadline);
     final disabledColor = Theme.of(context).hintColor;
-    final leadingColor = notification == null
+    final leadingColor = widget.notification == null
         ? Theme.of(context).hintColor
-        : notification!.important
+        : widget.notification!.important
             ? Colors.red
             : Theme.of(context).colorScheme.primary;
     final leading = Padding(
@@ -52,13 +78,15 @@ class NotificationListTile extends StatelessWidget {
       ),
     );
     Widget? subtitle;
-    if ((notification?.description ?? AppLocalizations.of(context)!.loading)
+    if ((widget.notification?.description ??
+            AppLocalizations.of(context)!.loading)
         .isNotEmpty) {
       subtitle = LocalSplitter.withShimmer(
-        isLoading: notification == null,
+        isLoading: widget.notification == null,
         context: context,
         child: Text(
-          notification?.description ?? AppLocalizations.of(context)!.loading,
+          widget.notification?.description ??
+              AppLocalizations.of(context)!.loading,
           style: Theme.of(context)
               .textTheme
               .bodySmall
@@ -71,9 +99,9 @@ class NotificationListTile extends StatelessWidget {
     }
     final title = LocalSplitter.withShimmer(
       context: context,
-      isLoading: notification == null,
+      isLoading: widget.notification == null,
       child: Text(
-        notification?.title ?? AppLocalizations.of(context)!.loading,
+        widget.notification?.title ?? AppLocalizations.of(context)!.loading,
         style: Theme.of(context)
             .textTheme
             .titleMedium
@@ -84,17 +112,17 @@ class NotificationListTile extends StatelessWidget {
       ),
     );
     Widget trailing = const SizedBox();
-    if (notification != null) {
+    if (widget.notification != null) {
       trailing = Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            timeLeftString(notification!.deadline),
+            timeLeftString(widget.notification!.deadline),
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
           Text(
-            getRepeatModeTitle(context, notification!.repeatMode),
+            getRepeatModeTitle(context, widget.notification!.repeatMode),
             style: Theme.of(context)
                 .textTheme
                 .caption!
@@ -107,12 +135,12 @@ class NotificationListTile extends StatelessWidget {
     const double leadingWidth = 16;
     return InkWell(
       onTap: () {
-        if (notification == null) return;
-        if (onTap != null) onTap!(notification!);
+        if (widget.notification == null) return;
+        onTap(widget.notification!);
       },
       onLongPress: () {
-        if (notification == null) return;
-        if (onLongPress != null) onLongPress!(notification!);
+        if (widget.notification == null) return;
+        onLongPress(widget.notification!);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
