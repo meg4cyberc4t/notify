@@ -16,6 +16,7 @@ class NotifyUserDetailed {
     required this.subscribersCount,
     required this.follow,
     required this.itsMe,
+    required this.numberOfNotifications,
   });
 
   factory NotifyUserDetailed.fromJson(Map<String, dynamic> json) =>
@@ -37,4 +38,5 @@ class NotifyUserDetailed {
   final int subscribersCount;
   final bool follow;
   final bool itsMe;
+  final int numberOfNotifications;
 }

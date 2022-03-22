@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 import 'package:notify/src/settings/sus_service.dart';
-import 'package:provider/provider.dart';
 
 class CreateNotificationView extends StatefulWidget {
   const CreateNotificationView({Key? key}) : super(key: key);

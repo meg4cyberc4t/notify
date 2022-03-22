@@ -4,6 +4,7 @@ import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
+import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
@@ -267,13 +268,18 @@ class _ProfileViewState extends State<ProfileView>
                   ),
                   Expanded(
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
                       onTap: () {
-                        Navigator.of(context).pushNamed(ProfileView.routeName,
+                        if (user == null) return;
+                        Navigator.of(context).pushNamed(
+                            ListNotificationsView.routeName,
                             arguments: {
-                              'id': 'a0919472-82a5-42d5-9716-85affff81f35'
+                              'title': AppLocalizations.of(context)!
+                                  .generalReminders,
+                              'callback': () =>
+                                  ApiService.users.notifications(user.id)
                             });
                       },
-                      borderRadius: BorderRadius.circular(8),
                       child: SizedBox(
                         height: 60,
                         child: LocalSplitter.withShimmer(
@@ -284,25 +290,18 @@ class _ProfileViewState extends State<ProfileView>
                             children: [
                               Expanded(
                                 child: Center(
-                                  child: Icon(
-                                    Icons.add_alert,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .headline4!
-                                        .color,
-                                    semanticLabel:
-                                        AppLocalizations.of(context)!.remind,
-                                    size: Theme.of(context)
-                                            .textTheme
-                                            .headline4!
-                                            .fontSize! -
-                                        8,
+                                  child: Text(
+                                    user?.numberOfNotifications.toString() ??
+                                        '0',
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
                                   ),
                                 ),
                               ),
                               Text(
-                                AppLocalizations.of(context)!.remind,
+                                'Напоминания',
                                 style: Theme.of(context).textTheme.bodyText2,
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),

@@ -121,6 +121,20 @@ class _ApiServiceUsers {
     return list;
   }
 
+  Future<List<NotifyNotificationQuick>> notifications(String uuid) async {
+    var res = await errorsHandlerMiddlware(
+      callback: UsersResponses.notifications(
+        token: await ApiServiceConfig.token,
+        uuid: uuid,
+      ),
+    );
+    List<NotifyNotificationQuick> list = [];
+    for (var item in jsonDecode(res.body)) {
+      list.add(NotifyNotificationQuick.fromJson(item));
+    }
+    return list;
+  }
+
   Future<List<NotifyUserQuick>> subscriptions(String uuid) async {
     var res = await errorsHandlerMiddlware(
       callback: UsersResponses.subscriptions(

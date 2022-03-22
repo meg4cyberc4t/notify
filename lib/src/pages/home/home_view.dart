@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
-import 'package:notify/src/components/dialogs/show_delete_dialog.dart';
 import 'package:notify/src/models/notify_folder_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
-import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeView extends StatefulWidget {
@@ -80,28 +76,7 @@ class _HomeViewState extends State<HomeView>
                     ],
                   ),
                   ...ntfs.map(
-                    (e) => NotificationListTile(
-                        notification: e,
-                        onTap: (ntf) async {
-                          await Navigator.of(context).pushNamed<bool>(
-                              NotificationView.routeName,
-                              arguments: {
-                                'id': ntf.id,
-                                'cache': e,
-                              });
-                        },
-                        onLongPress: (ntf) async {
-                          showDeleteDialog(context: context, title: ntf.title)
-                              .then((value) async {
-                            if (value != null && value) {
-                              await ApiService.notifications
-                                  .delete(notification: ntf);
-                              Provider.of<HomeLocalState>(context,
-                                      listen: false)
-                                  .updateState();
-                            }
-                          });
-                        }),
+                    (e) => NotificationListTile(notification: e),
                   ),
                   // AppBar(
                   //   centerTitle: true,

@@ -40,7 +40,6 @@ import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/sus_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
-import 'package:provider/provider.dart';
 
 import 'settings/settings_controller.dart';
 
