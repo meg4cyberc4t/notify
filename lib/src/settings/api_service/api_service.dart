@@ -27,21 +27,20 @@ class ApiService {
 }
 
 class _ApiServiceUser {
-  Future<NotifyUserDetailed> post({
+  Future<void> post({
     required String firstname,
     required String lastname,
     required String status,
     Color? color,
   }) async {
     color ??= Colors.primaries[Random().nextInt(Colors.primaries.length)];
-    var res = await errorsHandlerMiddlware(
+    await errorsHandlerMiddlware(
         callback: UserResponses.post(
             firstname: firstname,
             lastname: lastname,
             status: status,
             color: color,
             token: await ApiServiceConfig.token));
-    return NotifyUserDetailed.fromJson(jsonDecode(res.body));
   }
 
   Future<NotifyUserDetailed> get() async {

@@ -23,6 +23,7 @@ class _AuthPreviewState extends State<AuthPreview> {
 
   @override
   Widget build(BuildContext context) {
+    bool spamButtonProtection = false;
     return Scaffold(
       key: _scaffoldKey,
       restorationId: AuthPreview.routeName,
@@ -67,7 +68,9 @@ class _AuthPreviewState extends State<AuthPreview> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () async {
+                              if (spamButtonProtection) return;
                               try {
+                                spamButtonProtection = true;
                                 final GoogleSignIn _googleSignIn =
                                     GoogleSignIn();
                                 GoogleSignInAccount? googleSignInAccount =
@@ -100,6 +103,7 @@ class _AuthPreviewState extends State<AuthPreview> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(e.toString())));
                               }
+                              spamButtonProtection = false;
                             },
                             child: Text(
                               AppLocalizations.of(context)!.getStarted,
