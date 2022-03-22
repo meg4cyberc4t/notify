@@ -5,7 +5,7 @@ import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class UserListTile extends StatelessWidget {
+class UserListTile extends StatefulWidget {
   const UserListTile({
     Key? key,
     required this.user,
@@ -17,8 +17,13 @@ class UserListTile extends StatelessWidget {
   final Function(NotifyUserQuick user)? onTap;
 
   @override
+  State<UserListTile> createState() => _UserListTileState();
+}
+
+class _UserListTileState extends State<UserListTile> {
+  @override
   Widget build(BuildContext context) {
-    Function(NotifyUserQuick user)? onPressed = onTap ??
+    Function(NotifyUserQuick user)? onTap = widget.onTap ??
         (NotifyUserQuick user) {
           Navigator.of(context).pushNamed(ProfileView.routeName, arguments: {
             'id': user.id,
@@ -27,24 +32,24 @@ class UserListTile extends StatelessWidget {
         };
     return ListTile(
       onTap: () {
-        if (user == null) return;
-        onPressed(user!);
+        if (widget.user == null) return;
+        onTap(widget.user!);
       },
-      trailing: trailing,
+      trailing: widget.trailing,
       leading: LocalSplitter.withShimmer(
         context: context,
-        isLoading: user == null,
+        isLoading: widget.user == null,
         child: AnimatedContainer(
           duration: const Duration(seconds: 1),
           decoration: BoxDecoration(
-            color: user?.color ?? Theme.of(context).backgroundColor,
+            color: widget.user?.color ?? Theme.of(context).backgroundColor,
             borderRadius: BorderRadius.circular(15),
           ),
-          child: user != null
+          child: widget.user != null
               ? Center(
                   child: Text(
-                  user!.shortTitle,
-                  style: TextStyle(color: user!.color.passive),
+                  widget.user!.shortTitle,
+                  style: TextStyle(color: widget.user!.color.passive),
                 ))
               : null,
           height: 40,
@@ -53,11 +58,12 @@ class UserListTile extends StatelessWidget {
       ),
       title: LocalSplitter.withShimmer(
         context: context,
-        isLoading: user == null,
-        child: Text(user?.title ?? AppLocalizations.of(context)!.loading),
+        isLoading: widget.user == null,
+        child:
+            Text(widget.user?.title ?? AppLocalizations.of(context)!.loading),
       ),
       subtitle: Text(
-        user?.status ?? '...',
+        widget.user?.status ?? '...',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
