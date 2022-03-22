@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'settings_service.dart';
+import '../settings_service.dart';
 
-class ThemeNotifier with ChangeNotifier {
-  ThemeNotifier() {
+class ThemeState with ChangeNotifier {
+  ThemeState() {
     _themeMode = SettingsService.instance.themeMode;
   }
   late ThemeMode _themeMode;
