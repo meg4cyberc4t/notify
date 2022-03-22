@@ -39,6 +39,25 @@ class UsersResponses {
     return callback;
   }
 
+  static Future<http.Response> Function() notifications({
+    required final String uuid,
+    required final String token,
+  }) {
+    Future<http.Response> callback() {
+      return http.get(
+          Uri.parse(ApiServiceConfig.serverAddress +
+              ApiServiceConfig.usersControllerPrefix +
+              '/$uuid' +
+              ApiServiceConfig.notifications),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+    }
+
+    return callback;
+  }
+
   static Future<http.Response> Function() subscribers({
     required final String uuid,
     required final String token,
