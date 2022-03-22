@@ -22,6 +22,8 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   String title = '';
+  bool spamButtonProtection = false;
+
   late Color colorValue;
 
   String get shortTitle {
@@ -160,7 +162,9 @@ class _SignUpViewState extends State<SignUpView> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
+                            if (spamButtonProtection) return;
                             try {
+                              spamButtonProtection = true;
                               await ApiService.user.post(
                                 firstname: _firstnameController.text.trim(),
                                 lastname: _lastnameController.text.trim(),
@@ -170,7 +174,7 @@ class _SignUpViewState extends State<SignUpView> {
                               while (Navigator.of(context).canPop()) {
                                 Navigator.of(context).pop();
                               }
-                              Navigator.of(context)
+                              await Navigator.of(context)
                                   .popAndPushNamed(HomeView.routeName);
                             } on ApiServiceException catch (e) {
                               ScaffoldMessenger.of(context).clearSnackBars();
@@ -180,8 +184,8 @@ class _SignUpViewState extends State<SignUpView> {
                                     content: Text(e.message.toString())),
                               );
                               debugPrint(e.message);
-                              return;
                             }
+                            spamButtonProtection = false;
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),
