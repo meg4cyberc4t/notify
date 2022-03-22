@@ -17,7 +17,6 @@
 //  using it as an example. It may not start if there are no
 //  authorizing elements.
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
@@ -150,11 +149,6 @@ class MyApp extends StatelessWidget {
                         onSelect: args['onSelect'],
                       ),
                     );
-                  case __Router.routeName:
-                    return MaterialPageRoute(
-                      settings: routeSettings,
-                      builder: (BuildContext context) => const __Router(),
-                    );
                   case CreateNotificationView.routeName:
                     return MaterialPageRoute(
                       settings: routeSettings,
@@ -205,15 +199,4 @@ class MyApp extends StatelessWidget {
           );
         });
   }
-}
-
-class __Router extends StatelessWidget {
-  const __Router({Key? key}) : super(key: key);
-  static const routeName = '/';
-
-  @override
-  Widget build(BuildContext context) =>
-      FirebaseAuth.instance.currentUser == null
-          ? const AuthPreview()
-          : const RouterView();
 }

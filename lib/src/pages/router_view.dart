@@ -1,12 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notify/src/pages/additional/search/search_view.dart';
+import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 
 class RouterView extends StatefulWidget {
   const RouterView({Key? key}) : super(key: key);
-  static const routeName = '/router_page';
+  static const routeName = '/';
 
   @override
   State<RouterView> createState() => _RouterViewState();
@@ -15,8 +17,12 @@ class RouterView extends StatefulWidget {
 class _RouterViewState extends State<RouterView> {
   final PageController _controller = PageController();
   int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return const AuthPreview();
+    }
     return Scaffold(
       body: PageView(
         controller: _controller,
