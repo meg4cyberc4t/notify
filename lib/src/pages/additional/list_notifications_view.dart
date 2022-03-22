@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
+import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,9 +59,16 @@ class _ListNotificationsViewState extends State<ListNotificationsView>
             }
             return ListView.builder(
               itemCount: ntfs.length,
-              itemBuilder: (context, index) => NotificationListTile(
-                notification: ntfs[index],
-                onTap: widget.onSelect,
+              itemBuilder: (context, index) => LocalSplitter(
+                split: index == 0,
+                splitter: (Widget widget) => Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: widget,
+                ),
+                child: NotificationListTile(
+                  notification: ntfs[index],
+                  onTap: widget.onSelect,
+                ),
               ),
             );
           }),
