@@ -19,30 +19,26 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
-import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
-import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
+import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
+import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/pages/additional/search/search_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
-import 'package:notify/src/pages/additional/color_picker_view.dart';
+import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
-import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
-import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
-import 'package:notify/src/settings/sus_service/user_state.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
-
-import 'settings/sus_service/theme_state.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({

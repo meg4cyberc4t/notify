@@ -9,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
-import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
 
 class EditNotificationView extends StatefulWidget {
   const EditNotificationView({required this.notification, Key? key})

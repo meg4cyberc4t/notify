@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
-import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);

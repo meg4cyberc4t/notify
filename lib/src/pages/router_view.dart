@@ -6,8 +6,6 @@ import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
-import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
-import 'package:notify/src/settings/sus_service/user_state.dart';
 import 'package:rive_splash_screen/rive_splash_screen.dart';
 
 class RouterView extends StatefulWidget {

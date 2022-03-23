@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
-import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
 
 class CalendarView extends StatefulWidget {
   const CalendarView({Key? key}) : super(key: key);
