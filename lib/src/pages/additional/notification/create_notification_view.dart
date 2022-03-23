@@ -7,7 +7,8 @@ import 'package:notify/src/models/repeat_mode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
-import 'package:notify/src/settings/sus_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
 
 class CreateNotificationView extends StatefulWidget {
   const CreateNotificationView({Key? key}) : super(key: key);
@@ -242,7 +243,7 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
               important: _importantNotifier.value,
               repeatMode: _repeatModeNotifier.value,
             );
-            Provider.of<HomeLocalState>(context, listen: false).updateState();
+            Provider.of<UserNotificationsState>(context, listen: false).load();
             Navigator.of(context).pop(true);
           } on ApiServiceException catch (err) {
             ScaffoldMessenger.of(context).clearSnackBars();

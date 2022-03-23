@@ -8,10 +8,6 @@ class _LocalState extends ChangeNotifier {
   void updateState() => notifyListeners();
 }
 
-class HomeLocalState extends _LocalState {}
-
 class NotificationViewLocalState extends _LocalState {}
 
 class NotificationParticipantsLocalState extends _LocalState {}
-
-class CalendarPageState extends _LocalState {}

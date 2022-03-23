@@ -37,10 +37,12 @@ import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
-import 'package:notify/src/settings/sus_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_notifications_state.dart';
+import 'package:notify/src/settings/sus_service/user_state.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
-import 'settings/settings_controller.dart';
+import 'settings/sus_service/theme_state.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -51,17 +53,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => HomeLocalState()),
+          ChangeNotifierProvider(create: (context) => UserNotificationsState()),
+          ChangeNotifierProvider(create: (context) => UserState()),
+
+          ///
           ChangeNotifierProvider(
               create: (context) => NotificationViewLocalState()),
           ChangeNotifierProvider(
               create: (context) => NotificationParticipantsLocalState()),
-          ChangeNotifierProvider(create: (context) => ThemeNotifier()),
-          ChangeNotifierProvider(create: (context) => CalendarPageState()),
+          ChangeNotifierProvider(create: (context) => ThemeState()),
         ],
         builder: (context, child) {
-          return Consumer<ThemeNotifier>(
-            builder: (BuildContext context, ThemeNotifier themeNotifier,
+          return Consumer<ThemeState>(
+            builder: (BuildContext context, ThemeState themeNotifier,
                     Widget? child) =>
                 MaterialApp(
               restorationScopeId: 'app',
