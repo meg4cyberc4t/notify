@@ -188,7 +188,9 @@ class _NotificationViewState extends State<NotificationView> {
                                     Provider.of<UserNotificationsState>(context,
                                             listen: false)
                                         .load();
-
+                                    Provider.of<UserState>(context,
+                                            listen: false)
+                                        .load();
                                     Navigator.of(context).pop();
                                   }
                                 });

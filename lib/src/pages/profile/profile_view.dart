@@ -10,6 +10,7 @@ import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({
@@ -42,7 +43,7 @@ class _ProfileViewState extends State<ProfileView>
       key: _scaffoldKey,
       body: LocalFutureBuilder.withLoading<NotifyUserDetailed>(
         future: (widget.id == null)
-            ? ApiService.user.get()
+            ? (() async => Provider.of<UserState>(context).user)()
             : ApiService.users.get(widget.id!),
         onError: (BuildContext context, Object err) =>
             Center(child: Text(err.toString())),
@@ -99,22 +100,20 @@ class _ProfileViewState extends State<ProfileView>
                                     'color': user.color,
                                   });
                               if (color != null) {
-                                await ApiService.user
-                                    .put(
-                                        firstname: user.firstname,
-                                        lastname: user.lastname,
-                                        status: user.status,
-                                        color: color)
-                                    .whenComplete(() => setState(() {}))
-                                    .catchError((Object error) {
+                                try {
+                                  Provider.of<UserState>(context)
+                                      .edit(color: color);
+
+                                  Navigator.of(context).pop();
+                                } on Exception catch (error) {
                                   ScaffoldMessenger.of(context)
                                       .clearSnackBars();
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Error loading data!'),
-                                    ),
+                                    SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text(error.toString())),
                                   );
-                                });
+                                }
                               }
                             },
                           ),
