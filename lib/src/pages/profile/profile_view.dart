@@ -101,10 +101,8 @@ class _ProfileViewState extends State<ProfileView>
                                   });
                               if (color != null) {
                                 try {
-                                  Provider.of<UserState>(context)
+                                  Provider.of<UserState>(context, listen: false)
                                       .edit(color: color);
-
-                                  Navigator.of(context).pop();
                                 } on Exception catch (error) {
                                   ScaffoldMessenger.of(context)
                                       .clearSnackBars();
@@ -163,9 +161,7 @@ class _ProfileViewState extends State<ProfileView>
                               if (!isLoaded) return;
                               await Navigator.of(context).pushNamed(
                                   EditProfileView.routeName,
-                                  arguments: {
-                                    'user': user,
-                                  }).whenComplete(() => setState(() {}));
+                                  arguments: {'user': user});
                             },
                           );
                         }

@@ -148,7 +148,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   lastname: _lastnameController.text.trim(),
                                   status: _statusController.text.trim(),
                                   color: color);
-
                               Navigator.of(context).pop();
                             } on Exception catch (error) {
                               ScaffoldMessenger.of(context).clearSnackBars();
