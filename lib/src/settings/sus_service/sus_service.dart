@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 export 'package:provider/provider.dart';
+export 'package:notify/src/settings/sus_service/theme_state.dart';
+export 'package:notify/src/settings/sus_service/user_state.dart';
+export 'package:notify/src/settings/sus_service/user_notifications_state.dart';
 
 /// Screen Update Service
 /// The use of these states is not supposed to be Cubit,
@@ -8,10 +11,6 @@ class _LocalState extends ChangeNotifier {
   void updateState() => notifyListeners();
 }
 
-class HomeLocalState extends _LocalState {}
-
 class NotificationViewLocalState extends _LocalState {}
 
 class NotificationParticipantsLocalState extends _LocalState {}
-
-class CalendarPageState extends _LocalState {}

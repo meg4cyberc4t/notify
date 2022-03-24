@@ -23,6 +23,8 @@ dependencies:
   json_annotation: ^4.4.0
   package_info_plus: ^1.4.0
   provider: ^6.0.2
+  rive: ^0.8.4
+  rive_splash_screen: ^0.1.0
   shared_preferences: ^2.0.12
   shimmer: ^2.0.0
   timezone: ^0.8.0
@@ -44,6 +46,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/fonts/static/
+    - assets/rive/
 
 flutter_icons:
   android: "launcher_icon"

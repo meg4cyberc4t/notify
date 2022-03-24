@@ -17,31 +17,28 @@
 //  using it as an example. It may not start if there are no
 //  authorizing elements.
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
-import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
-import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
+import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
+import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/pages/additional/search/search_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
-import 'package:notify/src/pages/additional/color_picker_view.dart';
+import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/pages/router_view.dart';
-import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
-import 'package:notify/src/settings/sus_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
-
-import 'settings/settings_controller.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -52,17 +49,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => HomeLocalState()),
+          ChangeNotifierProvider(create: (context) => UserNotificationsState()),
+          ChangeNotifierProvider(create: (context) => UserState()),
+
+          ///
           ChangeNotifierProvider(
               create: (context) => NotificationViewLocalState()),
           ChangeNotifierProvider(
               create: (context) => NotificationParticipantsLocalState()),
-          ChangeNotifierProvider(create: (context) => ThemeNotifier()),
-          ChangeNotifierProvider(create: (context) => CalendarPageState()),
+          ChangeNotifierProvider(create: (context) => ThemeState()),
         ],
         builder: (context, child) {
-          return Consumer<ThemeNotifier>(
-            builder: (BuildContext context, ThemeNotifier themeNotifier,
+          return Consumer<ThemeState>(
+            builder: (BuildContext context, ThemeState themeNotifier,
                     Widget? child) =>
                 MaterialApp(
               restorationScopeId: 'app',
@@ -150,11 +149,6 @@ class MyApp extends StatelessWidget {
                         onSelect: args['onSelect'],
                       ),
                     );
-                  case __Router.routeName:
-                    return MaterialPageRoute(
-                      settings: routeSettings,
-                      builder: (BuildContext context) => const __Router(),
-                    );
                   case CreateNotificationView.routeName:
                     return MaterialPageRoute(
                       settings: routeSettings,
@@ -205,15 +199,4 @@ class MyApp extends StatelessWidget {
           );
         });
   }
-}
-
-class __Router extends StatelessWidget {
-  const __Router({Key? key}) : super(key: key);
-  static const routeName = '/';
-
-  @override
-  Widget build(BuildContext context) =>
-      FirebaseAuth.instance.currentUser == null
-          ? const AuthPreview()
-          : const RouterView();
 }

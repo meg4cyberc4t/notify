@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/methods/passive_color.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:notify/src/settings/api_service/api_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({
@@ -142,22 +142,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            await ApiService.user
-                                .put(
-                              firstname: _firstnameController.text.trim(),
-                              lastname: _lastnameController.text.trim(),
-                              status: _statusController.text.trim(),
-                              color: color,
-                            )
-                                .catchError((Object error) {
+                            try {
+                              Provider.of<UserState>(context).edit(
+                                  firstname: _firstnameController.text.trim(),
+                                  lastname: _lastnameController.text.trim(),
+                                  status: _statusController.text.trim(),
+                                  color: color);
+                              Navigator.of(context).pop();
+                            } on Exception catch (error) {
                               ScaffoldMessenger.of(context).clearSnackBars();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     behavior: SnackBarBehavior.floating,
                                     content: Text(error.toString())),
                               );
-                            });
-                            Navigator.of(context).pop();
+                            }
                           },
                           child: Text(
                               AppLocalizations.of(context)!.continueButton),

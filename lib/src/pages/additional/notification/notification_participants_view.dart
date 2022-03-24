@@ -7,7 +7,7 @@ import 'package:notify/src/models/notify_user_quick.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/api_service/middleware/api_service_exception.dart';
-import 'package:notify/src/settings/sus_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationParticipantsView extends StatefulWidget {

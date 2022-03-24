@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/methods/get_theme_mode_title.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
-import 'package:notify/src/settings/settings_controller.dart';
+import 'package:notify/src/settings/sus_service/theme_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -36,16 +36,16 @@ class SettingsView extends StatelessWidget {
           ListTile(
             title: Text(AppLocalizations.of(context)!.applicationTheme),
             subtitle: Text(getThemeModeTitle(context,
-                Provider.of<ThemeNotifier>(context, listen: false).themeMode)),
+                Provider.of<ThemeState>(context, listen: false).themeMode)),
             onTap: () {
-              int value = Provider.of<ThemeNotifier>(context, listen: false)
+              int value = Provider.of<ThemeState>(context, listen: false)
                       .themeMode
                       .index +
                   1;
               if (value == 3) {
                 value = 0;
               }
-              Provider.of<ThemeNotifier>(context, listen: false).themeMode =
+              Provider.of<ThemeState>(context, listen: false).themeMode =
                   ThemeMode.values[value];
             },
           ),

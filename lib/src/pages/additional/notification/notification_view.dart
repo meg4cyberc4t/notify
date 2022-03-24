@@ -11,7 +11,7 @@ import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
 import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
-import 'package:notify/src/settings/sus_service.dart';
+import 'package:notify/src/settings/sus_service/sus_service.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({
@@ -185,9 +185,12 @@ class _NotificationViewState extends State<NotificationView> {
                                   if (value != null && value) {
                                     await ApiService.notifications.delete(
                                         notification: notification.toQuick);
-                                    Provider.of<HomeLocalState>(context,
+                                    Provider.of<UserNotificationsState>(context,
                                             listen: false)
-                                        .updateState();
+                                        .load();
+                                    Provider.of<UserState>(context,
+                                            listen: false)
+                                        .load();
                                     Navigator.of(context).pop();
                                   }
                                 });
@@ -218,9 +221,10 @@ class _NotificationViewState extends State<NotificationView> {
                                     important: notification.important,
                                     repeatMode: notification.repeatMode,
                                   );
-                                  Provider.of<HomeLocalState>(context,
+                                  Provider.of<UserNotificationsState>(context,
                                           listen: false)
-                                      .updateState();
+                                      .load();
+
                                   Navigator.of(context).pop();
                                 },
                                 child:
