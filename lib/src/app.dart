@@ -41,9 +41,7 @@ import 'package:notify/src/settings/sus_service/sus_service.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({
-    Key? key,
-  }) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +49,6 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => UserNotificationsState()),
           ChangeNotifierProvider(create: (context) => UserState()),
-
-          ///
           ChangeNotifierProvider(
               create: (context) => NotificationViewLocalState()),
           ChangeNotifierProvider(

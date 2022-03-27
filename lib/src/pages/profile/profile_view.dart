@@ -41,7 +41,7 @@ class _ProfileViewState extends State<ProfileView>
     return Scaffold(
       restorationId: 'profile_view',
       key: _scaffoldKey,
-      body: LocalFutureBuilder.withLoading<NotifyUserDetailed>(
+      body: LocalFutureBuilder.withLoading<NotifyUserDetailed?>(
         future: (widget.id == null)
             ? (() async => Provider.of<UserState>(context).user)()
             : ApiService.users.get(widget.id!),
