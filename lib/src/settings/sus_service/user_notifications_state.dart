@@ -5,6 +5,7 @@ import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 
 class UserNotificationsState extends ChangeNotifier {
+  List<NotifyNotificationQuick> _notifications = [];
   UserNotificationsState();
 
   void load() async {
@@ -14,7 +15,6 @@ class UserNotificationsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late List<NotifyNotificationQuick> _notifications;
   UnmodifiableListView<NotifyNotificationQuick> get notifications =>
       UnmodifiableListView(_notifications);
 }

@@ -75,7 +75,6 @@ class _RouterViewState extends State<RouterView> {
       until: () async {
         Provider.of<UserNotificationsState>(context, listen: false).load();
         Provider.of<UserState>(context, listen: false).load();
-        return;
       },
       backgroundColor: Theme.of(context).backgroundColor,
       height: MediaQuery.of(context).size.width * 0.5,
