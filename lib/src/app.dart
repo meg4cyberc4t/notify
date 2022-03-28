@@ -20,6 +20,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
+import 'package:notify/src/pages/additional/folders/create_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/folder_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
@@ -38,6 +40,7 @@ import 'package:notify/src/pages/router_view.dart';
 import 'package:notify/src/pages/settings/about_view.dart';
 import 'package:notify/src/pages/settings/settings_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_folders_state.dart';
 import 'package:notify/src/settings/theme_data_service.dart';
 
 class MyApp extends StatelessWidget {
@@ -48,11 +51,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => UserNotificationsState()),
+          ChangeNotifierProvider(create: (context) => UserFoldersState()),
           ChangeNotifierProvider(create: (context) => UserState()),
           ChangeNotifierProvider(
               create: (context) => NotificationViewLocalState()),
           ChangeNotifierProvider(
               create: (context) => NotificationParticipantsLocalState()),
+          ChangeNotifierProvider(create: (context) => FolderViewLocalState()),
           ChangeNotifierProvider(create: (context) => ThemeState()),
         ],
         builder: (context, child) {
@@ -159,6 +164,14 @@ class MyApp extends StatelessWidget {
                         cache: args.containsKey('cache') ? args['cache'] : null,
                       ),
                     );
+                  case FolderView.routeName:
+                    return MaterialPageRoute(
+                      settings: routeSettings,
+                      builder: (BuildContext context) => FolderView(
+                        id: args!['id'],
+                        cache: args.containsKey('cache') ? args['cache'] : null,
+                      ),
+                    );
                   case EditNotificationView.routeName:
                     return MaterialPageRoute<bool>(
                       settings: routeSettings,
@@ -184,6 +197,13 @@ class MyApp extends StatelessWidget {
                       settings: routeSettings,
                       builder: (BuildContext context) => const AboutView(),
                     );
+                  case CreateFolderView.routeName:
+                    return MaterialPageRoute(
+                      settings: routeSettings,
+                      builder: (BuildContext context) =>
+                          const CreateFolderView(),
+                    );
+
                   default:
                     return MaterialPageRoute(
                       settings: routeSettings,
