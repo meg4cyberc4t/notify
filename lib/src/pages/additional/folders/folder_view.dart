@@ -86,7 +86,7 @@ class _FolderViewState extends State<FolderView> {
                                     ),
                                   ),
                                   Text(
-                                    'Уведомлений',
+                                    AppLocalizations.of(context)!.notifications,
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -126,7 +126,8 @@ class _FolderViewState extends State<FolderView> {
                                       ),
                                     ),
                                     Text(
-                                      'Участников',
+                                      AppLocalizations.of(context)!
+                                          .participants,
                                       style:
                                           Theme.of(context).textTheme.bodyText2,
                                     ),
@@ -143,7 +144,8 @@ class _FolderViewState extends State<FolderView> {
                                 await Navigator.of(context).pushNamed(
                                     ListNotificationsView.routeName,
                                     arguments: {
-                                      'title': 'Choose notification',
+                                      'title': AppLocalizations.of(context)!
+                                          .chooseNotification,
                                       'callback': ApiService.notifications.get,
                                       'onSelect':
                                           (NotifyNotificationQuick e) async {
@@ -163,6 +165,10 @@ class _FolderViewState extends State<FolderView> {
                                         Provider.of<UserFoldersState>(context,
                                                 listen: false)
                                             .load();
+                                        Provider.of<CustomListViewLocalState>(
+                                                context,
+                                                listen: false)
+                                            .updateState();
                                         Navigator.of(context).pop();
                                       }
                                     });
@@ -266,7 +272,7 @@ class _FolderViewState extends State<FolderView> {
                                 });
                               },
                               child: Text(
-                                'Удалить папку',
+                                AppLocalizations.of(context)!.delete,
                                 style: TextStyle(
                                   color: Theme.of(context).errorColor,
                                 ),

@@ -257,6 +257,8 @@ class _CreateNotificationInFolderViewState
             );
             Provider.of<FolderViewLocalState>(context, listen: false)
                 .updateState();
+            Provider.of<CustomListViewLocalState>(context, listen: false)
+                .updateState();
             Provider.of<UserNotificationsState>(context, listen: false).load();
             Provider.of<UserFoldersState>(context, listen: false).load();
             Navigator.of(context).pop(true);
