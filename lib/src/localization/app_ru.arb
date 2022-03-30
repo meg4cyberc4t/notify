@@ -114,6 +114,12 @@
       "word": {}
     }
   },
+  "foldersWithWord": "Папки с \"{word}\"",
+    "@foldersWithWord": {
+      "placeholders": {
+        "word": {}
+      }
+    },
   "generalReminders": "Общие напоминания",
   "createFolder": "Создать папку",
   "folders": "Папки"

@@ -189,7 +189,7 @@ class _ApiServiceSearch {
     return list;
   }
 
-  Future<List<NotifyFolderDetailed>> fromFolders({
+  Future<List<NotifyFolderQuick>> fromFolders({
     required String pattern,
     int? limit,
     int? offset,
@@ -202,9 +202,9 @@ class _ApiServiceSearch {
         token: await ApiServiceConfig.token,
       ),
     );
-    List<NotifyFolderDetailed> list = [];
+    List<NotifyFolderQuick> list = [];
     for (var item in jsonDecode(res.body)) {
-      list.add(NotifyFolderDetailed.fromJson(item));
+      list.add(NotifyFolderQuick.fromJson(item));
     }
     return list;
   }

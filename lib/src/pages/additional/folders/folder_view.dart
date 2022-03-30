@@ -226,6 +226,9 @@ class _FolderViewState extends State<FolderView> {
                               Provider.of<UserFoldersState>(context,
                                       listen: false)
                                   .load();
+                              Provider.of<CustomListViewLocalState>(context,
+                                      listen: false)
+                                  .updateState();
                             }
                           },
                         ),
@@ -254,6 +257,10 @@ class _FolderViewState extends State<FolderView> {
                                     Provider.of<UserState>(context,
                                             listen: false)
                                         .load();
+                                    Provider.of<CustomListViewLocalState>(
+                                            context,
+                                            listen: false)
+                                        .updateState();
                                     Navigator.of(context).pop();
                                   }
                                 });

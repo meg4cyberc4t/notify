@@ -18,3 +18,5 @@ class NotificationParticipantsLocalState extends _LocalState {}
 class FolderViewLocalState extends _LocalState {}
 
 class FolderParticipantsLocalState extends _LocalState {}
+
+class CustomListViewLocalState extends _LocalState {}

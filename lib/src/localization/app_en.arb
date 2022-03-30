@@ -114,6 +114,12 @@
       "word": {}
     }
   },
+  "foldersWithWord": "Folders with \"{word}\"",
+    "@foldersWithWord": {
+      "placeholders": {
+        "word": {}
+      }
+    },
   "generalReminders": "General reminders",
   "createFolder": "Create a folder",
   "folders": "Folders"

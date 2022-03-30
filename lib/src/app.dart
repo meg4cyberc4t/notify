@@ -24,6 +24,7 @@ import 'package:notify/src/pages/additional/folders/create_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_participants_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_view.dart';
+import 'package:notify/src/pages/additional/list_folders_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/pages/additional/notification/create_notification_view.dart';
@@ -63,6 +64,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
               create: (context) => FolderParticipantsLocalState()),
           ChangeNotifierProvider(create: (context) => ThemeState()),
+          ChangeNotifierProvider(
+              create: (context) => CustomListViewLocalState())
         ],
         builder: (context, child) {
           return Consumer<ThemeState>(
@@ -149,6 +152,15 @@ class MyApp extends StatelessWidget {
                     return MaterialPageRoute(
                       settings: routeSettings,
                       builder: (BuildContext context) => ListNotificationsView(
+                        title: args!['title'],
+                        callback: args['callback'],
+                        onSelect: args['onSelect'],
+                      ),
+                    );
+                  case ListFoldersView.routeName:
+                    return MaterialPageRoute(
+                      settings: routeSettings,
+                      builder: (BuildContext context) => ListFoldersView(
                         title: args!['title'],
                         callback: args['callback'],
                         onSelect: args['onSelect'],

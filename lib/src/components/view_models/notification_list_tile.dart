@@ -41,6 +41,8 @@ class _NotificationListTileState extends State<NotificationListTile> {
               await ApiService.notifications.delete(notification: ntf);
               Provider.of<UserNotificationsState>(context, listen: false)
                   .load();
+              Provider.of<CustomListViewLocalState>(context, listen: false)
+                  .updateState();
             }
           });
         };

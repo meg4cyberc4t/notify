@@ -194,6 +194,10 @@ class _NotificationViewState extends State<NotificationView> {
                                     Provider.of<UserState>(context,
                                             listen: false)
                                         .load();
+                                    Provider.of<CustomListViewLocalState>(
+                                            context,
+                                            listen: false)
+                                        .updateState();
                                     Navigator.of(context).pop();
                                   }
                                 });

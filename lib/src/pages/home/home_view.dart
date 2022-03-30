@@ -52,7 +52,7 @@ class _HomeViewState extends State<HomeView>
                         )
                       ],
                     ),
-                    if (foldersState.notifications.isEmpty)
+                    if (notificationsState.notifications.isEmpty)
                       const SizedBox(
                         height: 150,
                         child: Center(
@@ -81,7 +81,7 @@ class _HomeViewState extends State<HomeView>
                         )
                       ],
                     ),
-                    if (foldersState.notifications.isEmpty)
+                    if (foldersState.folders.isEmpty)
                       const SizedBox(
                         height: 150,
                         child: Center(
@@ -90,7 +90,7 @@ class _HomeViewState extends State<HomeView>
                           textAlign: TextAlign.center,
                         )),
                       ),
-                    ...foldersState.notifications
+                    ...foldersState.folders
                         .map((e) => FolderListTile(folder: e)),
                   ],
                 )),

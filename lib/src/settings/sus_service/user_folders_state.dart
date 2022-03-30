@@ -13,6 +13,6 @@ class UserFoldersState extends ChangeNotifier {
     notifyListeners();
   }
 
-  UnmodifiableListView<NotifyFolderQuick> get notifications =>
+  UnmodifiableListView<NotifyFolderQuick> get folders =>
       UnmodifiableListView(_folders);
 }
