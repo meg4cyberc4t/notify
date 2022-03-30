@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notify/src/pages/additional/list_folders_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
@@ -83,6 +84,20 @@ class _SearchViewState extends State<SearchView> {
                       title: Text(AppLocalizations.of(context)!
                           .notificationsWithWord(value.text)),
                       leading: const Icon(Icons.list_alt),
+                      minLeadingWidth: 0,
+                      trailing: const Icon(Icons.navigate_next_outlined),
+                    ),
+                    ListTile(
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(ListFoldersView.routeName, arguments: {
+                        'title': AppLocalizations.of(context)!
+                            .foldersWithWord(value.text),
+                        'callback': () =>
+                            ApiService.search.fromFolders(pattern: value.text)
+                      }),
+                      title: Text(AppLocalizations.of(context)!
+                          .foldersWithWord(value.text)),
+                      leading: const Icon(Icons.folder_copy_outlined),
                       minLeadingWidth: 0,
                       trailing: const Icon(Icons.navigate_next_outlined),
                     ),

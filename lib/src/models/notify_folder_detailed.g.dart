@@ -13,7 +13,12 @@ NotifyFolderDetailed _$NotifyFolderDetailedFromJson(
       title: json['title'] as String,
       description: json['description'] as String,
       participantsCount: json['participantsCount'] as int,
-      notificationsCount: json['notificationsCount'] as int,
+      notifications: (json['notifications'] as List<dynamic>)
+          .map((e) =>
+              NotifyNotificationQuick.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      creator:
+          NotifyUserQuick.fromJson(json['creator'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$NotifyFolderDetailedToJson(
@@ -23,5 +28,6 @@ Map<String, dynamic> _$NotifyFolderDetailedToJson(
       'title': instance.title,
       'description': instance.description,
       'participantsCount': instance.participantsCount,
-      'notificationsCount': instance.notificationsCount,
+      'notifications': instance.notifications.map((e) => e.toJson()).toList(),
+      'creator': instance.creator.toJson(),
     };

@@ -6,6 +6,7 @@ import 'package:notify/src/pages/calendar/calendar_view.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_folders_state.dart';
 import 'package:rive_splash_screen/rive_splash_screen.dart';
 
 class RouterView extends StatefulWidget {
@@ -71,10 +72,15 @@ class _RouterViewState extends State<RouterView> {
 
     return SplashScreen.callback(
       name: 'assets/rive/loader.riv',
-      onError: (_, __) {},
+      onError: (error, stackTrace) {
+        debugPrint('SplashScreen error');
+        debugPrint(error.toString());
+        debugPrintStack(stackTrace: stackTrace);
+      },
       until: () async {
-        Provider.of<UserNotificationsState>(context, listen: false).load();
         Provider.of<UserState>(context, listen: false).load();
+        Provider.of<UserNotificationsState>(context, listen: false).load();
+        Provider.of<UserFoldersState>(context, listen: false).load();
       },
       backgroundColor: Theme.of(context).backgroundColor,
       height: MediaQuery.of(context).size.width * 0.5,
