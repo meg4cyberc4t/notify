@@ -114,5 +114,7 @@
       "word": {}
     }
   },
-  "generalReminders": "Общие напоминания"
+  "generalReminders": "Общие напоминания",
+  "createFolder": "Создать папку",
+  "folders": "Папки"
 }

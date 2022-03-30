@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_splitter.dart';
-import 'package:notify/src/models/notify_folder_detailed.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/models/notify_folder_quick.dart';
 import 'package:notify/src/pages/additional/folders/folder_view.dart';
 
 class FolderListTile extends StatefulWidget {
@@ -11,8 +11,8 @@ class FolderListTile extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final NotifyFolderDetailed? folder;
-  final Function(NotifyFolderDetailed folder)? onTap;
+  final NotifyFolderQuick? folder;
+  final Function(NotifyFolderQuick folder)? onTap;
 
   @override
   State<FolderListTile> createState() => _FolderListTileState();
@@ -23,7 +23,7 @@ class _FolderListTileState extends State<FolderListTile> {
 
   @override
   Widget build(BuildContext context) {
-    Function(NotifyFolderDetailed folder) onTap = widget.onTap ??
+    Function(NotifyFolderQuick folder) onTap = widget.onTap ??
         (e) {
           Navigator.of(context).pushNamed(FolderView.routeName,
               arguments: {'id': e.id, 'cache': e});

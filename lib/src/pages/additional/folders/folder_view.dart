@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/components/dialogs/show_exclude_dialog.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/dialogs/show_delete_dialog.dart';
 import 'package:notify/src/components/view_models/folder_list_tile.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
 import 'package:notify/src/components/view_models/user_list_tile.dart';
 import 'package:notify/src/models/notify_folder_detailed.dart';
-import 'package:notify/src/models/notify_notification_detailed.dart';
+import 'package:notify/src/models/notify_folder_quick.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
-import 'package:notify/src/models/repeat_mode.dart';
-import 'package:notify/src/pages/additional/notification/edit_notification_view.dart';
-import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
+import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/folder_participants_view.dart';
+import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
 import 'package:notify/src/settings/sus_service/user_folders_state.dart';
@@ -25,7 +25,7 @@ class FolderView extends StatefulWidget {
 
   static const routeName = 'folder_view';
   final String id;
-  final NotifyFolderDetailed? cache;
+  final NotifyFolderQuick? cache;
 
   @override
   State<FolderView> createState() => _FolderViewState();
@@ -54,9 +54,11 @@ class _FolderViewState extends State<FolderView> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: FolderListTile(folder: folder ?? widget.cache),
+                      child: FolderListTile(
+                        folder: folder?.toQuick,
+                        onTap: (e) {},
+                      ),
                     ),
-                    const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Row(
@@ -72,10 +74,11 @@ class _FolderViewState extends State<FolderView> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        (folder ?? widget.cache)
-                                                ?.notificationsCount
-                                                .toString() ??
-                                            '0',
+                                        (folder?.notifications.length ??
+                                                widget.cache
+                                                    ?.notificationsCount ??
+                                                0)
+                                            .toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline4,
@@ -83,7 +86,7 @@ class _FolderViewState extends State<FolderView> {
                                     ),
                                   ),
                                   Text(
-                                    'Notifications',
+                                    'Уведомлений',
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -92,86 +95,141 @@ class _FolderViewState extends State<FolderView> {
                             ),
                           ),
                           Expanded(
-                            child: SizedBox(
-                              height: 60,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Center(
-                                      child: Text(
-                                        (folder ?? widget.cache)
-                                                ?.participantsCount
-                                                .toString() ??
-                                            '0',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: () async {
+                                if (folder == null) return;
+                                await Navigator.of(context).pushNamed(
+                                    FolderParticipantsView.routeName,
+                                    arguments: {
+                                      'folder': folder,
+                                    });
+                              },
+                              child: SizedBox(
+                                height: 60,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Center(
+                                        child: Text(
+                                          (folder?.participantsCount ??
+                                                  widget.cache
+                                                      ?.participantsCount ??
+                                                  0)
+                                              .toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!.date,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
-                                  ),
-                                ],
+                                    Text(
+                                      'Участников',
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          // Expanded(
-                          //   child: InkWell(
-                          //     onTap: () async {
-                          //       // if (folder == null) return;
-                          //       // await Navigator.of(context).pushNamed(
-                          //       //     NotificationParticipantsView.routeName,
-                          //       //     arguments: {
-                          //       //       'notification': notification,
-                          //       //     });
-                          //     },
-                          //     borderRadius: BorderRadius.circular(8),
-                          //     child: SizedBox(
-                          //       height: 60,
-                          //       child: Column(
-                          //         mainAxisAlignment:
-                          //             MainAxisAlignment.spaceBetween,
-                          //         children: [
-                          //           Expanded(
-                          //             child: Center(
-                          //               child: Text(
-                          //                 folder?.
-                          //                         .toString() ??
-                          //                     '0',
-                          //                 style: Theme.of(context)
-                          //                     .textTheme
-                          //                     .headline4,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //           Text(
-                          //             AppLocalizations.of(context)!
-                          //                 .participants,
-                          //             style:
-                          //                 Theme.of(context).textTheme.bodyText2,
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
+                          Expanded(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onLongPress: () async {
+                                if (folder == null) return;
+                                await Navigator.of(context).pushNamed(
+                                    ListNotificationsView.routeName,
+                                    arguments: {
+                                      'title': 'Choose notification',
+                                      'callback': ApiService.notifications.get,
+                                      'onSelect':
+                                          (NotifyNotificationQuick e) async {
+                                        await ApiService.folders
+                                            .addNotification(
+                                          folderId: folder.id,
+                                          ntfIds: [e.id],
+                                        );
+                                        Provider.of<FolderViewLocalState>(
+                                                context,
+                                                listen: false)
+                                            .updateState();
+                                        Provider.of<UserNotificationsState>(
+                                                context,
+                                                listen: false)
+                                            .load();
+                                        Provider.of<UserFoldersState>(context,
+                                                listen: false)
+                                            .load();
+                                        Navigator.of(context).pop();
+                                      }
+                                    });
+                              },
+                              onTap: () async {
+                                if (folder == null) return;
+                                await Navigator.of(context).pushNamed(
+                                    CreateNotificationInFolderView.routeName,
+                                    arguments: {'folder': folder.toQuick});
+                              },
+                              child: SizedBox(
+                                height: 60,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.notification_add_outlined,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .headline4
+                                            ?.color,
+                                      )),
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.remind,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    // const SizedBox(height: 16),
-                    // UserListTile(
-                    //   user: folder?.,
-                    //   trailing: Text(
-                    //     AppLocalizations.of(context)!.creator,
-                    //     style: TextStyle(color: Theme.of(context).hintColor),
-                    //   ),
-                    // ),
-
+                    const SizedBox(height: 16),
+                    UserListTile(
+                      user: folder?.creator,
+                      trailing: Text(
+                        AppLocalizations.of(context)!.creator,
+                        style: TextStyle(color: Theme.of(context).hintColor),
+                      ),
+                    ),
+                    if (folder != null)
+                      ...folder.notifications.map(
+                        (e) => NotificationListTile(
+                          notification: e,
+                          onTap: (e) async {
+                            final bool? value = await showExcludeDialog(
+                                context: context, title: e.title);
+                            if (value != null && value) {
+                              await ApiService.folders.removeNotification(
+                                  folderId: widget.id, ntfIds: [e.id]);
+                              Provider.of<FolderViewLocalState>(context,
+                                      listen: false)
+                                  .updateState();
+                              Provider.of<UserFoldersState>(context,
+                                      listen: false)
+                                  .load();
+                            }
+                          },
+                        ),
+                      ),
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -201,56 +259,19 @@ class _FolderViewState extends State<FolderView> {
                                 });
                               },
                               child: Text(
-                                AppLocalizations.of(context)!.delete,
+                                'Удалить папку',
                                 style: TextStyle(
                                   color: Theme.of(context).errorColor,
                                 ),
                               ),
                             ),
                           ),
-                          // if (RepeatMode.none != folder?.repeatMode)
-                          //   const SizedBox(width: 8),
-                          // if (RepeatMode.none != notification?.repeatMode)
-                          //   Expanded(
-                          //     child: OutlinedButton(
-                          //       onPressed: () async {
-                          //         if (notification == null) return;
-                          //         await ApiService.notifications.delete(
-                          //             notification: notification.toQuick);
-                          //         await ApiService.notifications.post(
-                          //           title: notification.title,
-                          //           description: notification.description,
-                          //           deadline: getRepeatModeNextDateTime(
-                          //               notification.deadline,
-                          //               notification.repeatMode),
-                          //           important: notification.important,
-                          //           repeatMode: notification.repeatMode,
-                          //         );
-                          //         Provider.of<UserNotificationsState>(context,
-                          //                 listen: false)
-                          //             .load();
-
-                          //         Navigator.of(context).pop();
-                          //       },
-                          //       child:
-                          //           Text(AppLocalizations.of(context)!.delay),
-                          //     ),
-                          //   ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              // floatingActionButton: FloatingActionButton(
-              //   child: const Icon(Icons.edit),
-              //   onPressed: () async {
-              //     if (folder == null) return;
-              //     await Navigator.of(context).pushNamed(
-              //         EditNotificationView.routeName,
-              //         arguments: {'notification': folder!});
-              //   },
-              // ),
             );
           },
         ),

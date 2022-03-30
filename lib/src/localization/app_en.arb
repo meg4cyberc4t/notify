@@ -114,5 +114,7 @@
       "word": {}
     }
   },
-  "generalReminders": "General reminders"
+  "generalReminders": "General reminders",
+  "createFolder": "Create a folder",
+  "folders": "Folders"
 }

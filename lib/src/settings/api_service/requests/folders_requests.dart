@@ -181,7 +181,7 @@ class FoldersRequests {
               ApiServiceConfig.foldersControllerPrefix +
               '/$uuid' +
               ApiServiceConfig.exclude +
-              '?inviteUserId=$excludeUserId'),
+              '?excludeUserId=$excludeUserId'),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'text/plain',
@@ -193,26 +193,21 @@ class FoldersRequests {
   }
 
   static Future<http.Response> Function() addNotification({
-    required final String uuid,
     required final String folderId,
     required String token,
-    final String? ntfId,
-    final List<String>? listIds,
+    required final List<String> ntfIds,
   }) {
-    assert(ntfId == null && listIds == null);
-    assert(ntfId != null && listIds != null);
-    assert(listIds?.isEmpty ?? false);
+    assert(ntfIds.isNotEmpty);
     Future<http.Response> callback() async {
       var path = ApiServiceConfig.serverAddress +
           ApiServiceConfig.foldersControllerPrefix +
-          '/$uuid' +
+          '/$folderId' +
           ApiServiceConfig.addNotification +
-          '?folderId=$folderId';
-      if (ntfId != null) {
-        path += '&ntfId=$ntfId';
-      } else {
-        for (var item in listIds!) {
-          path += '&listIds=$item';
+          '?notificationIds=';
+      for (var i = 0; i < ntfIds.length; i++) {
+        path += ntfIds[i];
+        if (i != ntfIds.length - 1) {
+          path += '&notificationIds=';
         }
       }
       return await http.post(Uri.parse(path), headers: {
@@ -226,26 +221,20 @@ class FoldersRequests {
   }
 
   static Future<http.Response> Function() removeNotification({
-    required final String uuid,
     required final String folderId,
-    required String token,
-    final String? ntfId,
-    final List<String>? listIds,
+    required List<String> ntfIds,
+    required final String token,
   }) {
-    assert(ntfId == null && listIds == null);
-    assert(ntfId != null && listIds != null);
-    assert(listIds?.isEmpty ?? false);
     Future<http.Response> callback() async {
       var path = ApiServiceConfig.serverAddress +
           ApiServiceConfig.foldersControllerPrefix +
-          '/$uuid' +
+          '/$folderId' +
           ApiServiceConfig.removeNotification +
-          '?folderId=$folderId';
-      if (ntfId != null) {
-        path += '&ntfId=$ntfId';
-      } else {
-        for (var item in listIds!) {
-          path += '&listIds=$item';
+          '?notificationIds=';
+      for (var i = 0; i < ntfIds.length; i++) {
+        path += ntfIds[i];
+        if (i != ntfIds.length - 1) {
+          path += '&notificationIds=';
         }
       }
       return await http.post(Uri.parse(path), headers: {

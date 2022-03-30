@@ -52,6 +52,15 @@ class _HomeViewState extends State<HomeView>
                         )
                       ],
                     ),
+                    if (foldersState.notifications.isEmpty)
+                      const SizedBox(
+                        height: 150,
+                        child: Center(
+                            child: Text(
+                          'Напоминаний нету',
+                          textAlign: TextAlign.center,
+                        )),
+                      ),
                     ...notificationsState.notifications.map(
                       (e) => NotificationListTile(notification: e),
                     ),
@@ -63,7 +72,7 @@ class _HomeViewState extends State<HomeView>
                           Theme.of(context).textTheme.titleLarge!.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
-                      title: const Text('Folders'), // TODO: "!"
+                      title: Text(AppLocalizations.of(context)!.folders),
                       actions: [
                         IconButton(
                           icon: const Icon(Icons.add),
@@ -77,8 +86,7 @@ class _HomeViewState extends State<HomeView>
                         height: 150,
                         child: Center(
                             child: Text(
-                          'Папок нету, только мамки\nТут будет красивое окошко,'
-                          ' закрывающее это', // TODO: "!"
+                          'Папок нету',
                           textAlign: TextAlign.center,
                         )),
                       ),

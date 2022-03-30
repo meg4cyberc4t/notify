@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/folders/create_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/folder_participants_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/pages/additional/list_users_view.dart';
@@ -58,6 +60,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
               create: (context) => NotificationParticipantsLocalState()),
           ChangeNotifierProvider(create: (context) => FolderViewLocalState()),
+          ChangeNotifierProvider(
+              create: (context) => FolderParticipantsLocalState()),
           ChangeNotifierProvider(create: (context) => ThemeState()),
         ],
         builder: (context, child) {
@@ -179,6 +183,13 @@ class MyApp extends StatelessWidget {
                         notification: args!['notification'],
                       ),
                     );
+                  case FolderParticipantsView.routeName:
+                    return MaterialPageRoute<bool>(
+                      settings: routeSettings,
+                      builder: (BuildContext context) => FolderParticipantsView(
+                        folder: args!['folder'],
+                      ),
+                    );
                   case NotificationParticipantsView.routeName:
                     return MaterialPageRoute<bool>(
                       settings: routeSettings,
@@ -202,6 +213,14 @@ class MyApp extends StatelessWidget {
                       settings: routeSettings,
                       builder: (BuildContext context) =>
                           const CreateFolderView(),
+                    );
+                  case CreateNotificationInFolderView.routeName:
+                    return MaterialPageRoute(
+                      settings: routeSettings,
+                      builder: (BuildContext context) =>
+                          CreateNotificationInFolderView(
+                        folder: args!['folder'],
+                      ),
                     );
 
                   default:

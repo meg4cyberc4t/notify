@@ -34,7 +34,7 @@ class _CreateFolderViewState extends State<CreateFolderView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Создать папку'), // TODO: "!"
+        title: Text(AppLocalizations.of(context)!.createFolder),
       ),
       body: SingleChildScrollView(
         child: Padding(

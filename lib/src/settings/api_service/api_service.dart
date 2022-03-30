@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:notify/src/models/notify_folder_detailed.dart';
+import 'package:notify/src/models/notify_folder_quick.dart';
 import 'package:notify/src/models/notify_notification_detailed.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/models/notify_user_detailed.dart';
@@ -332,13 +333,13 @@ class _ApiServiceNotifications {
 }
 
 class _ApiServiceFolders {
-  Future<List<NotifyFolderDetailed>> get() async {
+  Future<List<NotifyFolderQuick>> get() async {
     var res = await errorsHandlerMiddlware(
       callback: FoldersRequests.getAll(token: await ApiServiceConfig.token),
     );
-    List<NotifyFolderDetailed> list = [];
+    List<NotifyFolderQuick> list = [];
     for (var item in jsonDecode(res.body)) {
-      list.add(NotifyFolderDetailed.fromJson(item));
+      list.add(NotifyFolderQuick.fromJson(item));
     }
     return list;
   }
@@ -400,19 +401,6 @@ class _ApiServiceFolders {
     return list;
   }
 
-  Future<List<NotifyNotificationQuick>> byIdNotifications(
-      {required String uuid}) async {
-    var res = await errorsHandlerMiddlware(
-      callback: FoldersRequests.byIdParticipants(
-          uuid: uuid, token: await ApiServiceConfig.token),
-    );
-    List<NotifyNotificationQuick> list = [];
-    for (var item in jsonDecode(res.body)) {
-      list.add(NotifyNotificationQuick.fromJson(item));
-    }
-    return list;
-  }
-
   Future<void> invite({
     required String uuid,
     required String inviteUserId,
@@ -440,36 +428,26 @@ class _ApiServiceFolders {
   }
 
   Future<void> addNotification({
-    required String uuid,
-    required String excludeUserId,
     required String folderId,
-    String? ntfId,
-    List<String>? listIds,
+    required List<String> ntfIds,
   }) async {
     await errorsHandlerMiddlware(
       callback: FoldersRequests.addNotification(
-        uuid: uuid,
+        ntfIds: ntfIds,
         folderId: folderId,
-        listIds: listIds,
-        ntfId: ntfId,
         token: await ApiServiceConfig.token,
       ),
     );
   }
 
   Future<void> removeNotification({
-    required String uuid,
-    required String excludeUserId,
     required String folderId,
-    String? ntfId,
-    List<String>? listIds,
+    required List<String> ntfIds,
   }) async {
     await errorsHandlerMiddlware(
       callback: FoldersRequests.removeNotification(
-        uuid: uuid,
+        ntfIds: ntfIds,
         folderId: folderId,
-        listIds: listIds,
-        ntfId: ntfId,
         token: await ApiServiceConfig.token,
       ),
     );

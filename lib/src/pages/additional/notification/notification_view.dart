@@ -54,7 +54,10 @@ class _NotificationViewState extends State<NotificationView> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: NotificationListTile(
-                          notification: notification?.toQuick),
+                        notification: notification?.toQuick,
+                        onTap: (e) {},
+                        onLongPress: (e) {},
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Padding(
