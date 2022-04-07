@@ -34,12 +34,6 @@ class _ListNotificationsViewState extends State<ListNotificationsView>
         builder: (context, _, __) =>
             LocalFutureBuilder<List<NotifyNotificationQuick>>(
                 future: widget.callback(),
-                onError: (BuildContext context, Object error) {
-                  debugPrint(error.toString());
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                },
                 onProgress: (BuildContext context) =>
                     const Center(child: CircularProgressIndicator()),
                 onData:

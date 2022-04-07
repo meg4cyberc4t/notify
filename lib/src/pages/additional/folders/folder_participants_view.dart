@@ -68,12 +68,6 @@ class _FolderParticipantsViewState extends State<FolderParticipantsView>
         builder: (context, value, child) =>
             LocalFutureBuilder<List<NotifyUserQuick>>(
           future: ApiService.folders.byIdParticipants(uuid: widget.folder.id),
-          onError: (BuildContext context, Object error) {
-            debugPrint(error.toString());
-            return const Center(
-              child: Text('Error'),
-            );
-          },
           onProgress: (BuildContext context) =>
               const Center(child: CircularProgressIndicator()),
           onData: (BuildContext context, List<NotifyUserQuick> users) =>

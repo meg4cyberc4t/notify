@@ -32,12 +32,6 @@ class _ListUsersViewState extends State<ListUsersView>
       body: Consumer<CustomListViewLocalState>(
         builder: (context, _, __) => LocalFutureBuilder<List<NotifyUserQuick>>(
             future: widget.callback(),
-            onError: (BuildContext context, Object error) {
-              debugPrint(error.toString());
-              return const Center(
-                child: Text('Error'),
-              );
-            },
             onProgress: (BuildContext context) =>
                 const Center(child: CircularProgressIndicator()),
             onData: (BuildContext context, List<NotifyUserQuick> users) {

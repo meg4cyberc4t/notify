@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/pages/additional/search/search_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
@@ -73,9 +74,8 @@ class _RouterViewState extends State<RouterView> {
     return SplashScreen.callback(
       name: 'assets/rive/loader.riv',
       onError: (error, stackTrace) {
-        debugPrint('SplashScreen error');
-        debugPrint(error.toString());
         debugPrintStack(stackTrace: stackTrace);
+        return LocalFutureBuilder.onError(context, error);
       },
       until: () async {
         Provider.of<UserState>(context, listen: false).load();
