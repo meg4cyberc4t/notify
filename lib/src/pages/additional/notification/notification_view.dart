@@ -12,6 +12,7 @@ import 'package:notify/src/pages/additional/notification/edit_notification_view.
 import 'package:notify/src/pages/additional/notification/notification_participants_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_folders_state.dart';
 
 class NotificationView extends StatefulWidget {
   const NotificationView({
@@ -191,6 +192,9 @@ class _NotificationViewState extends State<NotificationView> {
                                     Provider.of<UserNotificationsState>(context,
                                             listen: false)
                                         .load();
+                                    Provider.of<UserFoldersState>(context,
+                                            listen: false)
+                                        .load();
                                     Provider.of<UserState>(context,
                                             listen: false)
                                         .load();
@@ -231,7 +235,6 @@ class _NotificationViewState extends State<NotificationView> {
                                   Provider.of<UserNotificationsState>(context,
                                           listen: false)
                                       .load();
-
                                   Navigator.of(context).pop();
                                 },
                                 child:
