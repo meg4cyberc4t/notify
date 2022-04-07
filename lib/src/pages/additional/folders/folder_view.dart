@@ -10,6 +10,7 @@ import 'package:notify/src/models/notify_folder_detailed.dart';
 import 'package:notify/src/models/notify_folder_quick.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
 import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/edit_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_participants_view.dart';
 import 'package:notify/src/pages/additional/list_notifications_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
@@ -284,6 +285,15 @@ class _FolderViewState extends State<FolderView> {
                     ),
                   ],
                 ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                child: const Icon(Icons.edit),
+                onPressed: () async {
+                  if (folder == null) return;
+                  await Navigator.of(context).pushNamed(
+                      EditFolderView.routeName,
+                      arguments: {'folder': folder.toQuick});
+                },
               ),
             );
           },
