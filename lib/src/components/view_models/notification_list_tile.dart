@@ -8,6 +8,7 @@ import 'package:notify/src/models/repeat_mode.dart';
 import 'package:notify/src/pages/additional/notification/notification_view.dart';
 import 'package:notify/src/settings/api_service/api_service.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
+import 'package:notify/src/settings/sus_service/user_folders_state.dart';
 
 class NotificationListTile extends StatefulWidget {
   const NotificationListTile({
@@ -41,6 +42,7 @@ class _NotificationListTileState extends State<NotificationListTile> {
               await ApiService.notifications.delete(notification: ntf);
               Provider.of<UserNotificationsState>(context, listen: false)
                   .load();
+              Provider.of<UserFoldersState>(context, listen: false).load();
               Provider.of<CustomListViewLocalState>(context, listen: false)
                   .updateState();
             }
