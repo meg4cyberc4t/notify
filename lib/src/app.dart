@@ -19,6 +19,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notify/src/components/warnings_view/unknown_error_view.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/folders/create_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
@@ -36,7 +37,6 @@ import 'package:notify/src/pages/additional/search/search_view.dart';
 import 'package:notify/src/pages/auth/auth_preview.dart';
 import 'package:notify/src/pages/auth/sign_up_view.dart';
 import 'package:notify/src/pages/calendar/calendar_view.dart';
-import 'package:notify/src/pages/developer_page.dart';
 import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/edit_profile_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
@@ -242,11 +242,11 @@ class MyApp extends StatelessWidget {
                         folder: args!['folder'],
                       ),
                     );
-
                   default:
                     return MaterialPageRoute(
                       settings: routeSettings,
-                      builder: (BuildContext context) => const DeveloperPage(),
+                      builder: (BuildContext context) =>
+                          const Scaffold(body: UnknownErrorView()),
                     );
                 }
               },
