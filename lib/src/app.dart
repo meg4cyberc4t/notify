@@ -22,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/pages/additional/color_picker_view.dart';
 import 'package:notify/src/pages/additional/folders/create_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/create_notification_in_folder_view.dart';
+import 'package:notify/src/pages/additional/folders/edit_folder_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_participants_view.dart';
 import 'package:notify/src/pages/additional/folders/folder_view.dart';
 import 'package:notify/src/pages/additional/list_folders_view.dart';
@@ -193,6 +194,13 @@ class MyApp extends StatelessWidget {
                       settings: routeSettings,
                       builder: (BuildContext context) => EditNotificationView(
                         notification: args!['notification'],
+                      ),
+                    );
+                  case EditFolderView.routeName:
+                    return MaterialPageRoute<bool>(
+                      settings: routeSettings,
+                      builder: (BuildContext context) => EditFolderView(
+                        folder: args!['folder'],
                       ),
                     );
                   case FolderParticipantsView.routeName:
