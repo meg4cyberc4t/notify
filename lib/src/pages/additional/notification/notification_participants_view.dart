@@ -71,12 +71,6 @@ class _NotificationParticipantsViewState
             LocalFutureBuilder<List<NotifyUserQuick>>(
           future: ApiService.notifications
               .byIdParticipants(uuid: widget.notification.id),
-          onError: (BuildContext context, Object error) {
-            debugPrint(error.toString());
-            return const Center(
-              child: Text('Error'),
-            );
-          },
           onProgress: (BuildContext context) =>
               const Center(child: CircularProgressIndicator()),
           onData: (BuildContext context, List<NotifyUserQuick> users) =>

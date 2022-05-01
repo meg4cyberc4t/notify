@@ -18,7 +18,9 @@ class _CalendarViewState extends State<CalendarView>
   final TextEditingController _rangeController = TextEditingController();
 
   final ValueNotifier<DateTime> start = ValueNotifier(DateTime.now());
-  final ValueNotifier<DateTime> end = ValueNotifier(DateTime.now());
+  final ValueNotifier<DateTime> end =
+      ValueNotifier(DateTime.now().add(const Duration(days: 99999)));
+  // No, it's not a crutch, by no means
 
   @override
   bool get wantKeepAlive => true;
@@ -98,20 +100,6 @@ class _CalendarViewState extends State<CalendarView>
                               ],
                             ),
                           ),
-                          if (ntfsItems.isEmpty)
-                            SizedBox(
-                              height: 300,
-                              child: Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.search_off_outlined),
-                                    Text(
-                                        AppLocalizations.of(context)!.notFound),
-                                  ],
-                                ),
-                              ),
-                            ),
                           ...ntfsItems.map(
                               (e) => NotificationListTile(notification: e)),
                         ],

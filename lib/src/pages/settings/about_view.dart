@@ -8,10 +8,10 @@ class AboutView extends StatelessWidget {
   const AboutView({Key? key}) : super(key: key);
   static const routeName = 'about_view';
 
-  static const String _codeUrl = 'https://github.com/meg4cyberc4t/notify';
-  static const String _releasesUrl =
+  static const String codeUrl = 'https://github.com/meg4cyberc4t/notify';
+  static const String releasesUrl =
       'https://github.com/meg4cyberc4t/notify/releases/';
-  static const String _newIssueUrl =
+  static const String newIssueUrl =
       'https://github.com/meg4cyberc4t/notify/issues/new';
 
   @override
@@ -23,7 +23,6 @@ class AboutView extends StatelessWidget {
       body: LocalFutureBuilder(
         future: PackageInfo.fromPlatform(),
         onProgress: (_) => const Center(child: CircularProgressIndicator()),
-        onError: (_, err) => Center(child: Text(err.toString())),
         onData: (context, PackageInfo info) {
           return Column(
             children: [
@@ -34,7 +33,7 @@ class AboutView extends StatelessWidget {
                 height: 200,
               ),
               ListTile(
-                onTap: () => launch(_codeUrl),
+                onTap: () => launch(codeUrl),
                 title: Text(
                   info.appName,
                   textAlign: TextAlign.center,
@@ -45,7 +44,7 @@ class AboutView extends StatelessWidget {
                 ),
               ),
               ListTile(
-                onTap: () => launch(_releasesUrl),
+                onTap: () => launch(releasesUrl),
                 title: Text(
                   AppLocalizations.of(context)!
                       .version(info.version, info.buildNumber),
@@ -53,14 +52,14 @@ class AboutView extends StatelessWidget {
                 ),
               ),
               ListTile(
-                onTap: () => launch(_codeUrl),
+                onTap: () => launch(codeUrl),
                 title: Text(
                   AppLocalizations.of(context)!.sourceCode,
                   textAlign: TextAlign.center,
                 ),
               ),
               ListTile(
-                onTap: () => launch(_newIssueUrl),
+                onTap: () => launch(newIssueUrl),
                 title: Text(
                   AppLocalizations.of(context)!.reportBug,
                   textAlign: TextAlign.center,

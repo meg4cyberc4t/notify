@@ -123,5 +123,10 @@
     },
   "generalReminders": "General reminders",
   "createFolder": "Create a folder",
-  "folders": "Folders"
+  "folders": "Folders",
+  "badConnection": "Bad connection",
+  "checkYourConnection": "Check the network settings or refresh the screen",
+  "repeat": "Repeat",
+  "unknownError": "Unidentified error",
+  "unknownErrorDevMessage": "Unfortunately, not all bugs can be fixed..."
 }

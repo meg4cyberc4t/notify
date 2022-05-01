@@ -53,14 +53,7 @@ class _HomeViewState extends State<HomeView>
                       ],
                     ),
                     if (notificationsState.notifications.isEmpty)
-                      const SizedBox(
-                        height: 150,
-                        child: Center(
-                            child: Text(
-                          'Напоминаний нету',
-                          textAlign: TextAlign.center,
-                        )),
-                      ),
+                      const SizedBox(height: 150),
                     ...notificationsState.notifications.map(
                       (e) => NotificationListTile(notification: e),
                     ),
@@ -82,14 +75,7 @@ class _HomeViewState extends State<HomeView>
                       ],
                     ),
                     if (foldersState.folders.isEmpty)
-                      const SizedBox(
-                        height: 150,
-                        child: Center(
-                            child: Text(
-                          'Папок нету',
-                          textAlign: TextAlign.center,
-                        )),
-                      ),
+                      const SizedBox(height: 150),
                     ...foldersState.folders
                         .map((e) => FolderListTile(folder: e)),
                   ],
