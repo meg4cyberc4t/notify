@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BadConnectionView extends StatelessWidget {
   const BadConnectionView({
@@ -10,36 +11,38 @@ class BadConnectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            Icon(
-              Icons.cell_tower_outlined,
-              size: Theme.of(context).textTheme.headline4!.fontSize,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Плохое соединение',
-              style: Theme.of(context).textTheme.headline6,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Проверьте настройки сети или обновите экран',
-              textAlign: TextAlign.center,
-            ),
-            if (callback != null)
-              TextButton(
-                onPressed: callback,
-                child: const Text(
-                  'Повторить',
-                  textAlign: TextAlign.center,
-                ),
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            children: [
+              Icon(
+                Icons.cell_tower_outlined,
+                size: Theme.of(context).textTheme.headline5!.fontSize,
               ),
-          ],
-          mainAxisSize: MainAxisSize.min,
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.badConnection,
+                style: Theme.of(context).textTheme.headline6,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.checkYourConnection,
+                textAlign: TextAlign.center,
+              ),
+              if (callback != null)
+                TextButton(
+                  onPressed: callback,
+                  child: Text(
+                    AppLocalizations.of(context)!.repeat,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            ],
+            mainAxisSize: MainAxisSize.min,
+          ),
         ),
       ),
     );

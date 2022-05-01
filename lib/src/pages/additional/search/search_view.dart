@@ -31,30 +31,14 @@ class _SearchViewState extends State<SearchView> {
               autofocus: true,
               decoration: InputDecoration(
                 suffixIcon: const Icon(Icons.search),
-                hintText: AppLocalizations.of(context)!.search_hint,
+                hintText: AppLocalizations.of(context)!.enterToSearch,
               ),
             ),
           ),
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: _searchController,
             builder: (context, value, _) {
-              if (value.text.trim().isEmpty) {
-                return SizedBox(
-                  height: 300,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.search_outlined),
-                        Text(
-                          AppLocalizations.of(context)!.enterToSearch,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
+              if (value.text.trim().isEmpty) return Container();
               return Expanded(
                 child: ListView(
                   children: [

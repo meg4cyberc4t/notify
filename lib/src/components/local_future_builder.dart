@@ -16,7 +16,7 @@ class LocalFutureBuilder<T> extends StatefulWidget {
 
   static LocalFutureBuilder withLoading<T>({
     Key? key,
-    required Future<T>? future,
+    required Future<T> future,
     required Widget Function(BuildContext context, Object error) onError,
     required Widget Function(BuildContext context, T? data, bool isLoaded)
         onLoading,
@@ -28,19 +28,14 @@ class LocalFutureBuilder<T> extends StatefulWidget {
     );
   }
 
-  final Future<T>? future;
+  final Future<T> future;
   final Widget Function(BuildContext context, T data) onData;
   final Widget Function(BuildContext context) onProgress;
 
   static Widget onError(BuildContext context, Object error,
       [VoidCallback? callback]) {
-    if (error is ApiServiceException) {
-      switch (error.statusCode) {
-        case 404:
-          return const NotFoundView();
-        default:
-          break;
-      }
+    if (error is ApiServiceException && error.statusCode == 404) {
+      return const NotFoundView();
     }
     if (error is SocketException) {
       return BadConnectionView(callback: callback);

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:notify/src/components/local_future_builder.dart';
 import 'package:notify/src/components/local_splitter.dart';
 import 'package:notify/src/components/view_models/notification_list_tile.dart';
+import 'package:notify/src/components/warnings_view/not_found_view.dart';
 import 'package:notify/src/models/notify_notification_quick.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
 
 class ListNotificationsView extends StatefulWidget {
@@ -39,21 +39,7 @@ class _ListNotificationsViewState extends State<ListNotificationsView>
                 onData:
                     (BuildContext context, List<NotifyNotificationQuick> ntfs) {
                   if (ntfs.isEmpty) {
-                    return SizedBox(
-                      height: 300,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.search_off_outlined),
-                            Text(
-                              AppLocalizations.of(context)!.notFound,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    return const NotFoundView();
                   }
                   return ListView.builder(
                     itemCount: ntfs.length,

@@ -123,5 +123,10 @@
     },
   "generalReminders": "Общие напоминания",
   "createFolder": "Создать папку",
-  "folders": "Папки"
+  "folders": "Папки",
+  "badConnection": "Плохое соединение",
+  "checkYourConnection": "Проверьте настройки сети или обновите экран",
+  "repeat": "Повторить",
+  "unknownError": "Неопознанная ошибка",
+  "unknownErrorDevMessage": "К сожалению, не все баги удаётся устранить..."
 }

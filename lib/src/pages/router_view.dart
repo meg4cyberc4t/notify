@@ -8,7 +8,6 @@ import 'package:notify/src/pages/home/home_view.dart';
 import 'package:notify/src/pages/profile/profile_view.dart';
 import 'package:notify/src/settings/sus_service/sus_service.dart';
 import 'package:notify/src/settings/sus_service/user_folders_state.dart';
-import 'package:rive_splash_screen/rive_splash_screen.dart';
 
 class RouterView extends StatefulWidget {
   const RouterView({Key? key}) : super(key: key);
@@ -27,6 +26,15 @@ class _RouterViewState extends State<RouterView> {
     if (FirebaseAuth.instance.currentUser == null) {
       return const AuthPreview();
     }
+
+    Widget splashScreen = Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Center(
+          child: Image.asset(
+        'assets/images/icon.png',
+        height: MediaQuery.of(context).size.width * 0.5,
+      )),
+    );
 
     Widget routerPage = Scaffold(
       body: PageView(
@@ -71,30 +79,27 @@ class _RouterViewState extends State<RouterView> {
       ),
     );
 
-    return SplashScreen.callback(
-      name: 'assets/rive/loader.riv',
-      onError: (error, stackTrace) {
-        debugPrintStack(stackTrace: stackTrace);
-        return LocalFutureBuilder.onError(context, error);
-      },
-      until: () async {
+    return LocalFutureBuilder(
+      future: () async {
         Provider.of<UserState>(context, listen: false).load();
         Provider.of<UserNotificationsState>(context, listen: false).load();
         Provider.of<UserFoldersState>(context, listen: false).load();
-      },
-      backgroundColor: Theme.of(context).backgroundColor,
-      height: MediaQuery.of(context).size.width * 0.5,
-      endAnimation: 'Animation 1',
-      onSuccess: (value) => Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-            pageBuilder: (BuildContext context, Animation<double> animation,
-                    Animation<double> secondaryAnimation) =>
-                FadeTransition(
-                  opacity: animation,
-                  child: routerPage,
+        return true;
+      }()
+          .whenComplete(() => Navigator.of(context).pushReplacement(
+                PageRouteBuilder(
+                  pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) =>
+                      FadeTransition(
+                    opacity: animation,
+                    child: routerPage,
+                  ),
+                  transitionDuration: const Duration(milliseconds: 700),
                 ),
-            transitionDuration: const Duration(milliseconds: 700)),
-      ),
+              )),
+      onData: (context, _) => splashScreen,
+      onProgress: (context) => splashScreen,
     );
   }
 }
