@@ -1,6 +1,6 @@
 name: notify
 description: An application for creating and working reminders in a team.
-version: 0.2.1+5
+version: 1.0.0+5-rc.1
 repository: https://github.com/meg4cyberc4t/notify
 
 environment:

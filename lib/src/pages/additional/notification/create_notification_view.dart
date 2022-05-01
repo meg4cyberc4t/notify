@@ -139,7 +139,13 @@ class _CreateNotificationViewState extends State<CreateNotificationView> {
                             ),
                           );
                           if (date == null) return;
-                          _deadlineNotifier.value = date;
+                          _deadlineNotifier.value = DateTime(
+                            date.year,
+                            date.month,
+                            date.day,
+                            _deadlineNotifier.value.hour,
+                            _deadlineNotifier.value.minute,
+                          );
                           _dateController.text =
                               DateFormat('dd.MM.yyyy').format(date);
                         },
