@@ -143,11 +143,13 @@ class _EditProfileViewState extends State<EditProfileView> {
                         child: ElevatedButton(
                           onPressed: () async {
                             try {
-                              Provider.of<UserState>(context).edit(
-                                  firstname: _firstnameController.text.trim(),
-                                  lastname: _lastnameController.text.trim(),
-                                  status: _statusController.text.trim(),
-                                  color: color);
+                              Provider.of<UserState>(context, listen: false)
+                                  .edit(
+                                      firstname:
+                                          _firstnameController.text.trim(),
+                                      lastname: _lastnameController.text.trim(),
+                                      status: _statusController.text.trim(),
+                                      color: color);
                               Navigator.of(context).pop();
                             } on Exception catch (error) {
                               ScaffoldMessenger.of(context).clearSnackBars();

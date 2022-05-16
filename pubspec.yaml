@@ -1,6 +1,6 @@
 name: notify
 description: An application for creating and working reminders in a team.
-version: 1.0.0+6-rc.1
+version: 1.0.1+10
 repository: https://github.com/meg4cyberc4t/notify
 
 environment:
@@ -46,7 +46,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/fonts/static/
-    - assets/rive/
+    - assets/
 
 flutter_icons:
   android: "launcher_icon"
